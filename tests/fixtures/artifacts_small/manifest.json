@@ -1,0 +1,60 @@
+{
+  "format_version": 1,
+  "built_at": "2026-10-06T09:29:53+00:00",
+  "name": "flickpick-ml-latest-small-600",
+  "n_items": 600,
+  "sources": [
+    {
+      "name": "MovieLens ml-latest-small",
+      "version": "ml-latest-small",
+      "licence": "research, non-commercial, share-alike on transformations",
+      "url": "https://grouplens.org/datasets/movielens/"
+    }
+  ],
+  "cf": {
+    "method": "ease",
+    "topk": 50,
+    "lambda": 500.0,
+    "n_train_users": 605,
+    "n_train_ratings": 32874,
+    "like_threshold": 70.0
+  },
+  "embedding": {
+    "model": "BAAI/bge-small-en-v1.5",
+    "dim": 384,
+    "dtype": "float32",
+    "query_prefix": "",
+    "text_field": "semantic_text"
+  },
+  "files": {
+    "cf_indptr": {
+      "path": "cf_indptr.i32",
+      "dtype": "int32",
+      "shape": [
+        601
+      ]
+    },
+    "cf_indices": {
+      "path": "cf_indices.i32",
+      "dtype": "int32",
+      "shape": [
+        30000
+      ]
+    },
+    "cf_values": {
+      "path": "cf_values.f32",
+      "dtype": "float32",
+      "shape": [
+        30000
+      ]
+    },
+    "embeddings": {
+      "path": "embeddings.f32",
+      "dtype": "float32",
+      "shape": [
+        600,
+        384
+      ]
+    }
+  }
+}

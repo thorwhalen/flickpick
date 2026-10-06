@@ -1,0 +1,525 @@
+{
+ "artifacts": "tests/fixtures/artifacts_small",
+ "ratings": "flickpick/data/examples/movie_ratings_various.csv",
+ "cases": [
+  {
+   "name": "ease_default",
+   "scorer": "ease",
+   "options": {
+    "folds": 5,
+    "k": 10,
+    "seed": 0
+   },
+   "expected": {
+    "folds": 5,
+    "k": 10,
+    "n_liked": 53,
+    "n_rated": 101,
+    "per_fold": [
+     {
+      "fold": 0,
+      "n_test": 11,
+      "test_ids": [
+       "tt0137523",
+       "tt0118799",
+       "tt0116282",
+       "tt0258463",
+       "tt0167404",
+       "tt0105236",
+       "tt0378194",
+       "tt1010048",
+       "tt0240772",
+       "tt0130827",
+       "tt0103064"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.45454545454545453,
+       "ndcg": 0.5801476231864474,
+       "precision": 0.5
+      }
+     },
+     {
+      "fold": 1,
+      "n_test": 11,
+      "test_ids": [
+       "tt0120586",
+       "tt0073486",
+       "tt0264464",
+       "tt0080684",
+       "tt1631867",
+       "tt2096673",
+       "tt0468569",
+       "tt0396269",
+       "tt0076759",
+       "tt0120601",
+       "tt0068646"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.5454545454545454,
+       "ndcg": 0.6523706084452718,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 2,
+      "n_test": 11,
+      "test_ids": [
+       "tt1853728",
+       "tt0097165",
+       "tt0133093",
+       "tt0395169",
+       "tt0111161",
+       "tt0266697",
+       "tt1119646",
+       "tt0382932",
+       "tt0102926",
+       "tt0119217",
+       "tt0109830"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.45454545454545453,
+       "ndcg": 0.6489315753318466,
+       "precision": 0.5
+      }
+     },
+     {
+      "fold": 3,
+      "n_test": 10,
+      "test_ids": [
+       "tt0108052",
+       "tt0114369",
+       "tt0110413",
+       "tt0081505",
+       "tt0211915",
+       "tt0209144",
+       "tt0338013",
+       "tt0407887",
+       "tt0119174",
+       "tt0117951"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.5,
+       "ndcg": 0.5669450709942983,
+       "precision": 0.5
+      }
+     },
+     {
+      "fold": 4,
+      "n_test": 10,
+      "test_ids": [
+       "tt0071562",
+       "tt0151804",
+       "tt0169547",
+       "tt0118715",
+       "tt0095953",
+       "tt0071853",
+       "tt0114746",
+       "tt0110912",
+       "tt0114814",
+       "tt0082971"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.5,
+       "ndcg": 0.6020521034564039,
+       "precision": 0.5
+      }
+     }
+    ],
+    "mean": {
+     "hit_rate": 1.0,
+     "recall": 0.4909090909090909,
+     "ndcg": 0.6100893962828536,
+     "precision": 0.52
+    },
+    "ci95": {
+     "hit_rate": null,
+     "recall": [
+      0.3472272727272728,
+      0.6254545454545455
+     ],
+     "ndcg": [
+      0.41633329118695567,
+      0.8221315224170893
+     ],
+     "precision": [
+      0.36000000000000004,
+      0.6599999999999998
+     ]
+    },
+    "note": "hit_rate is per fold (any held-out item in the top 10); with 5 < 10 folds its interval is not reported."
+   }
+  },
+  {
+   "name": "popularity",
+   "scorer": "popularity",
+   "options": {
+    "folds": 5,
+    "k": 10,
+    "seed": 0
+   },
+   "expected": {
+    "folds": 5,
+    "k": 10,
+    "n_liked": 53,
+    "n_rated": 101,
+    "per_fold": [
+     {
+      "fold": 0,
+      "n_test": 11,
+      "test_ids": [
+       "tt0137523",
+       "tt0118799",
+       "tt0116282",
+       "tt0258463",
+       "tt0167404",
+       "tt0105236",
+       "tt0378194",
+       "tt1010048",
+       "tt0240772",
+       "tt0130827",
+       "tt0103064"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.18181818181818182,
+       "ndcg": 0.24890832702259466,
+       "precision": 0.2
+      }
+     },
+     {
+      "fold": 1,
+      "n_test": 11,
+      "test_ids": [
+       "tt0120586",
+       "tt0073486",
+       "tt0264464",
+       "tt0080684",
+       "tt1631867",
+       "tt2096673",
+       "tt0468569",
+       "tt0396269",
+       "tt0076759",
+       "tt0120601",
+       "tt0068646"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.2727272727272727,
+       "ndcg": 0.38113435412202007,
+       "precision": 0.3
+      }
+     },
+     {
+      "fold": 2,
+      "n_test": 11,
+      "test_ids": [
+       "tt1853728",
+       "tt0097165",
+       "tt0133093",
+       "tt0395169",
+       "tt0111161",
+       "tt0266697",
+       "tt1119646",
+       "tt0382932",
+       "tt0102926",
+       "tt0119217",
+       "tt0109830"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.36363636363636365,
+       "ndcg": 0.5637884576902257,
+       "precision": 0.4
+      }
+     },
+     {
+      "fold": 3,
+      "n_test": 10,
+      "test_ids": [
+       "tt0108052",
+       "tt0114369",
+       "tt0110413",
+       "tt0081505",
+       "tt0211915",
+       "tt0209144",
+       "tt0338013",
+       "tt0407887",
+       "tt0119174",
+       "tt0117951"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.2,
+       "ndcg": 0.23365080824310536,
+       "precision": 0.2
+      }
+     },
+     {
+      "fold": 4,
+      "n_test": 10,
+      "test_ids": [
+       "tt0071562",
+       "tt0151804",
+       "tt0169547",
+       "tt0118715",
+       "tt0095953",
+       "tt0071853",
+       "tt0114746",
+       "tt0110912",
+       "tt0114814",
+       "tt0082971"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.4,
+       "ndcg": 0.46945447024602927,
+       "precision": 0.4
+      }
+     }
+    ],
+    "mean": {
+     "hit_rate": 1.0,
+     "recall": 0.2836363636363636,
+     "ndcg": 0.379387283464795,
+     "precision": 0.3
+    },
+    "ci95": {
+     "hit_rate": null,
+     "recall": [
+      0.1690909090909091,
+      0.39999999999999997
+     ],
+     "ndcg": [
+      0.2009309931354195,
+      0.5647637202836511
+     ],
+     "precision": [
+      0.18000000000000005,
+      0.42
+     ]
+    },
+    "note": "hit_rate is per fold (any held-out item in the top 10); with 5 < 10 folds its interval is not reported."
+   }
+  },
+  {
+   "name": "ease_10_folds",
+   "scorer": "ease",
+   "options": {
+    "folds": 10,
+    "k": 5,
+    "seed": 7
+   },
+   "expected": {
+    "folds": 10,
+    "k": 5,
+    "n_liked": 53,
+    "n_rated": 101,
+    "per_fold": [
+     {
+      "fold": 0,
+      "n_test": 6,
+      "test_ids": [
+       "tt0395169",
+       "tt0114369",
+       "tt0119217",
+       "tt0080684",
+       "tt0137523",
+       "tt1119646"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.5,
+       "ndcg": 0.6843515475204855,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 1,
+      "n_test": 6,
+      "test_ids": [
+       "tt0118715",
+       "tt0110413",
+       "tt0240772",
+       "tt0120601",
+       "tt0081505",
+       "tt0073486"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.16666666666666666,
+       "ndcg": 0.13120507751234178,
+       "precision": 0.2
+      }
+     },
+     {
+      "fold": 2,
+      "n_test": 6,
+      "test_ids": [
+       "tt1631867",
+       "tt0133093",
+       "tt0105236",
+       "tt0095953",
+       "tt0396269",
+       "tt0068646"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.3333333333333333,
+       "ndcg": 0.5531464700081437,
+       "precision": 0.4
+      }
+     },
+     {
+      "fold": 3,
+      "n_test": 5,
+      "test_ids": [
+       "tt0111161",
+       "tt0266697",
+       "tt0407887",
+       "tt0167404",
+       "tt0151804"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.6,
+       "ndcg": 0.6843515475204855,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 4,
+      "n_test": 5,
+      "test_ids": [
+       "tt0338013",
+       "tt0071853",
+       "tt0071562",
+       "tt0211915",
+       "tt0118799"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.4,
+       "ndcg": 0.48522855511632257,
+       "precision": 0.4
+      }
+     },
+     {
+      "fold": 5,
+      "n_test": 5,
+      "test_ids": [
+       "tt0117951",
+       "tt2096673",
+       "tt0209144",
+       "tt0468569",
+       "tt0103064"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.6,
+       "ndcg": 0.639945385422766,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 6,
+      "n_test": 5,
+      "test_ids": [
+       "tt0097165",
+       "tt0264464",
+       "tt0109830",
+       "tt0102926",
+       "tt0116282"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.6,
+       "ndcg": 0.7227265726449519,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 7,
+      "n_test": 5,
+      "test_ids": [
+       "tt0120586",
+       "tt0110912",
+       "tt0382932",
+       "tt0108052",
+       "tt0114746"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.6,
+       "ndcg": 0.7227265726449519,
+       "precision": 0.6
+      }
+     },
+     {
+      "fold": 8,
+      "n_test": 5,
+      "test_ids": [
+       "tt1853728",
+       "tt0378194",
+       "tt0130827",
+       "tt0082971",
+       "tt0119174"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.2,
+       "ndcg": 0.14606834984270645,
+       "precision": 0.2
+      }
+     },
+     {
+      "fold": 9,
+      "n_test": 5,
+      "test_ids": [
+       "tt0258463",
+       "tt1010048",
+       "tt0076759",
+       "tt0114814",
+       "tt0169547"
+      ],
+      "metrics": {
+       "hit_rate": 1.0,
+       "recall": 0.6,
+       "ndcg": 0.7227265726449519,
+       "precision": 0.6
+      }
+     }
+    ],
+    "mean": {
+     "hit_rate": 1.0,
+     "recall": 0.45999999999999996,
+     "ndcg": 0.5492476650878106,
+     "precision": 0.48
+    },
+    "ci95": {
+     "hit_rate": [
+      1.0,
+      1.0
+     ],
+     "recall": [
+      0.3266666666666667,
+      0.5967499999999997
+     ],
+     "ndcg": [
+      0.37751934213865573,
+      0.7324806335426827
+     ],
+     "precision": [
+      0.3400000000000001,
+      0.6199999999999998
+     ]
+    },
+    "note": null
+   }
+  }
+ ]
+}

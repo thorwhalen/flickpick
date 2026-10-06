@@ -33,13 +33,13 @@ The first two are the v1. The Python pipeline is v1 too, because nothing runs wi
 | # | Seam | v1 default (no new dependency) | Replacement I can point at |
 |---|---|---|---|
 | 1 | where artifacts are loaded from (`artifactSource`) | `fetch()` from a static base URL (HF Hub dataset or the site's own `data/`) | local files in Node, or a `qh` endpoint (`tt/app_ef` is the template; browser-first report §2) |
-| 2 | how candidates are scored (`scorer`) | EASE: ratings row × sparse top-k item-item matrix | iALS item factors with closed-form fold-in; item-kNN for explanations (recsys report §3; same pipeline emits all three) |
-| 3 | where the user's data lives (`store`) | `@zodal/store-localstorage` (IndexedDB-backed provider) | `@zodal/store-http` against the qh service (both in the manifest) |
-| 4 | live enrichment provider (`enrichment`) | TMDB with the user's key: `/watch/providers`, votes, poster paths | Movie of the Night for availability, MDBList for RT/Metacritic/Letterboxd scores (streaming report §1-2) |
-| 5 | how a free-text request becomes a structured query (`queryParser`) | the structured form itself: mood text is embedded client-side, everything else is fields | an LLM parser with the user's key via `acture-ai` (the brief asks for it; acture exists) |
+| 2 | where the user's data lives (`store`) | `@zodal/store-localstorage` (IndexedDB-backed provider) | `@zodal/store-http` against the qh service (both in the manifest) |
+| 3 | how a free-text request becomes a structured query (`queryParser`) | the structured form itself: mood text is embedded client-side, everything else is fields | an LLM parser with the user's key via `acture-ai` (the brief asks for it; acture exists) |
+
+Two rows that were in the proposal were **demoted to seam candidates** after the v1 review (2026-10-06), because their replacement exists only in the research, not in code, which fails the evidence test: the **scorer** (`recommend` calls EASE directly in both languages; iALS fold-in and item-kNN would be one keyword argument when the pipeline emits their artifacts) and the **enrichment provider** (only the HTTP transport is injected; Movie of the Night and MDBList would be a second module behind one argument). Both carry a `seam candidate` comment at the call site.
 
 ```
-Surface for v1: web app + Node CLI over the TS core; Python `build` CLI.
+Surface for v1 (built): web app + Node CLI over the TS core; Python `build|recommend|evaluate` CLI.
                 (MCP, remote MCP, shipped skills, qh: questions answered below, not built)
 NOT seams:      embedding model (bge-small-en-v1.5 int8 or snowflake-arctic-embed-xs, fixed per artifact version),
                 fusion formula (weights are config, the formula is code), chart library, URL state shape,
