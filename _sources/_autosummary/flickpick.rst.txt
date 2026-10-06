@@ -1,0 +1,70 @@
+﻿flickpick
+=========
+
+.. automodule:: flickpick
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      read_artifacts
+      validate_artifacts
+      write_artifacts
+      build_artifacts
+      ease_dense
+      fit_ease
+      sparsify_topk
+      detect_format
+      parse_flickpick
+      parse_imdb
+      parse_letterboxd
+      parse_movielens
+      parse_ratings
+      read_ratings
+      resolve_ratings
+      agreement
+      cross_validated_fit
+      holdout_evaluate
+      ranking_metrics
+      embed_query
+      format_recommendations
+      recommend
+      score_cf
+      score_semantic
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CF
+      Artifacts
+      Defaults
+      Rating
+      Query
+      Recommendation
+      Weights
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      ArtifactFormatError
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   artifacts
+   build
+   data
+   defaults
+   ease
+   embedding
+   importers
+   ratings
+   science
+   score
+   tools

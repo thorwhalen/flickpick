@@ -1,0 +1,15 @@
+flickpick.embedding
+===================
+
+.. automodule:: flickpick.embedding
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      embed_texts
+      embedding_spec
+      get_encoder
+      l2_normalise
+   

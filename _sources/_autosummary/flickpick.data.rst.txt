@@ -1,0 +1,23 @@
+flickpick.data
+==============
+
+.. automodule:: flickpick.data
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      data_home
+      fetch_dataset
+      load_movielens
+      movielens_source
+      raw_dir
+      read_movielens
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MovieLens
+   

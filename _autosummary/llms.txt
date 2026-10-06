@@ -1,0 +1,23 @@
+# flickpick
+
+> Personal movie recommender: browser-first app, TypeScript core, Python build pipeline; AI agents pick movies for you
+
+
+## Pages in this subsection
+
+- [flickpick](flickpick.html.md): flickpick: a personal movie recommender (Python half: build pipeline and scorer).
+- [flickpick.artifacts](flickpick.artifacts.html.md): Write and read an artifact set as specified in &#96;docs/artifact-format.md&#96;.
+- [flickpick.build](flickpick.build.html.md): The build pipeline: MovieLens tables -&gt; catalogue, sparse EASE matrix, embeddings.
+- [flickpick.data](flickpick.data.html.md): Download (with a cache) and parse the MovieLens datasets the build uses.
+- [flickpick.defaults](flickpick.defaults.html.md): Named defaults shared by the build pipeline, the scorer and the CLI.
+- [flickpick.ease](flickpick.ease.html.md): EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.
+- [flickpick.embedding](flickpick.embedding.html.md): Sentence embeddings of catalogue text and of mood queries.
+- [flickpick.importers](flickpick.importers.html.md): Parse ratings exports into &#96;Rating&#96; lists on the canonical 0-100 scale.
+- [flickpick.ratings](flickpick.ratings.html.md): The canonical &#96;Rating&#96; type, and how ratings are joined to a catalogue.
+- [flickpick.science](flickpick.science.html.md): Personal evaluation and agreement statistics (“for scientists”).
+- [flickpick.score](flickpick.score.html.md): Score and recommend over an artifact set (&#96;docs/core-contract.md&#96;).
+- [flickpick.tools](flickpick.tools.html.md): The command surface: plain functions returning JSON-able values (SSOT for the CLI).
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

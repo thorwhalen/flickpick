@@ -1,0 +1,30 @@
+flickpick.score
+===============
+
+.. automodule:: flickpick.score
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      score_cf
+      score_semantic
+      embed_query
+      recommend
+      format_recommendations
+      liked_indices
+      candidate_mask
+      zscore
+      percentile_rank
+      fuse
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Weights
+      Query
+      Recommendation
+      Rating
+   

@@ -1,0 +1,18 @@
+flickpick.build
+===============
+
+.. automodule:: flickpick.build
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      build_artifacts
+      catalog_rows
+      clean_title
+      like_matrix
+      movie_tags
+      parse_genres
+      select_items
+   

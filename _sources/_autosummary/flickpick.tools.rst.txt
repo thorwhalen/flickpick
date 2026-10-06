@@ -1,0 +1,22 @@
+flickpick.tools
+===============
+
+.. automodule:: flickpick.tools
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      CLI_CONFIG
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      build
+      cli_egress
+      default_artifacts_dir
+      evaluate
+      recommend
+   

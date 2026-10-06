@@ -1,0 +1,25 @@
+flickpick.ratings
+=================
+
+.. automodule:: flickpick.ratings
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      as_rating
+      catalog_lookup
+      imdb_id
+      like_threshold
+      resolve_ratings
+      split_title_year
+      title_keys
+      title_variants
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Rating
+   

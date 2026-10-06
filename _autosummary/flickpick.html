@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="alternate" type="text/markdown" href="flickpick.html.md">
+<link rel="describedby" href="../llms.txt" type="text/markdown">
+<link rel="alternate" type="text/markdown" href="flickpick.html.md">
+<link rel="describedby" href="llms.txt">
+    <title>flickpick &#8212; flickpick</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/epythet.css?v=4dd68672" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
+
+    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=fd10adb8"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_autosummary/flickpick';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="flickpick.artifacts" href="flickpick.artifacts.html" />
+    <link rel="prev" title="API reference" href="../api.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.1" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">flickpick</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../ai-agents.html">
+    For AI agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thorwhalen/flickpick" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../api.html">
+    API reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../ai-agents.html">
+    For AI agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/thorwhalen/flickpick" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">flickpick</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.artifacts.html">flickpick.artifacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.build.html">flickpick.build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.data.html">flickpick.data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.defaults.html">flickpick.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.ease.html">flickpick.ease</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.embedding.html">flickpick.embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.importers.html">flickpick.importers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.ratings.html">flickpick.ratings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.science.html">flickpick.science</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.score.html">flickpick.score</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.tools.html">flickpick.tools</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../api.html" class="nav-link">API reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">flickpick</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-flickpick">
+<span id="flickpick"></span><h1>flickpick<a class="headerlink" href="#module-flickpick" title="Link to this heading">#</a></h1>
+<p>flickpick: a personal movie recommender (Python half: build pipeline and scorer).</p>
+<p>Build an artifact set, then recommend from a ratings export:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">flickpick</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_artifacts</span><span class="p">,</span> <span class="n">read_ratings</span><span class="p">,</span> <span class="n">recommend</span><span class="p">,</span> <span class="n">Query</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">read_artifacts</span><span class="p">(</span><span class="s1">'path/to/artifacts'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">recommend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">read_ratings</span><span class="p">(</span><span class="s1">'my_ratings.csv'</span><span class="p">),</span> <span class="n">Query</span><span class="p">(</span><span class="n">mood</span><span class="o">=</span><span class="s1">'slow-burn sci-fi'</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>From the shell: <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">flickpick</span> <span class="pre">build</span> <span class="pre">--sample</span></code> then
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">flickpick</span> <span class="pre">recommend</span> <span class="pre">--ratings</span> <span class="pre">my_ratings.csv</span> <span class="pre">--mood</span> <span class="pre">&quot;...&quot;</span></code>.
+The formats and the scoring contract are in <code class="docutils literal notranslate"><span class="pre">docs/artifact-format.md</span></code> and
+<code class="docutils literal notranslate"><span class="pre">docs/core-contract.md</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">flickpick</span></code> stays light (numpy only): the names from <code class="docutils literal notranslate"><span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">ease</span></code> and
+<code class="docutils literal notranslate"><span class="pre">science</span></code>, which pull in pandas and scipy, are imported on first access.</p>
+<p class="rubric">Functions</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.read_artifacts" title="flickpick.read_artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_artifacts</span></code></a>(source)</p></td>
+<td><p>Load and validate the artifact set in directory <code class="docutils literal notranslate"><span class="pre">source</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.validate_artifacts" title="flickpick.validate_artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_artifacts</span></code></a>(a)</p></td>
+<td><p>Raise <code class="docutils literal notranslate"><span class="pre">ArtifactFormatError</span></code> unless every shape and the catalogue agree.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.write_artifacts" title="flickpick.write_artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_artifacts</span></code></a>(a, out_dir)</p></td>
+<td><p>Write <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">out_dir</span></code> (created if needed) and return the directory path.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.build_artifacts" title="flickpick.build_artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_artifacts</span></code></a>(ml, *[, n_items, topk, lam, ...])</p></td>
+<td><p>Build an in-memory artifact set from MovieLens tables.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ease_dense" title="flickpick.ease_dense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease_dense</span></code></a>(X, *[, lam, dtype])</p></td>
+<td><p>The dense EASE weight matrix B for a (sparse or dense) binary matrix X.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.fit_ease" title="flickpick.fit_ease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_ease</span></code></a>(X, *[, lam, topk, n_items])</p></td>
+<td><p>Fit sparse EASE on X restricted to its <code class="docutils literal notranslate"><span class="pre">n_items</span></code> most-rated columns (None: all).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.sparsify_topk" title="flickpick.sparsify_topk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparsify_topk</span></code></a>(B, *[, topk])</p></td>
+<td><p>Keep each row's <code class="docutils literal notranslate"><span class="pre">topk</span></code> largest positive weights, sorted descending, as CSR.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.detect_format" title="flickpick.detect_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_format</span></code></a>(csv_text)</p></td>
+<td><p>The name of the export format of <code class="docutils literal notranslate"><span class="pre">csv_text</span></code> (a key of <code class="docutils literal notranslate"><span class="pre">SIGNATURES</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.parse_flickpick" title="flickpick.parse_flickpick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_flickpick</span></code></a>(csv_text)</p></td>
+<td><p>The flickpick CSV (the example file's columns) -&gt; ratings (already 0-100).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.parse_imdb" title="flickpick.parse_imdb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_imdb</span></code></a>(csv_text)</p></td>
+<td><p>IMDb ratings export -&gt; ratings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.parse_letterboxd" title="flickpick.parse_letterboxd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_letterboxd</span></code></a>(csv_text)</p></td>
+<td><p>Letterboxd <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings (unrated rows are skipped).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.parse_movielens" title="flickpick.parse_movielens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_movielens</span></code></a>(csv_text, *[, user_id])</p></td>
+<td><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user (<code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> ids).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.parse_ratings" title="flickpick.parse_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_ratings</span></code></a>(csv_text, *[, format])</p></td>
+<td><p>Parse <code class="docutils literal notranslate"><span class="pre">csv_text</span></code> with the parser for <code class="docutils literal notranslate"><span class="pre">format</span></code> (detected when None).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.read_ratings" title="flickpick.read_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_ratings</span></code></a>(path, *[, format, encoding])</p></td>
+<td><p>Read and parse a ratings CSV file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.resolve_ratings" title="flickpick.resolve_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_ratings</span></code></a>(catalog, ratings)</p></td>
+<td><p>Pair each rating with its catalogue <code class="docutils literal notranslate"><span class="pre">idx</span></code>, dropping the ones not found.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.agreement" title="flickpick.agreement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">agreement</span></code></a>(ratings, catalog)</p></td>
+<td><p>Pearson, Spearman and the OLS line of the user's score on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.cross_validated_fit" title="flickpick.cross_validated_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validated_fit</span></code></a>(ratings, catalog, *[, ...])</p></td>
+<td><p>K-fold RMSE/MAE of a linear fit on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> vs the user-mean baseline.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.holdout_evaluate" title="flickpick.holdout_evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">holdout_evaluate</span></code></a>(artifacts, ratings, *[, ...])</p></td>
+<td><p>K-fold holdout of the user's liked items, scored over the full catalogue.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ranking_metrics" title="flickpick.ranking_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ranking_metrics</span></code></a>(recommended_idx, held_out_idx, k)</p></td>
+<td><p>Ranking metrics at <code class="docutils literal notranslate"><span class="pre">k</span></code> of one recommendation list against held-out items.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.embed_query" title="flickpick.embed_query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embed_query</span></code></a>(text, embedding)</p></td>
+<td><p>L2-normalised <code class="docutils literal notranslate"><span class="pre">float32[dim]</span></code> embedding of <code class="docutils literal notranslate"><span class="pre">query_prefix</span> <span class="pre">+</span> <span class="pre">text</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.format_recommendations" title="flickpick.format_recommendations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_recommendations</span></code></a>(recs)</p></td>
+<td><p>One line per item: <a href="#id1"><span class="problematic" id="id2">``</span></a>rank.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.recommend" title="flickpick.recommend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recommend</span></code></a>(artifacts, ratings[, query, ...])</p></td>
+<td><p>The top <code class="docutils literal notranslate"><span class="pre">query.k</span></code> unrated items for this user and query, explained.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.score_cf" title="flickpick.score_cf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_cf</span></code></a>(artifacts, ratings)</p></td>
+<td><p>EASE scores <code class="docutils literal notranslate"><span class="pre">float32[n_items]</span></code>; the user's rated items are <code class="docutils literal notranslate"><span class="pre">-inf</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.score_semantic" title="flickpick.score_semantic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_semantic</span></code></a>(artifacts, query_embedding)</p></td>
+<td><p>Cosine similarity <code class="docutils literal notranslate"><span class="pre">float32[n_items]</span></code> of every item to the query embedding.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Classes</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.CF" title="flickpick.CF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CF</span></code></a>(indptr, indices, values)</p></td>
+<td><p>The sparsified EASE item-item matrix B in CSR form (rows = source items).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.Artifacts" title="flickpick.Artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artifacts</span></code></a>(manifest, catalog, cf[, embeddings])</p></td>
+<td><p>One loaded artifact set: manifest, catalogue, CF matrix, optional embeddings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.Defaults" title="flickpick.Defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Defaults</span></code></a>([ease_lambda, topk, n_items, ...])</p></td>
+<td><p>Every tunable number in one place (see the docs cited on each field).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.Rating" title="flickpick.Rating"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rating</span></code></a>(item_id, score[, rated_at, title])</p></td>
+<td><p>One user rating on the canonical 0-100 scale.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.Query" title="flickpick.Query"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Query</span></code></a>([mood, like_ids, include_genres, ...])</p></td>
+<td><p>What the user asks for, beyond their ratings (all fields optional).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.Recommendation" title="flickpick.Recommendation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Recommendation</span></code></a>(item_id, idx, title, year, ...)</p></td>
+<td><p>One recommended item, its fused score, its raw component scores, and why.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.Weights" title="flickpick.Weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Weights</span></code></a>([cf, semantic, popularity])</p></td>
+<td><p>Fusion weights of the percentile-ranked components.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Exceptions</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ArtifactFormatError" title="flickpick.ArtifactFormatError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArtifactFormatError</span></code></a></p></td>
+<td><p>An artifact set does not match <code class="docutils literal notranslate"><span class="pre">docs/artifact-format.md</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py exception">
+<dt class="sig sig-object py" id="flickpick.ArtifactFormatError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">ArtifactFormatError</span></span><a class="reference internal" href="../_modules/flickpick/artifacts.html#ArtifactFormatError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ArtifactFormatError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></a></p>
+<p>An artifact set does not match <code class="docutils literal notranslate"><span class="pre">docs/artifact-format.md</span></code>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Artifacts">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manifest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#Artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Artifacts" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One loaded artifact set: manifest, catalogue, CF matrix, optional embeddings.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="flickpick.Artifacts.imdb_to_idx">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">imdb_to_idx</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#flickpick.Artifacts.imdb_to_idx" title="Link to this definition">#</a></dt>
+<dd><p>IMDb id -&gt; row index.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="flickpick.Artifacts.n_items">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_items</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><a class="headerlink" href="#flickpick.Artifacts.n_items" title="Link to this definition">#</a></dt>
+<dd><p>Number of items (rows of every file).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="flickpick.Artifacts.n_ratings">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_ratings</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#flickpick.Artifacts.n_ratings" title="Link to this definition">#</a></dt>
+<dd><p>Population rating counts, as an array in <code class="docutils literal notranslate"><span class="pre">idx</span></code> order.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.CF">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">CF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#CF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.CF" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The sparsified EASE item-item matrix B in CSR form (rows = source items).</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flickpick.CF.to_scipy">
+<span class="sig-name descname"><span class="pre">to_scipy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_items</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#CF.to_scipy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.CF.to_scipy" title="Link to this definition">#</a></dt>
+<dd><p>The same matrix as a <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code> of shape (n, n).</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Defaults">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ease_lambda</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">like_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ratings_for_median</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalisation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'percentile_rank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_semantic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_because</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BAAI/bge-small-en-v1.5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">384</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bootstrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_folds_for_fold_ci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/defaults.html#Defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Defaults" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Every tunable number in one place (see the docs cited on each field).</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.ease_lambda">
+<span class="sig-name descname"><span class="pre">ease_lambda</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">500.0</span></span><a class="headerlink" href="#flickpick.Defaults.ease_lambda" title="Link to this definition">#</a></dt>
+<dd><p>L2 regularisation; the recsys report’s probe found 200, 500 and 1000 tie on
+<a class="reference external" href="mailto:NDCG&#37;&#52;&#48;100">NDCG<span>&#64;</span>100</a> for MovieLens 32M (docs/research/recsys-methods-libraries-evaluation.md §3)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.like_threshold">
+<span class="sig-name descname"><span class="pre">like_threshold</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">70.0</span></span><a class="headerlink" href="#flickpick.Defaults.like_threshold" title="Link to this definition">#</a></dt>
+<dd><p>a population rating counts as a “like” at or above this, on the 0-100 scale
+(3.5 stars)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.max_tags">
+<span class="sig-name descname"><span class="pre">max_tags</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></span><a class="headerlink" href="#flickpick.Defaults.max_tags" title="Link to this definition">#</a></dt>
+<dd><p>cap on the distinct user tags appended to semantic_text (most frequent first)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.min_folds_for_fold_ci">
+<span class="sig-name descname"><span class="pre">min_folds_for_fold_ci</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#flickpick.Defaults.min_folds_for_fold_ci" title="Link to this definition">#</a></dt>
+<dd><p>hit_rate is a per-fold quantity; below this many folds its bootstrap interval
+(over folds) is too coarse to report (core contract, Science)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.min_ratings_for_median">
+<span class="sig-name descname"><span class="pre">min_ratings_for_median</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#flickpick.Defaults.min_ratings_for_median" title="Link to this definition">#</a></dt>
+<dd><p>with fewer ratings than this, the fixed like_threshold replaces the median</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.n_because">
+<span class="sig-name descname"><span class="pre">n_because</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#flickpick.Defaults.n_because" title="Link to this definition">#</a></dt>
+<dd><p>number of liked items named in “because you liked …”</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.n_items">
+<span class="sig-name descname"><span class="pre">n_items</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10000</span></span><a class="headerlink" href="#flickpick.Defaults.n_items" title="Link to this definition">#</a></dt>
+<dd><p>number of most-rated items in the CF artifact (they carry ~97% of ratings)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.normalisation">
+<span class="sig-name descname"><span class="pre">normalisation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'percentile_rank'</span></span><a class="headerlink" href="#flickpick.Defaults.normalisation" title="Link to this definition">#</a></dt>
+<dd><p>how each component is normalised over the candidate set before the weighted
+sum (core contract: “Defaults that are not seams”); the only value is
+“percentile_rank” (average ranks scaled to [0, 1])</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="flickpick.Defaults.topk">
+<span class="sig-name descname"><span class="pre">topk</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></span><a class="headerlink" href="#flickpick.Defaults.topk" title="Link to this definition">#</a></dt>
+<dd><p>kept neighbours per item row (98% of dense <a class="reference external" href="mailto:NDCG&#37;&#52;&#48;100">NDCG<span>&#64;</span>100</a> in the same probe)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Query">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">like_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_genres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_genres</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ratings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#Query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Query" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>What the user asks for, beyond their ratings (all fields optional).</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Rating">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Rating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rated_at</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#Rating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Rating" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One user rating on the canonical 0-100 scale.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Recommendation">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Recommendation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cf_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semantic_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity_score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reasons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">because_of</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#Recommendation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Recommendation" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One recommended item, its fused score, its raw component scores, and why.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="flickpick.Recommendation.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#Recommendation.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Recommendation.to_dict" title="Link to this definition">#</a></dt>
+<dd><p>A JSON-able dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="flickpick.Weights">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">Weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">semantic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">popularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#Weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.Weights" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Fusion weights of the percentile-ranked components.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.agreement">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">agreement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#agreement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.agreement" title="Link to this definition">#</a></dt>
+<dd><p>Pearson, Spearman and the OLS line of the user’s score on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.build_artifacts">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">build_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ml</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">like_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embeddings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BAAI/bge-small-en-v1.5'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/build.html#build_artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.build_artifacts" title="Link to this definition">#</a></dt>
+<dd><p>Build an in-memory artifact set from MovieLens tables.</p>
+<p><code class="docutils literal notranslate"><span class="pre">embed</span></code> (texts -&gt; L2-normalised float32 array) replaces the default encoder,
+which is <code class="docutils literal notranslate"><span class="pre">embed_texts</span></code> with <code class="docutils literal notranslate"><span class="pre">embedding_model</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="flickpick.artifacts.html#flickpick.artifacts.Artifacts" title="flickpick.artifacts.Artifacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Artifacts</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.cross_validated_fit">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">cross_validated_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">folds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#cross_validated_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.cross_validated_fit" title="Link to this definition">#</a></dt>
+<dd><p>K-fold RMSE/MAE of a linear fit on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> vs the user-mean baseline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.detect_format">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">detect_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#detect_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.detect_format" title="Link to this definition">#</a></dt>
+<dd><p>The name of the export format of <code class="docutils literal notranslate"><span class="pre">csv_text</span></code> (a key of <code class="docutils literal notranslate"><span class="pre">SIGNATURES</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.ease_dense">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">ease_dense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ease.html#ease_dense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ease_dense" title="Link to this definition">#</a></dt>
+<dd><p>The dense EASE weight matrix B for a (sparse or dense) binary matrix X.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.embed_query">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">embed_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#embed_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.embed_query" title="Link to this definition">#</a></dt>
+<dd><p>L2-normalised <code class="docutils literal notranslate"><span class="pre">float32[dim]</span></code> embedding of <code class="docutils literal notranslate"><span class="pre">query_prefix</span> <span class="pre">+</span> <span class="pre">text</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">embedding</span></code> is <code class="docutils literal notranslate"><span class="pre">manifest[&quot;embedding&quot;]</span></code>; this is the only place a model runs at
+query time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.fit_ease">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">fit_ease</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_items</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ease.html#fit_ease"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.fit_ease" title="Link to this definition">#</a></dt>
+<dd><p>Fit sparse EASE on X restricted to its <code class="docutils literal notranslate"><span class="pre">n_items</span></code> most-rated columns (None: all).</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">(cf,</span> <span class="pre">item_cols)</span></code>: the CSR matrix over the kept items, and the original
+column index of each kept item (row <code class="docutils literal notranslate"><span class="pre">r</span></code> of <code class="docutils literal notranslate"><span class="pre">cf</span></code> is column <code class="docutils literal notranslate"><span class="pre">item_cols[r]</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference internal" href="flickpick.artifacts.html#flickpick.artifacts.CF" title="flickpick.artifacts.CF"><code class="xref py py-class docutils literal notranslate"><span class="pre">CF</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.format_recommendations">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">format_recommendations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#format_recommendations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.format_recommendations" title="Link to this definition">#</a></dt>
+<dd><p>One line per item: <code class="docutils literal notranslate"><span class="pre">rank.</span> <span class="pre">title</span> <span class="pre">(year)</span>&#160; <span class="pre">score=...</span>&#160; <span class="pre">because:</span> <span class="pre">...</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.holdout_evaluate">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">holdout_evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scorer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">ease_scorer&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ci_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_folds_for_fold_ci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#holdout_evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.holdout_evaluate" title="Link to this definition">#</a></dt>
+<dd><p>K-fold holdout of the user’s liked items, scored over the full catalogue.</p>
+<p>The algorithm (steps a-f of <code class="docutils literal notranslate"><span class="pre">docs/core-contract.md</span></code>, Science): restrict the
+ratings to the catalogue; liked = at or above the like threshold of that restricted
+set; sort the liked <code class="docutils literal notranslate"><span class="pre">imdb_id``s,</span> <span class="pre">shuffle</span> <span class="pre">them</span> <span class="pre">with</span> <span class="pre">``mulberry32(seed)</span></code> and deal
+them round-robin into folds; per fold, score with <code class="docutils literal notranslate"><span class="pre">scorer(artifacts,</span> <span class="pre">train)</span></code> and
+rank every item outside the training ratings. <code class="docutils literal notranslate"><span class="pre">ci95</span></code> is a bootstrap over held-out
+items for recall, NDCG and precision; <code class="docutils literal notranslate"><span class="pre">hit_rate</span></code>’s is over folds, and <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(see <code class="docutils literal notranslate"><span class="pre">note</span></code>) with fewer than <code class="docutils literal notranslate"><span class="pre">min_folds_for_fold_ci</span></code> folds.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">{folds,</span> <span class="pre">k,</span> <span class="pre">n_liked,</span> <span class="pre">n_rated,</span> <span class="pre">per_fold,</span> <span class="pre">mean,</span> <span class="pre">ci95,</span> <span class="pre">note}</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.parse_flickpick">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">parse_flickpick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_flickpick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.parse_flickpick" title="Link to this definition">#</a></dt>
+<dd><p>The flickpick CSV (the example file’s columns) -&gt; ratings (already 0-100).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.parse_imdb">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">parse_imdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_imdb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.parse_imdb" title="Link to this definition">#</a></dt>
+<dd><p>IMDb ratings export -&gt; ratings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.parse_letterboxd">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">parse_letterboxd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_letterboxd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.parse_letterboxd" title="Link to this definition">#</a></dt>
+<dd><p>Letterboxd <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings (unrated rows are skipped).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.parse_movielens">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">parse_movielens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_movielens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.parse_movielens" title="Link to this definition">#</a></dt>
+<dd><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user (<code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> ids).</p>
+<p><code class="docutils literal notranslate"><span class="pre">userId</span></code> is optional; a file holding several users needs <code class="docutils literal notranslate"><span class="pre">user_id</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.parse_ratings">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">parse_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.parse_ratings" title="Link to this definition">#</a></dt>
+<dd><p>Parse <code class="docutils literal notranslate"><span class="pre">csv_text</span></code> with the parser for <code class="docutils literal notranslate"><span class="pre">format</span></code> (detected when None).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.ranking_metrics">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">ranking_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recommended_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">held_out_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#ranking_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ranking_metrics" title="Link to this definition">#</a></dt>
+<dd><p>Ranking metrics at <code class="docutils literal notranslate"><span class="pre">k</span></code> of one recommendation list against held-out items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ranking_metrics</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">3</span><span class="p">)[</span><span class="s1">'recall'</span><span class="p">]</span>
+<span class="go">0.5</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.read_artifacts">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">read_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#read_artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.read_artifacts" title="Link to this definition">#</a></dt>
+<dd><p>Load and validate the artifact set in directory <code class="docutils literal notranslate"><span class="pre">source</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="flickpick.artifacts.html#flickpick.artifacts.Artifacts" title="flickpick.artifacts.Artifacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Artifacts</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.read_ratings">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">read_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#read_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.read_ratings" title="Link to this definition">#</a></dt>
+<dd><p>Read and parse a ratings CSV file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.recommend">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">recommend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">embed_query&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_because</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#recommend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.recommend" title="Link to this definition">#</a></dt>
+<dd><p>The top <code class="docutils literal notranslate"><span class="pre">query.k</span></code> unrated items for this user and query, explained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.score.html#flickpick.score.Recommendation" title="flickpick.score.Recommendation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recommendation</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.resolve_ratings">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">resolve_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#resolve_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.resolve_ratings" title="Link to this definition">#</a></dt>
+<dd><p>Pair each rating with its catalogue <code class="docutils literal notranslate"><span class="pre">idx</span></code>, dropping the ones not found.</p>
+<p>A later rating of the same item replaces an earlier one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.score_cf">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">score_cf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#score_cf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.score_cf" title="Link to this definition">#</a></dt>
+<dd><p>EASE scores <code class="docutils literal notranslate"><span class="pre">float32[n_items]</span></code>; the user’s rated items are <code class="docutils literal notranslate"><span class="pre">-inf</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.score_semantic">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">score_semantic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_embedding</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#score_semantic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.score_semantic" title="Link to this definition">#</a></dt>
+<dd><p>Cosine similarity <code class="docutils literal notranslate"><span class="pre">float32[n_items]</span></code> of every item to the query embedding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.sparsify_topk">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">sparsify_topk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">B</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">topk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ease.html#sparsify_topk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.sparsify_topk" title="Link to this definition">#</a></dt>
+<dd><p>Keep each row’s <code class="docutils literal notranslate"><span class="pre">topk</span></code> largest positive weights, sorted descending, as CSR.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="flickpick.artifacts.html#flickpick.artifacts.CF" title="flickpick.artifacts.CF"><code class="xref py py-class docutils literal notranslate"><span class="pre">CF</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.validate_artifacts">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">validate_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#validate_artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.validate_artifacts" title="Link to this definition">#</a></dt>
+<dd><p>Raise <code class="docutils literal notranslate"><span class="pre">ArtifactFormatError</span></code> unless every shape and the catalogue agree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="flickpick.artifacts.html#flickpick.artifacts.Artifacts" title="flickpick.artifacts.Artifacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Artifacts</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.write_artifacts">
+<span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">write_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/artifacts.html#write_artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.write_artifacts" title="Link to this definition">#</a></dt>
+<dd><p>Write <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">out_dir</span></code> (created if needed) and return the directory path.</p>
+<p>The manifest’s <code class="docutils literal notranslate"><span class="pre">files</span></code> entry is (re)computed from the arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Modules</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.artifacts.html#module-flickpick.artifacts" title="flickpick.artifacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">artifacts</span></code></a></p></td>
+<td><p>Write and read an artifact set as specified in <code class="docutils literal notranslate"><span class="pre">docs/artifact-format.md</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.build.html#module-flickpick.build" title="flickpick.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a></p></td>
+<td><p>The build pipeline: MovieLens tables -&gt; catalogue, sparse EASE matrix, embeddings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.data.html#module-flickpick.data" title="flickpick.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
+<td><p>Download (with a cache) and parse the MovieLens datasets the build uses.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.defaults.html#module-flickpick.defaults" title="flickpick.defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defaults</span></code></a></p></td>
+<td><p>Named defaults shared by the build pipeline, the scorer and the CLI.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.ease.html#module-flickpick.ease" title="flickpick.ease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease</span></code></a></p></td>
+<td><p>EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.embedding.html#module-flickpick.embedding" title="flickpick.embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding</span></code></a></p></td>
+<td><p>Sentence embeddings of catalogue text and of mood queries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.importers.html#module-flickpick.importers" title="flickpick.importers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importers</span></code></a></p></td>
+<td><p>Parse ratings exports into <code class="docutils literal notranslate"><span class="pre">Rating</span></code> lists on the canonical 0-100 scale.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.ratings.html#module-flickpick.ratings" title="flickpick.ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ratings</span></code></a></p></td>
+<td><p>The canonical <code class="docutils literal notranslate"><span class="pre">Rating</span></code> type, and how ratings are joined to a catalogue.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.science.html#module-flickpick.science" title="flickpick.science"><code class="xref py py-obj docutils literal notranslate"><span class="pre">science</span></code></a></p></td>
+<td><p>Personal evaluation and agreement statistics (&quot;for scientists&quot;).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.score.html#module-flickpick.score" title="flickpick.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a></p></td>
+<td><p>Score and recommend over an artifact set (<code class="docutils literal notranslate"><span class="pre">docs/core-contract.md</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.tools.html#module-flickpick.tools" title="flickpick.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tools</span></code></a></p></td>
+<td><p>The command surface: plain functions returning JSON-able values (SSOT for the CLI).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../api.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API reference</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="flickpick.artifacts.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">flickpick.artifacts</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ArtifactFormatError"><code class="docutils literal notranslate"><span class="pre">ArtifactFormatError</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Artifacts"><code class="docutils literal notranslate"><span class="pre">Artifacts</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Artifacts.imdb_to_idx"><code class="docutils literal notranslate"><span class="pre">Artifacts.imdb_to_idx</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Artifacts.n_items"><code class="docutils literal notranslate"><span class="pre">Artifacts.n_items</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Artifacts.n_ratings"><code class="docutils literal notranslate"><span class="pre">Artifacts.n_ratings</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.CF"><code class="docutils literal notranslate"><span class="pre">CF</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.CF.to_scipy"><code class="docutils literal notranslate"><span class="pre">CF.to_scipy()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults"><code class="docutils literal notranslate"><span class="pre">Defaults</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.ease_lambda"><code class="docutils literal notranslate"><span class="pre">Defaults.ease_lambda</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.like_threshold"><code class="docutils literal notranslate"><span class="pre">Defaults.like_threshold</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.max_tags"><code class="docutils literal notranslate"><span class="pre">Defaults.max_tags</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.min_folds_for_fold_ci"><code class="docutils literal notranslate"><span class="pre">Defaults.min_folds_for_fold_ci</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.min_ratings_for_median"><code class="docutils literal notranslate"><span class="pre">Defaults.min_ratings_for_median</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.n_because"><code class="docutils literal notranslate"><span class="pre">Defaults.n_because</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.n_items"><code class="docutils literal notranslate"><span class="pre">Defaults.n_items</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.normalisation"><code class="docutils literal notranslate"><span class="pre">Defaults.normalisation</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Defaults.topk"><code class="docutils literal notranslate"><span class="pre">Defaults.topk</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Query"><code class="docutils literal notranslate"><span class="pre">Query</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Rating"><code class="docutils literal notranslate"><span class="pre">Rating</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Recommendation"><code class="docutils literal notranslate"><span class="pre">Recommendation</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Recommendation.to_dict"><code class="docutils literal notranslate"><span class="pre">Recommendation.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.Weights"><code class="docutils literal notranslate"><span class="pre">Weights</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.agreement"><code class="docutils literal notranslate"><span class="pre">agreement()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.build_artifacts"><code class="docutils literal notranslate"><span class="pre">build_artifacts()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.cross_validated_fit"><code class="docutils literal notranslate"><span class="pre">cross_validated_fit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.detect_format"><code class="docutils literal notranslate"><span class="pre">detect_format()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ease_dense"><code class="docutils literal notranslate"><span class="pre">ease_dense()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.embed_query"><code class="docutils literal notranslate"><span class="pre">embed_query()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.fit_ease"><code class="docutils literal notranslate"><span class="pre">fit_ease()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.format_recommendations"><code class="docutils literal notranslate"><span class="pre">format_recommendations()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.holdout_evaluate"><code class="docutils literal notranslate"><span class="pre">holdout_evaluate()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.parse_flickpick"><code class="docutils literal notranslate"><span class="pre">parse_flickpick()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.parse_imdb"><code class="docutils literal notranslate"><span class="pre">parse_imdb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.parse_letterboxd"><code class="docutils literal notranslate"><span class="pre">parse_letterboxd()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.parse_movielens"><code class="docutils literal notranslate"><span class="pre">parse_movielens()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.parse_ratings"><code class="docutils literal notranslate"><span class="pre">parse_ratings()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ranking_metrics"><code class="docutils literal notranslate"><span class="pre">ranking_metrics()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.read_artifacts"><code class="docutils literal notranslate"><span class="pre">read_artifacts()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.read_ratings"><code class="docutils literal notranslate"><span class="pre">read_ratings()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.recommend"><code class="docutils literal notranslate"><span class="pre">recommend()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.resolve_ratings"><code class="docutils literal notranslate"><span class="pre">resolve_ratings()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.score_cf"><code class="docutils literal notranslate"><span class="pre">score_cf()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.score_semantic"><code class="docutils literal notranslate"><span class="pre">score_semantic()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.sparsify_topk"><code class="docutils literal notranslate"><span class="pre">sparsify_topk()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.validate_artifacts"><code class="docutils literal notranslate"><span class="pre">validate_artifacts()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.write_artifacts"><code class="docutils literal notranslate"><span class="pre">write_artifacts()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/_autosummary/flickpick.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

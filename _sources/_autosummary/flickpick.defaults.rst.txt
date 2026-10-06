@@ -1,0 +1,18 @@
+flickpick.defaults
+==================
+
+.. automodule:: flickpick.defaults
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      STARS_TO_100
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Defaults
+   

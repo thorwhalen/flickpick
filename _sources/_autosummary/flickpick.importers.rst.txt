@@ -1,0 +1,24 @@
+flickpick.importers
+===================
+
+.. automodule:: flickpick.importers
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SIGNATURES
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      detect_format
+      parse_flickpick
+      parse_imdb
+      parse_letterboxd
+      parse_movielens
+      parse_ratings
+      read_ratings
+   

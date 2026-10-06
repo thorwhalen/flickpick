@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "built_at": "2026-10-06T10:29:00Z",
+  "package": {
+    "name": "flickpick",
+    "version": "0.0.1",
+    "display_name": "flickpick",
+    "source": "pyproject.toml"
+  },
+  "git": {
+    "available": true,
+    "commit": "a791c0ad1ba308f22361f8a54ecdbf9e3775b90b",
+    "short_commit": "a791c0a",
+    "branch": "main",
+    "tags": [],
+    "dirty": false,
+    "remote_url": "https://github.com/thorwhalen/flickpick",
+    "commit_url": "https://github.com/thorwhalen/flickpick/commit/a791c0ad1ba308f22361f8a54ecdbf9e3775b90b",
+    "error": null
+  },
+  "ci": {
+    "provider": "github",
+    "repository": "thorwhalen/flickpick",
+    "sha": "a791c0ad1ba308f22361f8a54ecdbf9e3775b90b",
+    "sha_in_history": true,
+    "ref": "refs/heads/main",
+    "ref_name": "main",
+    "run_id": "37449885472",
+    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/37449885472",
+    "server_url": "https://github.com"
+  },
+  "tools": {
+    "epythet": "0.2.12",
+    "sphinx": "9.1.0",
+    "docutils": "0.22.4",
+    "python": "3.12.14"
+  },
+  "config": {
+    "theme": "auto",
+    "html_theme": "pydata_sphinx_theme",
+    "accent": "#4c6200",
+    "mode": "auto",
+    "api_generator": "autosummary",
+    "ignore": [
+      "tests/",
+      "scrap/",
+      "examples/"
+    ],
+    "agent_outputs": true,
+    "aggregates": [
+      "md"
+    ],
+    "ai_artifacts": true,
+    "provenance": true,
+    "docs_dir": "docsrc"
+  },
+  "site": {
+    "modules_documented": 12,
+    "objects_documented": 143
+  },
+  "pypi": {
+    "checked": true,
+    "latest": "0.0.2",
+    "relation": "behind",
+    "error": null
+  },
+  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout a791c0ad1ba308f22361f8a54ecdbf9e3775b90b\npip install \"epythet==0.2.12\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "warnings": [],
+  "alignment": {
+    "aligned": false,
+    "notes": [
+      "The documented version (0.0.1) is behind the latest release on PyPI (0.0.2): `pip install flickpick` gives newer code than these docs describe."
+    ]
+  }
+}

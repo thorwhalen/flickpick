@@ -1,0 +1,34 @@
+flickpick.artifacts
+===================
+
+.. automodule:: flickpick.artifacts
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      BINARY_FILES
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      mk_manifest
+      read_artifacts
+      validate_artifacts
+      write_artifacts
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Artifacts
+      CF
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      ArtifactFormatError
+   

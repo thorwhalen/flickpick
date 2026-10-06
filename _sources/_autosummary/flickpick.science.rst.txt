@@ -1,0 +1,29 @@
+flickpick.science
+=================
+
+.. automodule:: flickpick.science
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      ITEM_METRICS
+      MIN_POINTS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      agreement
+      bootstrap_ci
+      cross_validated_fit
+      ease_scorer
+      holdout_evaluate
+      mulberry32
+      mulberry32_floats
+      popularity_scorer
+      rank_unrated
+      ranking_metrics
+      shuffled
+   

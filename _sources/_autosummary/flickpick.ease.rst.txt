@@ -1,0 +1,21 @@
+flickpick.ease
+==============
+
+.. automodule:: flickpick.ease
+
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      SPARSIFY_CHUNK_ROWS
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      ease_dense
+      fit_ease
+      most_rated_items
+      sparsify_topk
+   
