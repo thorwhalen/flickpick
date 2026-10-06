@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flickpick"
-version = "0.0.1"
+version = "0.0.2"
 description = "Personal movie recommender: browser-first app, TypeScript core, Python build pipeline; AI agents pick movies for you"
 readme = "README.md"
 requires-python = ">=3.10"
