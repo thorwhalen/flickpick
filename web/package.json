@@ -6,12 +6,16 @@
   "description": "flickpick web app: a personal movie recommender that runs in the browser over the flickpick TypeScript core.",
   "license": "MIT",
   "scripts": {
+    "build-core": "node scripts/build-core.mjs",
     "prepare-data": "node scripts/prepare-data.mjs",
-    "predev": "npm run prepare-data",
+    "predev": "npm run build-core && npm run prepare-data",
     "dev": "vite",
+    "prebuild": "npm run build-core",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "pretypecheck": "npm run build-core",
     "typecheck": "tsc -b --noEmit",
+    "pretest": "npm run build-core",
     "test": "vitest run",
     "test:watch": "vitest"
   },

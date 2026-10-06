@@ -12,7 +12,12 @@ python -m flickpick recommend --artifacts ./artifacts --ratings my_ratings.csv -
 
 `my_ratings.csv` can be a Letterboxd, IMDb or MovieLens export, or flickpick's own format (see `flickpick/data/examples/movie_ratings_various.csv`). Drop `--sample` to build from MovieLens ml-32m (about 10,000 films; a few minutes). Drop `[embed]` and add `--no-embeddings` if you do not want mood search.
 
-The same core exists in TypeScript (`js/`, npm `flickpick`) and runs in the browser; the web app is in `web/` (`cd web && npm install && npm run dev`).
+The same core exists in TypeScript (`js/`, npm `flickpick`) and runs in the browser; the web app is in `web/`. From a fresh clone (Node 20 or later):
+
+```bash
+cd js && npm ci && npm test && npm run build      # the TypeScript core; CLI: node dist/cli.js recommend --artifacts ../tests/fixtures/artifacts_small --ratings <csv>
+cd web && npm install && npm run dev              # the web app; dev, build and test build ../js first when it is missing or stale
+```
 
 ## How it works
 

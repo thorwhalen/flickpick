@@ -11,6 +11,7 @@ from dataclasses import dataclass
 #: The canonical ratings scale is 0-100; these convert from each source's scale.
 STARS_TO_100 = 20  # Letterboxd and MovieLens: 0.5-5 stars
 TEN_TO_100 = 10  # IMDb: 1-10
+SCALE_MIN, SCALE_MAX = 0, 100  # bounds every imported score must lie in
 
 
 @dataclass(frozen=True)
@@ -58,6 +59,9 @@ class Defaults:
     seed: int = 0
     n_bootstrap: int = 1000
     ci_level: float = 0.95
+    #: hit_rate is a per-fold quantity; below this many folds its bootstrap interval
+    #: (over folds) is too coarse to report (core contract, Science)
+    min_folds_for_fold_ci: int = 10
 
 
 DFLT = Defaults()

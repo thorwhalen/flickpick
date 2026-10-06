@@ -129,15 +129,17 @@ def evaluate(
     *,
     folds: int = DFLT.folds,
     k: int = DFLT.k,
+    seed: int = DFLT.seed,
 ) -> dict:
     """Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit."""
     a = read_artifacts(_resolve_artifacts_dir(artifacts))
     user = read_ratings(_require(ratings, "ratings"))
+    folds, k, seed = int(folds), int(k), int(seed)
     return {
-        "holdout": _science.holdout_evaluate(a, user, folds=int(folds), k=int(k)),
+        "holdout": _science.holdout_evaluate(a, user, folds=folds, k=k, seed=seed),
         "agreement": _science.agreement(user, a.catalog),
         "cross_validated_fit": _science.cross_validated_fit(
-            user, a.catalog, folds=int(folds)
+            user, a.catalog, folds=folds, seed=seed
         ),
     }
 
@@ -186,6 +188,7 @@ CLI_CONFIG = {
         "ratings": {"help": _RATINGS_HELP},
         "folds": {"help": "number of holdout folds"},
         "k": {"help": "cutoff for the ranking metrics"},
+        "seed": {"help": "seed of the fold shuffle and the bootstrap (mulberry32)"},
     },
 }
 

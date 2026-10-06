@@ -97,6 +97,8 @@ export const defaults = {
     seed: 0,
     bootstrapResamples: 1000,
     ciLevel: 0.95,
+    /** hit_rate is per fold; below this many folds its (fold) bootstrap interval is not reported. */
+    minFoldsForFoldCi: 10,
   },
 
   /** CLI output formatting. */

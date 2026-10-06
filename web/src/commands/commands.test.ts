@@ -136,6 +136,22 @@ describe('commands', () => {
     expect(result.ok).toBe(true);
     const { evaluation } = deps.store.getState();
     expect(evaluation.status).toBe('ready');
-    expect(evaluation.result?.ci95.hit_rate).toHaveLength(2);
+    expect(evaluation.result?.ci95.precision).toHaveLength(2);
+    expect(evaluation.result?.ci95.hit_rate).toBeNull(); // per fold: no interval with 5 folds
+    expect(evaluation.result?.per_fold).toHaveLength(evaluation.result!.folds);
+  });
+});
+
+describe('TMDB cache expiry', () => {
+  it('load deletes cached enrichment older than the 180-day limit', async () => {
+    const { createMemoryProviders } = await import('@/state/providers');
+    const providers = createMemoryProviders();
+    const entry = (imdb_id: string, fetched_at: string) => ({ imdb_id, fetched_at, region: 'US', found: false });
+    await providers.enrichment.create(entry('tt0000001', '2026-01-01T00:00:00Z') as never); // 278 days before FIXED_NOW
+    await providers.enrichment.create(entry('tt0000002', '2026-09-01T00:00:00Z') as never); // 35 days before
+    const services = await makeTestServices({ providers });
+    await services.dispatch(CMD.load);
+    const left = (await providers.enrichment.getList({})).data.map((r) => r.imdb_id);
+    expect(left).toEqual(['tt0000002']);
   });
 });

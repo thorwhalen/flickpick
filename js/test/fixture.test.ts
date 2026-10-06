@@ -6,7 +6,15 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { loadArtifacts, parseRatings, recommend, resolveRatings } from '../src/index.js';
+import {
+  holdoutEvaluate,
+  loadArtifacts,
+  parseRatings,
+  recommend,
+  resolveRatings,
+  scorePopularity,
+  type HoldoutOptions,
+} from '../src/index.js';
 
 const FIXTURE = fileURLToPath(new URL('../../tests/fixtures/artifacts_small/', import.meta.url));
 const EXAMPLE = fileURLToPath(new URL('../../flickpick/data/examples/movie_ratings_various.csv', import.meta.url));
@@ -45,6 +53,38 @@ describe('Python-built fixture artifact set', () => {
       expect(recs.map((r) => r.item_id), c.name).toEqual(c.expected.map((e) => e.item_id));
       expect(recs.map((r) => r.because_of), c.name).toEqual(c.expected.map((e) => e.because_of));
       recs.forEach((r, i) => expect(r.score, `${c.name} #${i}`).toBeCloseTo(c.expected[i]!.score, 5));
+    }
+  });
+
+  const PARITY_EVALUATE = fileURLToPath(new URL('../../tests/fixtures/parity/expected_evaluate.json', import.meta.url));
+  const evaluateReady = ready && existsSync(PARITY_EVALUATE);
+  /** Every number in `actual` within 1e-6 of `expected`; everything else equal (null, strings, keys). */
+  const expectClose = (actual: unknown, expected: unknown, path: string): void => {
+    if (typeof expected === 'number') {
+      expect(typeof actual, path).toBe('number');
+      expect(Math.abs((actual as number) - expected), path).toBeLessThan(1e-6);
+    } else if (Array.isArray(expected)) {
+      expect(Array.isArray(actual), path).toBe(true);
+      expect((actual as unknown[]).length, path).toBe(expected.length);
+      expected.forEach((e, i) => expectClose((actual as unknown[])[i], e, `${path}[${i}]`));
+    } else if (expected !== null && typeof expected === 'object') {
+      expect(Object.keys(actual as object).sort(), path).toEqual(Object.keys(expected).sort());
+      for (const [key, e] of Object.entries(expected)) expectClose((actual as Record<string, unknown>)[key], e, `${path}.${key}`);
+    } else {
+      expect(actual, path).toEqual(expected);
+    }
+  };
+  it.skipIf(!evaluateReady)('holdoutEvaluate matches the Python holdout_evaluate to 1e-6 (tests/fixtures/parity/)', async () => {
+    const artifacts = await loadArtifacts(FIXTURE);
+    const ratings = parseRatings(readFileSync(EXAMPLE, 'utf8'));
+    const { cases } = JSON.parse(readFileSync(PARITY_EVALUATE, 'utf8')) as {
+      cases: { name: string; scorer: 'ease' | 'popularity'; options: { folds: number; k: number; seed: number }; expected: unknown }[];
+    };
+    const scorers: Record<string, HoldoutOptions['score']> = { ease: undefined, popularity: (a) => scorePopularity(a) };
+    expect(cases.length).toBeGreaterThan(0);
+    for (const c of cases) {
+      const actual = holdoutEvaluate(artifacts, ratings, { ...c.options, score: scorers[c.scorer] });
+      expectClose(JSON.parse(JSON.stringify(actual)), c.expected, c.name);
     }
   });
 });

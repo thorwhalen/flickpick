@@ -56,7 +56,9 @@ describe('flickpick CLI', () => {
     const { code, stdout } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', '5', '--k', '2', '--json');
     expect(code).toBe(0);
     const out = JSON.parse(stdout);
-    expect(out.holdout.folds).toHaveLength(5);
+    expect(out.holdout.folds).toBe(5);
+    expect(out.holdout.per_fold).toHaveLength(5);
+    expect(out.holdout.ci95.hit_rate).toBeNull();
     expect(out.agreement.n).toBe(10);
     expect(out.fit.folds).toBe(5);
   });
@@ -66,6 +68,7 @@ describe('flickpick CLI', () => {
     expect(code).toBe(0);
     expect(stdout).toMatch(/hold-out: 5 folds over 5 liked items/);
     expect(stdout).toMatch(/ndcg@10: \d\.\d{3}  \(95% CI/);
+    expect(stdout).toMatch(/note: hit_rate is per fold/);
   });
 
   it('exits 2 with usage on bad arguments and 1 on runtime errors', async () => {

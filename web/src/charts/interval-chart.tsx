@@ -1,6 +1,7 @@
 /**
  * Mean and 95% bootstrap interval per ranking metric (all on a 0-1 scale): one row per metric,
- * a dot at the mean and a whisker across the interval. One series, so no legend; each row is
+ * a dot at the mean and a whisker across the interval (none when the interval is not reported,
+ * i.e. `low`/`high` are NaN). One series, so no legend; each row is
  * labelled, hovering a row shows its numbers, and a table repeats them.
  */
 import { useState } from 'react';
@@ -63,7 +64,11 @@ export function IntervalChart({ rows, label }: { rows: IntervalRow[]; label: str
           <SvgTooltip
             x={x(Number.isFinite(rows[hover].mean) ? rows[hover].mean : 0)}
             y={rowY(hover)}
-            lines={[rows[hover].label, `mean ${fmt(rows[hover].mean)}`, `95% interval ${fmt(rows[hover].low)} to ${fmt(rows[hover].high)}`]}
+            lines={[
+              rows[hover].label,
+              `mean ${fmt(rows[hover].mean)}`,
+              Number.isFinite(rows[hover].low) ? `95% interval ${fmt(rows[hover].low)} to ${fmt(rows[hover].high)}` : 'no interval',
+            ]}
           />
         )}
       </ChartSvg>
@@ -81,7 +86,7 @@ export function IntervalChart({ rows, label }: { rows: IntervalRow[]; label: str
               <td className="py-1">{row.label}</td>
               <td className="py-1 text-right tabular-nums">{fmt(row.mean)}</td>
               <td className="py-1 text-right tabular-nums">
-                {fmt(row.low)} to {fmt(row.high)}
+                {Number.isFinite(row.low) && Number.isFinite(row.high) ? `${fmt(row.low)} to ${fmt(row.high)}` : 'not reported'}
               </td>
             </tr>
           ))}

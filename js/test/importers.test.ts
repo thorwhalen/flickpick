@@ -103,6 +103,29 @@ describe('detectFormat / parseRatings', () => {
     expect(detectFormat('a,b\n1,2\n')).toBeNull();
   });
 
+  // the four header variants the contract names (docs/core-contract.md, Importers); the Python
+  // importers test uses the same four
+  const VARIANTS: [string, 'letterboxd' | 'movielens'][] = [
+    ['Date,Name,Year,Letterboxd URI,Rating\n2024-01-02,Se7en,1995,u,4.5\n', 'letterboxd'],
+    ['Date,Name,Year,Rating\n2024-01-02,Se7en,1995,4.5\n', 'letterboxd'],
+    ['userId,movieId,rating,timestamp\n1,47,4.5,964982703\n', 'movielens'],
+    ['movieId,rating\n47,4.5\n', 'movielens'],
+  ];
+  it.each(VARIANTS)('detects and parses the header variant %#: %j', (text, fmt) => {
+    expect(detectFormat(text)).toBe(fmt);
+    expect(detectFormat(text.replace('Rating', 'RATING').replace('rating', 'Rating'))).toBe(fmt);
+    const [r, ...rest] = parseRatings(text);
+    expect(rest).toEqual([]);
+    expect(r!.score).toBe(90);
+    expect(r!.item_id).toBe(fmt === 'letterboxd' ? 'Se7en:1995' : 'ml:47');
+  });
+
+  it('a multi-user MovieLens file needs an explicit userId', () => {
+    const text = 'userId,movieId,rating\n1,47,4.5\n2,50,3\n';
+    expect(() => parseMovielens(text)).toThrow(/2 users/);
+    expect(parseMovielens(text, { userId: 2 }).map((r) => r.item_id)).toEqual(['ml:50']);
+  });
+
   it('throws on an unknown file, listing its header', () => {
     expect(() => parseRatings('foo,bar\n1,2\n')).toThrow(/unrecognised ratings file \(header: foo, bar\)/);
   });
@@ -143,5 +166,16 @@ describe('ids and resolution', () => {
       { item_id: 'tt0000009', score: 65, title: 'Movie 8 (1998)' },
     ]);
     expect(titleVariants('Seven (a.k.a. Se7en)')).toEqual(['seven', 'se7en']);
+  });
+});
+
+describe('parseMovielens with several users', () => {
+  const MULTI = 'userId,movieId,rating\n1,1,4\n2,1,1\n2,2,5\n';
+  it('refuses to merge users, and picks one with { userId }', () => {
+    expect(() => parseMovielens(MULTI)).toThrow(/2 users/);
+    expect(parseMovielens(MULTI, { userId: 2 }).map((r) => [r.item_id, r.score])).toEqual([
+      ['ml:1', 20],
+      ['ml:2', 100],
+    ]);
   });
 });

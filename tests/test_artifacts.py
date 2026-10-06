@@ -9,6 +9,7 @@ from flickpick.artifacts import (
     Artifacts,
     mk_manifest,
     read_artifacts,
+    validate_artifacts,
     write_artifacts,
 )
 from flickpick.embedding import embedding_spec, l2_normalise
@@ -112,3 +113,11 @@ def test_fixture_is_valid_and_small(small, paths):
     total = sum(p.stat().st_size for p in FIXTURE_DIR.iterdir())
     assert total < 2_000_000
     assert (FIXTURE_DIR / "LICENSE-DATA.md").is_file()
+
+
+def test_indptr_must_start_at_zero(tmp_path):
+    # the TypeScript reader rejects this; the Python one must too
+    a = _synthetic()
+    a.cf = CF(np.array([1, 2, 3, 3]), np.array([1, 2, 0]), np.array([0.5, 0.25, 0.1]))
+    with pytest.raises(ArtifactFormatError, match=r"cf_indptr\[0\] must be 0"):
+        validate_artifacts(a)

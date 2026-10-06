@@ -4,9 +4,9 @@
  *
  * | format     | key columns                                              | scale        | item_id                         |
  * |------------|----------------------------------------------------------|--------------|---------------------------------|
- * | letterboxd | Date, Name, Year, Letterboxd URI, Rating                 | 0.5-5 x 20   | `title:year`, needs_resolution  |
+ * | letterboxd | Name, Year, Rating (+ Date, Letterboxd URI optional)     | 0.5-5 x 20   | `title:year`, needs_resolution  |
  * | imdb       | Const, Your Rating, Date Rated, Title, Year              | 1-10 x 10    | Const (`tt...`)                 |
- * | movielens  | movieId, imdbId?, tmdbId?, rating, title?, timestamp?    | 0.5-5 x 20   | `tt...` from imdbId, else `ml:<movieId>` with needs_resolution |
+ * | movielens  | movieId, rating (+ userId?, imdbId?, title?, timestamp?) | 0.5-5 x 20   | `tt...` from imdbId, else `ml:<movieId>` with needs_resolution |
  * | flickpick  | movie_id, imdb_id, tmdb_id, rating, average_rating, title| 0-100        | `tt...` from imdb_id            |
  *
  * Letterboxd exports carry no IMDb id, so those ratings keep `title` and `year`, get
@@ -174,9 +174,18 @@ export function parseImdb(csvText: string): Rating[] {
   });
 }
 
-/** MovieLens-style ratings (`movieId, rating` plus any of `imdbId, tmdbId, title, timestamp`). */
-export function parseMovielens(csvText: string): Rating[] {
+/**
+ * MovieLens-style ratings (`movieId, rating` plus any of `imdbId, tmdbId, title, timestamp`).
+ * A file holding several users (`userId` column) throws unless `userId` picks one, as in Python:
+ * merging users would silently score one person on everybody's ratings.
+ */
+export function parseMovielens(csvText: string, { userId }: { userId?: string | number } = {}): Rating[] {
+  const users = new Set(csvRecords(csvText).records.map((r) => column(r, 'userId')).filter(Boolean));
+  if (userId === undefined && users.size > 1) {
+    throw new Error(`movielens: the file holds ${users.size} users; pass { userId } to pick one`);
+  }
   return mapRows(csvText, 'movielens', (r, row) => {
+    if (userId !== undefined && column(r, 'userId') !== String(userId)) return null;
     const stars = toNumber(column(r, 'rating'), 'movielens', row);
     if (stars === undefined) return null;
     const imdb = normalizeImdbId(column(r, 'imdbId', 'imdb_id'));
@@ -218,11 +227,16 @@ const PARSERS: Record<RatingFormat, (csvText: string) => Rating[]> = {
   flickpick: parseFlickpick,
 };
 
-/** Columns that identify each format (case-insensitive), checked in this order. */
-const SIGNATURES: [RatingFormat, string[]][] = [
-  ['letterboxd', ['letterboxd uri', 'rating']],
+/**
+ * Columns that identify each format (trimmed, case-insensitive), checked in this order; the first
+ * format whose columns are all present wins. Same table as the Python `SIGNATURES`
+ * (docs/core-contract.md, Importers): Letterboxd needs Name, Year and Rating (the URI column is
+ * optional); MovieLens needs movieId and rating (userId is optional).
+ */
+export const SIGNATURES: readonly (readonly [RatingFormat, readonly string[]])[] = [
   ['imdb', ['const', 'your rating']],
   ['flickpick', ['movie_id', 'imdb_id', 'rating']],
+  ['letterboxd', ['name', 'year', 'rating']],
   ['movielens', ['movieid', 'rating']],
 ];
 

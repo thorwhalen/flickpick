@@ -11,7 +11,9 @@ import {
   olsFit,
   pearson,
   rankingMetrics,
+  shuffled,
   spearman,
+  topKByScore,
   type Artifacts,
   type CatalogItem,
   type Rating,
@@ -91,6 +93,13 @@ describe('resampling', () => {
     expect(xs.every((v) => v >= 0 && v < 1)).toBe(true);
   });
 
+  it('mulberry32 matches the Python mulberry32 bit for bit (values from flickpick.science)', () => {
+    const r = mulberry32(42);
+    expect([r(), r(), r()]).toEqual([0.6011037519201636, 0.44829055899754167, 0.8524657934904099]);
+    const z = mulberry32(4294967295);
+    expect(z()).toBe(0.8964226141106337);
+  });
+
   it('bootstrap interval brackets the mean and collapses for constant data', () => {
     expect(bootstrapMeanCi([3, 3, 3])).toEqual([3, 3]);
     const [lo, hi] = bootstrapMeanCi([0, 1, 0, 1, 1, 0, 1, 0]);
@@ -113,24 +122,59 @@ describe('holdoutEvaluate', () => {
 
   it('is deterministic for a seed and reports per-fold metrics with intervals', () => {
     const res = holdoutEvaluate(art, ratings, { folds: 5, k: 2, seed: 7 });
+    expect(Object.keys(res).sort()).toEqual(['ci95', 'folds', 'k', 'mean', 'n_liked', 'n_rated', 'note', 'per_fold']);
     expect(res.n_liked).toBe(5);
-    expect(res.folds).toHaveLength(5);
-    expect(res.folds.every((f) => f.n_test === 1)).toBe(true);
-    for (const m of ['hit_rate', 'recall', 'ndcg', 'precision'] as const) {
-      const [lo, hi] = res.ci95[m];
+    expect(res.n_rated).toBe(10);
+    expect(res.folds).toBe(5);
+    expect(res.per_fold).toHaveLength(5);
+    expect(res.per_fold.every((f) => f.n_test === 1)).toBe(true);
+    for (const m of ['recall', 'ndcg', 'precision'] as const) {
+      const [lo, hi] = res.ci95[m]!;
       expect(lo).toBeLessThanOrEqual(res.mean[m] + 1e-12);
       expect(hi).toBeGreaterThanOrEqual(res.mean[m] - 1e-12);
     }
+    // hit_rate is per fold: no interval below minFoldsForFoldCi folds, and the note says why
+    expect(res.ci95.hit_rate).toBeNull();
+    expect(res.note).toMatch(/hit_rate is per fold/);
+    expect(holdoutEvaluate(art, ratings, { folds: 5, k: 2, seed: 7, minFoldsForFoldCi: 5 }).ci95.hit_rate).toHaveLength(2);
     expect(holdoutEvaluate(art, ratings, { folds: 5, k: 2, seed: 7 })).toEqual(res);
+  });
+
+  it('folds: sorted liked ids, mulberry32 Fisher-Yates, position mod folds', () => {
+    const liked = [0, 1, 2, 5, 6].map(imdbId).sort();
+    const order = shuffled(liked, mulberry32(3));
+    const res = holdoutEvaluate(art, ratings, { folds: 2, k: 2, seed: 3 });
+    expect(res.per_fold.map((f) => f.test_ids)).toEqual([order.filter((_, p) => p % 2 === 0), order.filter((_, p) => p % 2 === 1)]);
+  });
+
+  it('restricts ratings to the catalogue before the like threshold', () => {
+    // low scores outside the catalogue would pull the median down and add liked items
+    const extra: Rating[] = Array.from({ length: 20 }, (_, i) => ({ item_id: `tt99${String(i).padStart(5, '0')}`, score: 5 }));
+    const res = holdoutEvaluate(art, [...ratings, ...extra], { folds: 5, k: 2, seed: 7 });
+    expect(res.n_liked).toBe(5);
+    expect(res.n_rated).toBe(10);
   });
 
   it('finds an item recoverable from the rest (item 2 from items 0 and 1)', () => {
     // Holding out item 2 leaves nine ratings, median 72, liked {0, 1, 3, 5, 6}; the only
     // unrated items are 2, 10 and 11, and B[0,2] + B[1,2] = 0.5 puts item 2 first.
     const res = holdoutEvaluate(art, ratings, { folds: 5, k: 1, seed: 7 });
-    const fold2 = res.folds.find((f) => f.test_ids.includes(imdbId(2)))!;
+    const fold2 = res.per_fold.find((f) => f.test_ids.includes(imdbId(2)))!;
     expect(fold2.test_ids).toEqual([imdbId(2)]);
     expect(fold2.metrics).toEqual({ hit_rate: 1, recall: 1, ndcg: 1, precision: 1 });
+  });
+
+  it('ranks only items outside the training ratings, ties by n_ratings then row', () => {
+    // a constant scorer: every unrated item ties, so the order is n_ratings desc (= row desc here)
+    const res = holdoutEvaluate(art, ratings, { folds: 5, k: 3, seed: 7, score: (a) => new Float64Array(a.manifest.n_items) });
+    for (const f of res.per_fold) {
+      const held = f.test_ids.map((id) => art.idToIdx.get(id)!);
+      const top = topKByScore(art, new Float64Array(art.manifest.n_items), 3, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].filter((i) => !held.includes(i)));
+      expect(top.slice(0, 2)).toEqual([11, 10]);
+      expect(f.metrics.hit_rate).toBe(top.some((i) => held.includes(i)) ? 1 : 0);
+    }
+    expect(topKByScore(art, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 3)).toEqual([11, 10, 9]);
+    expect(topKByScore(art, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 3, [11])).toEqual([10, 9, 8]);
   });
 
   it('needs at least as many liked items as folds', () => {

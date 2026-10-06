@@ -13,6 +13,9 @@ stored embedding (or the artifact set was rebuilt).
 - ``parity/expected_recommend.json``: the Python scorer's output for the example ratings
   under a few queries; the mood case stores its query embedding so a parity test needs
   no model.
+- ``parity/expected_evaluate.json``: ``holdout_evaluate`` on the example ratings for a
+  few (scorer, folds, k, seed) cases; the TypeScript ``holdoutEvaluate`` must match it
+  to 1e-6 (``docs/core-contract.md``, Science).
 """
 
 import json
@@ -25,12 +28,14 @@ from flickpick import Query, read_artifacts, read_ratings, recommend
 from flickpick.artifacts import write_artifacts
 from flickpick.build import build_artifacts
 from flickpick.data import load_movielens
+from flickpick.science import ease_scorer, holdout_evaluate, popularity_scorer
 from flickpick.score import embed_query
 
 HERE = Path(__file__).parent
 REPO = HERE.parent.parent
 ARTIFACTS = HERE / "artifacts_small"
 PARITY = HERE / "parity" / "expected_recommend.json"
+PARITY_EVALUATE = HERE / "parity" / "expected_evaluate.json"
 RATINGS = "flickpick/data/examples/movie_ratings_various.csv"
 N_ITEMS, TOPK = 600, 50
 MOOD = "slow-burn melancholic sci-fi"
@@ -48,6 +53,26 @@ CASES = [
     },
     {"name": "include_genre", "query": {"include_genres": ["sci-fi"], "k": 5}},
     {"name": "mood", "query": {"mood": MOOD, "exclude_genres": ["Horror"], "k": 10}},
+]
+
+#: scorer names the TypeScript parity test maps to its own scorers
+SCORERS = {"ease": ease_scorer, "popularity": popularity_scorer}
+EVALUATE_CASES = [
+    {
+        "name": "ease_default",
+        "scorer": "ease",
+        "options": {"folds": 5, "k": 10, "seed": 0},
+    },
+    {
+        "name": "popularity",
+        "scorer": "popularity",
+        "options": {"folds": 5, "k": 10, "seed": 0},
+    },
+    {
+        "name": "ease_10_folds",
+        "scorer": "ease",
+        "options": {"folds": 10, "k": 5, "seed": 7},
+    },
 ]
 
 
@@ -93,6 +118,25 @@ def parity_cases(*, reuse_embeddings: bool = True):
     }
 
 
+def evaluate_cases():
+    a = read_artifacts(ARTIFACTS)
+    ratings = read_ratings(REPO / RATINGS)
+    cases = [
+        {
+            **case,
+            "expected": holdout_evaluate(
+                a, ratings, scorer=SCORERS[case["scorer"]], **case["options"]
+            ),
+        }
+        for case in EVALUATE_CASES
+    ]
+    return {
+        "artifacts": "tests/fixtures/artifacts_small",
+        "ratings": RATINGS,
+        "cases": cases,
+    }
+
+
 if __name__ == "__main__":
     rebuild = "--rebuild" in sys.argv[1:] or not (ARTIFACTS / "manifest.json").exists()
     if rebuild:
@@ -100,3 +144,6 @@ if __name__ == "__main__":
     PARITY.parent.mkdir(exist_ok=True)
     cases = parity_cases(reuse_embeddings=not rebuild)
     PARITY.write_text(json.dumps(cases, indent=1, ensure_ascii=False))
+    PARITY_EVALUATE.write_text(
+        json.dumps(evaluate_cases(), indent=1, ensure_ascii=False) + "\n"
+    )

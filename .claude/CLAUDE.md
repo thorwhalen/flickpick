@@ -1,6 +1,6 @@
 # flickpick — map for the agent building this project
 
-Seams (v1 defaults → replacement): artifactSource (static URL/dir → qh endpoint) · scorer (EASE → iALS fold-in, item-kNN) · store (zodal localStorage provider → zodal-store-http) · enrichment (TMDB with the user's key → Movie of the Night, MDBList) · queryParser (structured form + embedded mood → LLM via acture-ai). Surfaces built: Python CLI (`python -m flickpick`), Node CLI (`js/`), web app (`web/`). Not built: MCP, remote MCP, shipped skills, qh service. Details: `docs/architecture.md`.
+Seams (v1 defaults → replacement): artifactSource (static URL/dir → qh endpoint) · store (zodal localStorage provider → zodal-store-http) · queryParser (structured form + embedded mood → LLM via acture-ai). Seam candidates, not seams (no replacement in code yet): scorer (EASE hard-wired; iALS/item-kNN later) · enrichment (TMDB only; Movie of the Night/MDBList later). Surfaces built: Python CLI (`python -m flickpick`), Node CLI (`js/`), web app (`web/`). Not built: MCP, remote MCP, shipped skills, qh service. Details: `docs/architecture.md`.
 
 ## Layout
 

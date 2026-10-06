@@ -7,10 +7,10 @@ The flickpick web app: a personal movie recommender that runs entirely in your b
 ```bash
 cd web
 npm install          # .npmrc sets legacy-peer-deps (npm 10 trips over the linked ../js peer set otherwise)
-npm run dev          # copies the fixture data into public/data/, then starts Vite
+npm run dev          # builds ../js if needed, copies the fixture data into public/data/, then starts Vite
 ```
 
-The core is consumed as `"flickpick": "file:../js"`, from its built `dist/`; if `../js/dist` is missing, run `npm run build` in `js/` first.
+The core is consumed as `"flickpick": "file:../js"`, from its built `dist/`. `npm run dev`, `npm run build`, `npm test` and `npm run typecheck` first run `npm run build-core` (`scripts/build-core.mjs`), which installs the core's dependencies when `../js/node_modules` is missing and rebuilds `../js/dist` when it is missing or older than the core's sources; otherwise it does nothing.
 
 Other scripts: `npm test` (vitest, about a second, no network), `npm run build` (type-check and build to `dist/`), `npx tsc -b --noEmit`, `npm run preview` (serve `dist/`).
 

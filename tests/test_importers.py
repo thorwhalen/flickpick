@@ -42,6 +42,40 @@ def test_detect_format(text, fmt):
     assert detect_format("﻿" + text) == fmt
 
 
+#: the four header variants the contract names (docs/core-contract.md, Importers); the
+#: TypeScript importers test uses the same four
+HEADER_VARIANTS = [
+    (
+        "Date,Name,Year,Letterboxd URI,Rating\n2024-01-02,Se7en,1995,u,4.5\n",
+        "letterboxd",
+    ),
+    ("Date,Name,Year,Rating\n2024-01-02,Se7en,1995,4.5\n", "letterboxd"),
+    ("userId,movieId,rating,timestamp\n1,47,4.5,964982703\n", "movielens"),
+    ("movieId,rating\n47,4.5\n", "movielens"),
+]
+
+
+@pytest.mark.parametrize("text, fmt", HEADER_VARIANTS)
+def test_detect_format_header_variants(text, fmt):
+    assert detect_format(text) == fmt
+    assert (
+        detect_format(text.replace("Rating", "RATING").replace("rating", "Rating"))
+        == fmt
+    )
+    (r,) = parse_ratings(text)
+    assert r.score == 90.0
+    assert (r.title, r.item_id) == (
+        ("Se7en (1995)", "") if fmt == "letterboxd" else (None, "ml:47")
+    )
+
+
+def test_movielens_multi_user_needs_user_id():
+    text = "userId,movieId,rating\n1,47,4.5\n2,50,3\n"
+    with pytest.raises(ValueError, match="2 users"):
+        parse_movielens(text)
+    assert [r.item_id for r in parse_movielens(text, user_id=2)] == ["ml:50"]
+
+
 def test_detect_format_unknown():
     with pytest.raises(ValueError, match="Unrecognised ratings CSV header"):
         detect_format("a,b\n1,2\n")
@@ -108,3 +142,32 @@ def test_every_format_resolves_to_the_same_items():
     for text in (LETTERBOXD, IMDB, MOVIELENS, FLICKPICK):
         resolved = resolve_ratings(catalog, parse_ratings(text))
         assert sorted(idx for idx, _ in resolved) == [0, 1], text
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "Date,Name,Year,Letterboxd URI,Rating\n2020-01-01,Heat,1995,u,7\n",
+        "Const,Your Rating,Title,Year\ntt0114369,11,Se7en,1995\n",
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n47,114369,807,150,1,X\n",
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n47,114369,807,-5,1,X\n",
+    ],
+)
+def test_out_of_scale_ratings_are_rejected(text):
+    with pytest.raises(ValueError, match="outside the 0-100 scale"):
+        parse_ratings(text)
+
+
+def test_padded_header_and_upper_case_imdb_id():
+    assert parse_ratings("Const, Your Rating\nTT0114369,9\n") == [
+        Rating(item_id="tt0114369", score=90.0)
+    ]
+
+
+def test_bom_crlf_and_quoted_fields():
+    text = (
+        "﻿Date,Name,Year,Letterboxd URI,Rating\r\n"
+        '2020-01-01,"Crouching Tiger, Hidden Dragon",2000,u,4.5\r\n'
+    )
+    [r] = parse_ratings(text)
+    assert (r.score, r.title) == (90.0, "Crouching Tiger, Hidden Dragon (2000)")

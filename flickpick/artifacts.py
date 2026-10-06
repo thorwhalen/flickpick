@@ -169,6 +169,7 @@ def validate_artifacts(a: Artifacts) -> Artifacts:
         f"cf_indices {indices.shape} and cf_values {values.shape} must both have "
         f"length indptr[-1] = {nnz}",
     )
+    check(len(indptr) == 0 or int(indptr[0]) == 0, "cf_indptr[0] must be 0")
     check(bool(np.all(np.diff(indptr) >= 0)), "cf_indptr must be non-decreasing")
     check(
         nnz == 0 or (indices.min() >= 0 and indices.max() < n),

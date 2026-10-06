@@ -253,10 +253,15 @@ export function rankIdx(artifacts: Artifacts, candidates: readonly number[], sco
     .map(({ idx }) => idx);
 }
 
-/** Top `k` unrated rows by a full-catalogue score array (used by evaluation). */
-export function topKByScore(artifacts: Artifacts, scores: ArrayLike<number>, k: number): number[] {
+/**
+ * Top `k` rows by a full-catalogue score array (used by evaluation). Rows in `exclude` (the
+ * training ratings) and non-finite scores are skipped; ties as in `rankIdx` (more ratings, then
+ * lower row), the order the Python `rank_unrated` uses.
+ */
+export function topKByScore(artifacts: Artifacts, scores: ArrayLike<number>, k: number, exclude: Iterable<number> = []): number[] {
+  const skip = new Set(exclude);
   const candidates: number[] = [];
-  for (let i = 0; i < scores.length; i++) if (Number.isFinite(scores[i]!)) candidates.push(i);
+  for (let i = 0; i < scores.length; i++) if (Number.isFinite(scores[i]!) && !skip.has(i)) candidates.push(i);
   return rankIdx(artifacts, candidates, candidates.map((i) => scores[i]!)).slice(0, k);
 }
 
@@ -306,6 +311,8 @@ export async function recommend(
   const { onWarning = (m: string) => console.warn(m) } = options;
   const likeOpts = { ...options, extraLikedIds: q.like_ids };
   const liked = likedIdx(artifacts, ratings, likeOpts);
+  // seam candidate: the scorer. EASE is hard-wired; iALS fold-in or item-kNN would become one
+  // option here once the build pipeline emits their artifacts (docs/architecture.md).
   const cf = liked.length ? scoreCf(artifacts, ratings, likeOpts) : undefined;
   const popularity = scorePopularity(artifacts);
   let mood = q.mood?.trim() || undefined;

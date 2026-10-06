@@ -156,19 +156,19 @@ function HoldoutSection() {
       {result && evaluation.status === 'ready' && (
         <>
           <p className="text-sm">
-            {result.n_liked} liked titles out of {result.n_rated_in_catalog} rated in the catalogue, {result.folds.length} folds, top {result.k}.
+            {result.n_liked} liked titles out of {result.n_rated} rated in the catalogue, {result.folds} folds, top {result.k}.
           </p>
           <IntervalChart
             label={`Ranking metrics at ${result.k}, mean and 95% interval`}
             rows={(Object.keys(METRIC_LABEL) as (keyof RankingMetrics)[]).map((m) => ({
               label: METRIC_LABEL[m],
               mean: result.mean[m],
-              low: result.ci95[m][0],
-              high: result.ci95[m][1],
+              low: result.ci95[m]?.[0] ?? NaN,
+              high: result.ci95[m]?.[1] ?? NaN,
             }))}
           />
           <Notice>
-            What the interval means for one person: it is a bootstrap over your {result.folds.length} folds, so it shows how much the score moves with which of your titles happened to be hidden, not how the recommender would do for other people. With a few dozen liked titles, two methods whose hit rates differ by less than about ten points cannot be told apart on your data alone.
+            What the interval means for one person: it is a bootstrap over your {result.n_liked} hidden titles, so it shows how much the score moves with which of your titles happen to be in the sample, not how the recommender would do for other people.{result.ci95.hit_rate === null && ` Hit rate is counted per fold, and ${result.folds} folds are too few for an interval, so none is shown for it.`} With a few dozen liked titles, two methods whose scores differ by less than about ten points cannot be told apart on your data alone.
           </Notice>
         </>
       )}

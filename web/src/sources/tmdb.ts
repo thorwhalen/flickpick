@@ -112,10 +112,15 @@ export async function fetchEnrichment(imdbId: string, options: FetchEnrichmentOp
   });
 }
 
+/** Whether a cached entry is past TMDB's cache limit (or has no valid `fetched_at`): delete it. */
+export function isExpired(entry: Pick<Enrichment, 'fetched_at'>, now: Date): boolean {
+  const age = now.getTime() - Date.parse(entry.fetched_at);
+  return !(Number.isFinite(age) && age >= 0 && age < TMDB_TERMS.cacheDays * defaults.time.msPerDay);
+}
+
 /** Whether a cached entry may still be shown: younger than the cache limit, same region. */
 export function isFresh(entry: Enrichment, { now, region }: { now: Date; region: string }): boolean {
-  const age = now.getTime() - Date.parse(entry.fetched_at);
-  return entry.region === region && Number.isFinite(age) && age >= 0 && age < TMDB_TERMS.cacheDays * defaults.time.msPerDay;
+  return entry.region === region && !isExpired(entry, now);
 }
 
 /** A TMDB image URL (CDN, no key), or null without a path. */

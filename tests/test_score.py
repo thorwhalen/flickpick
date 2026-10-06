@@ -149,3 +149,16 @@ def test_cli_recommend_json(paths):
     )
     recs = json.loads(text)["recommendations"]
     assert code == 0 and len(recs) == 2 and {"item_id", "because_of"} <= set(recs[0])
+
+
+def test_popular_reason_rounds_half_up_like_typescript(small):
+    # Schindler's List has mean_rating 84.5: TS toFixed(0) prints 85; Python must agree
+    row = next(r for r in small.catalog if r["mean_rating"] == 84.5)
+    recs = recommend(small, [], Query(k=len(small.catalog)), embed_query=_no_model)
+    rec = next(r for r in recs if r.idx == row["idx"])
+    assert rec.reasons == [f"popular: {row['n_ratings']} ratings, mean 85/100"]
+
+
+def test_blank_mood_is_no_mood(small, example_ratings):
+    recs = recommend(small, example_ratings, Query(mood="   "), embed_query=_no_model)
+    assert all(r.semantic_score is None for r in recs)

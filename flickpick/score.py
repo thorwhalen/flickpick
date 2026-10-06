@@ -18,6 +18,7 @@ z-scores, because EASE scores are heavy-tailed: their z-scores reach ~15 against
 the cosine, which drowned the mood.
 """
 
+import math
 import warnings
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import asdict, dataclass, field
@@ -255,9 +256,11 @@ def _reasons(artifacts, row, *, because_idx, semantic, mood) -> list[str]:
             f'close to "{mood}" (similarity {semantic:.{SIMILARITY_DECIMALS}f})'
         )
     if not reasons:
-        reasons.append(
-            f"popular: {row['n_ratings']} ratings, mean {row['mean_rating']:.0f}/100"
-        )
+        mean = row["mean_rating"]
+        # round half up, as JavaScript's toFixed(0) does (Python's format rounds half
+        # to even, which printed "84/100" where the TypeScript core printed "85/100")
+        mean_text = "" if mean is None else f", mean {math.floor(mean + 0.5)}/100"
+        reasons.append(f"popular: {row['n_ratings']} ratings{mean_text}")
     return reasons
 
 
@@ -271,6 +274,7 @@ def recommend(
 ) -> list[Recommendation]:
     """The top ``query.k`` unrated items for this user and query, explained."""
     query = query or Query()
+    mood = (query.mood or "").strip() or None  # a blank mood is no mood (as in TS)
     ratings = [as_rating(r) for r in ratings]
     liked, rated = liked_indices(artifacts, ratings)
     seeds = [
@@ -289,9 +293,11 @@ def recommend(
     cand = np.nonzero(candidate_mask(artifacts, query, exclude=sorted(excluded)))[0]
 
     popularity = np.log1p(artifacts.n_ratings.astype(np.float64))
+    # seam candidate: the scorer. EASE is hard-wired; iALS fold-in or item-kNN would
+    # become one keyword argument once the pipeline emits their artifacts.
     cf = _cf_row_sum(artifacts, liked) if liked else None
     semantic = None
-    if query.mood:
+    if mood:
         if artifacts.embeddings is None:
             warnings.warn(
                 "A mood was given but the artifacts have no embeddings; "
@@ -299,7 +305,7 @@ def recommend(
                 stacklevel=2,
             )
         else:
-            q = embed_query(query.mood, artifacts.manifest["embedding"])
+            q = embed_query(mood, artifacts.manifest["embedding"])
             semantic = score_semantic(artifacts, q)
     components = {"cf": cf, "semantic": semantic, "popularity": popularity}
     fused = fuse(components, cand, query.weights)
@@ -326,7 +332,7 @@ def recommend(
                     row,
                     because_idx=because_idx,
                     semantic=sem,
-                    mood=query.mood,
+                    mood=mood,
                 ),
                 because_of=[artifacts.catalog[i]["imdb_id"] for i in because_idx],
             )

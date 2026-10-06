@@ -23,7 +23,7 @@ import { defaults } from '@/defaults';
 import { previewImport, toFlickpickCsv, toRow } from '@/lib/ratings-io';
 import { errorMessage } from '@/lib/utils';
 import { parseSetting, settingKeys, SettingsSchema, type SettingKey, type Settings } from '@/settings/schema';
-import { fetchEnrichment, isFresh } from '@/sources/tmdb';
+import { fetchEnrichment, isExpired, isFresh } from '@/sources/tmdb';
 import { readAll, upsertRow } from '@/state/providers';
 import { queryFromForm, RecommendFormSchema, type RecommendForm } from '@/state/recommend-form';
 import { EnrichmentSchema, RatingRowSchema, type RatingRow } from '@/state/schemas';
@@ -76,6 +76,22 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
       s.ratings = Object.fromEntries(ratings.map((r) => [r.item_id, r]));
       s.hydrated = true;
     });
+    await purgeExpiredEnrichment();
+  }
+
+  /**
+   * Delete TMDB cache entries past the terms' limit (180 days). Reading checks freshness too, but
+   * an entry nobody looks at again would otherwise stay in storage forever.
+   */
+  async function purgeExpiredEnrichment(): Promise<void> {
+    const now = deps.now();
+    const rows = await readAll(providers.enrichment).catch(() => []);
+    const expired = rows.flatMap((r) => {
+      const parsed = EnrichmentSchema.safeParse(r);
+      const id = (r as { imdb_id?: unknown }).imdb_id;
+      return typeof id === 'string' && (!parsed.success || isExpired(parsed.data, now)) ? [id] : [];
+    });
+    if (expired.length) await providers.enrichment.deleteMany(expired).catch(() => undefined);
   }
 
   /** Map stored title-only ratings onto the newly loaded catalogue, and store the upgrades. */
@@ -382,6 +398,8 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
         }
         set({ status: 'loading', data: current?.data ?? null, error: null });
         try {
+          // seam candidate: the enrichment provider. Only TMDB exists; Movie of the Night or
+          // MDBList would be a second module behind one argument (docs/architecture.md).
           const enrichment = await fetchEnrichment(imdb_id, {
             apiKey: tmdbApiKey,
             region,

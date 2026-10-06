@@ -39,6 +39,9 @@ const OPTIONS = {
   mood: { type: 'string' },
   'include-genre': { type: 'string', multiple: true },
   'exclude-genre': { type: 'string', multiple: true },
+  // Plural aliases, so the flags read the same as the Python CLI's (`--exclude-genres`).
+  'include-genres': { type: 'string', multiple: true },
+  'exclude-genres': { type: 'string', multiple: true },
   'year-min': { type: 'string' },
   'year-max': { type: 'string' },
   'min-ratings': { type: 'string' },
@@ -89,8 +92,8 @@ async function runRecommend(values: Values): Promise<string> {
   const { artifacts, ratings } = await loadInputs(values);
   const query: QueryInput = {
     ...(values.mood ? { mood: values.mood } : {}),
-    include_genres: values['include-genre'] ?? [],
-    exclude_genres: values['exclude-genre'] ?? [],
+    include_genres: [...(values['include-genre'] ?? []), ...(values['include-genres'] ?? [])],
+    exclude_genres: [...(values['exclude-genre'] ?? []), ...(values['exclude-genres'] ?? [])],
   };
   const ints = { year_min: 'year-min', year_max: 'year-max', min_ratings: 'min-ratings', k: 'k' } as const;
   for (const [field, flag] of Object.entries(ints)) {
@@ -115,12 +118,14 @@ async function runEvaluate(values: Values): Promise<string> {
   if (values.json) return JSON.stringify({ holdout, agreement: agree, fit }, null, 2);
   const d = defaults.cli.metricDigits;
   const metricLines = (Object.keys(holdout.mean) as (keyof typeof holdout.mean)[]).map((m) => {
-    const [lo, hi] = holdout.ci95[m];
-    return `  ${m}@${holdout.k}: ${fmt(holdout.mean[m], d)}  (95% CI ${fmt(lo, d)} to ${fmt(hi, d)})`;
+    const ci = holdout.ci95[m];
+    const interval = ci ? `  (95% CI ${fmt(ci[0], d)} to ${fmt(ci[1], d)})` : '';
+    return `  ${m}@${holdout.k}: ${fmt(holdout.mean[m], d)}${interval}`;
   });
   return [
-    `hold-out: ${holdout.folds.length} folds over ${holdout.n_liked} liked items (${holdout.n_rated_in_catalog} rated items in the catalogue)`,
+    `hold-out: ${holdout.folds} folds over ${holdout.n_liked} liked items (${holdout.n_rated} rated items in the catalogue)`,
     ...metricLines,
+    ...(holdout.note ? [`  note: ${holdout.note}`] : []),
     `agreement with population mean (n=${agree.n}): pearson ${fmt(agree.pearson, d)}, spearman ${fmt(agree.spearman, d)}, ` +
       `slope ${fmt(agree.slope, d)}, intercept ${fmt(agree.intercept, d)}`,
     `cross-validated fit (${fit.folds} folds, n=${fit.n}): linear RMSE ${fmt(fit.linear.rmse, d)} MAE ${fmt(fit.linear.mae, d)}; ` +
