@@ -1,0 +1,145 @@
+/*
+ * flickpick theme: design tokens as CSS variables, light and dark.
+ *
+ * Components use Tailwind classes that read these tokens (`bg-background`, `text-muted-foreground`,
+ * `border-border`, ...) through the `@theme inline` block, so the whole palette switches in one
+ * place. Dark mode follows the OS (`prefers-color-scheme`) unless `data-theme` on <html> says
+ * otherwise. Chart colours (`--viz-*`) follow the dataviz reference palette.
+ */
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --background: #fafaf8;
+  --foreground: #16150f;
+  --card: #ffffff;
+  --card-foreground: #16150f;
+  --muted: #f0efea;
+  --muted-foreground: #5d5b54;
+  --border: #e2e0d8;
+  --input: #d6d4cb;
+  --primary: #b45309;
+  --primary-foreground: #ffffff;
+  --accent: #fdf3e2;
+  --accent-foreground: #7c3a06;
+  --destructive: #c62828;
+  --ring: #d97706;
+  --success: #166534;
+
+  --viz-surface: #fcfcfb;
+  --viz-ink: #0b0b0b;
+  --viz-ink-2: #52514e;
+  --viz-muted: #898781;
+  --viz-grid: #e1e0d9;
+  --viz-axis: #c3c2b7;
+  --viz-series-1: #2a78d6;
+  --viz-series-2: #eb6834;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --background: #121210;
+    --foreground: #f3f2ec;
+    --card: #1b1b19;
+    --card-foreground: #f3f2ec;
+    --muted: #262622;
+    --muted-foreground: #b4b2a8;
+    --border: #33332e;
+    --input: #44433d;
+    --primary: #f59e0b;
+    --primary-foreground: #1b1206;
+    --accent: #2f2414;
+    --accent-foreground: #fcd9a0;
+    --destructive: #ef6461;
+    --ring: #f59e0b;
+    --success: #4ade80;
+
+    --viz-surface: #1a1a19;
+    --viz-ink: #ffffff;
+    --viz-ink-2: #c3c2b7;
+    --viz-muted: #898781;
+    --viz-grid: #2c2c2a;
+    --viz-axis: #383835;
+    --viz-series-1: #3987e5;
+    --viz-series-2: #d95926;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #121210;
+  --foreground: #f3f2ec;
+  --card: #1b1b19;
+  --card-foreground: #f3f2ec;
+  --muted: #262622;
+  --muted-foreground: #b4b2a8;
+  --border: #33332e;
+  --input: #44433d;
+  --primary: #f59e0b;
+  --primary-foreground: #1b1206;
+  --accent: #2f2414;
+  --accent-foreground: #fcd9a0;
+  --destructive: #ef6461;
+  --ring: #f59e0b;
+  --success: #4ade80;
+  --viz-surface: #1a1a19;
+  --viz-ink: #ffffff;
+  --viz-ink-2: #c3c2b7;
+  --viz-muted: #898781;
+  --viz-grid: #2c2c2a;
+  --viz-axis: #383835;
+  --viz-series-1: #3987e5;
+  --viz-series-2: #d95926;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html,
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    text-underline-offset: 2px;
+  }
+}
+
+/* Skeleton shimmer for loading states (tw-frontend-ux principle 1). */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--border) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

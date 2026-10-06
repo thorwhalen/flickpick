@@ -1,0 +1,78 @@
+{
+  "name": "flickpick",
+  "version": "0.0.1",
+  "description": "Personal movie recommender core: artifact loading, EASE + semantic scoring, ratings importers and personal evaluation. Runs in the browser and in Node.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "flickpick": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "movies",
+    "recommender",
+    "ease",
+    "embeddings",
+    "letterboxd",
+    "imdb",
+    "movielens"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
+  "peerDependencies": {
+    "@huggingface/transformers": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@huggingface/transformers": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "wads": {
+    "ci": {
+      "subdir": "js",
+      "packageManager": "npm",
+      "nodeVersions": [
+        "20",
+        "22",
+        "24"
+      ],
+      "publishNode": "24",
+      "lintCommand": "npm run lint --if-present",
+      "testCommand": "npm test --if-present",
+      "buildCommand": "npm run build --if-present",
+      "publish": {
+        "enabled": true,
+        "marker": "[publish-npm]",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  }
+}

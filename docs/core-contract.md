@@ -15,13 +15,13 @@
 - `scoreCf(artifacts, ratings)` → `Float32Array[n_items]` (EASE row sum over liked items; rated items set to `-Infinity`).
 - `scoreSemantic(artifacts, queryEmbedding)` → `Float32Array[n_items]` (cosine; brute force).
 - `embedQuery(text, manifest.embedding)` → `Float32Array[dim]` (TS: transformers.js with the manifest's model; Python: the same model through `ef` or sentence-transformers). The only place a model runs at query time.
-- `recommend(artifacts, ratings, query, { embedQuery })` → `Recommendation[]`: filters by the structured fields, z-scores each available score over the candidate set, combines with `query.weights`, sorts, takes `k`, fills `reasons` and `because_of`.
+- `recommend(artifacts, ratings, query, { embedQuery })` → `Recommendation[]`: filters by the structured fields, percentile-ranks each available score over the candidate set, combines with `query.weights`, sorts, takes `k`, fills `reasons` and `because_of`.
 - Importers (`importers/`): `parseLetterboxd(csvText)`, `parseImdb(csvText)`, `parseMovielens(csvText)`, `parseFlickpick(csvText)` → `Rating[]`; `detectFormat(csvText)`. The flickpick format is the example file's columns (`movie_id, imdb_id, tmdb_id, rating, average_rating, title`), with `imdb_id` numeric or `tt`-prefixed.
 - Science (`science/`): `rankingMetrics(recommendedIdx, heldOutIdx, k)` → `{ hit_rate, recall, ndcg, precision }`; `holdoutEvaluate(artifacts, ratings, { folds: 5, k: 10, seed })` → per-fold metrics with mean and a bootstrap 95% interval; `agreement(ratings, catalog)` → `{ pearson, spearman, n, slope, intercept }` of the user's score against `mean_rating`; `crossValidatedFit(ratings, catalog, { folds })` → RMSE and MAE of predicting the user's score from `mean_rating` (linear) versus the user's mean (baseline).
 
 ## Defaults that are not seams
 
-Like threshold: the user's median score (or 70 with fewer than 5 ratings). Fusion: z-score then weighted sum; a missing component contributes 0. Popularity: `log1p(n_ratings)`. Ties: by `n_ratings` descending.
+Like threshold: the user's median score (or 70 with fewer than 5 ratings). Fusion (`normalisation: percentile_rank`): each available component becomes percentile ranks over the candidate set (ranks 0..n-1 over the finite values, ties share their mean rank, divided by `max(n - 1, 1)`; `-Infinity` and other non-finite values are dropped before ranking and get 0), then a weighted sum; a missing component contributes 0. Ranks rather than z-scores because EASE scores are heavy-tailed, so their z-scores (up to ~15) swamped the cosine's (~3) and a mood barely reordered the list. Popularity: `log1p(n_ratings)`. Ties: by `n_ratings` descending.
 
 ## CLI (both)
 
