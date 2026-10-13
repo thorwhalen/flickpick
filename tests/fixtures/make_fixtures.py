@@ -16,6 +16,8 @@ stored embedding (or the artifact set was rebuilt).
 - ``parity/expected_evaluate.json``: ``holdout_evaluate`` on the example ratings for a
   few (scorer, folds, k, seed) cases; the TypeScript ``holdoutEvaluate`` must match it
   to 1e-6 (``docs/core-contract.md``, Science).
+- ``parity/expected_cv_fit.json``: ``cross_validated_fit`` on the example ratings for a
+  few (folds, seed) cases; the TypeScript ``crossValidatedFit`` must match it to 1e-6.
 """
 
 import json
@@ -28,7 +30,12 @@ from flickpick import Query, read_artifacts, read_ratings, recommend
 from flickpick.artifacts import write_artifacts
 from flickpick.build import build_artifacts
 from flickpick.data import load_movielens
-from flickpick.science import ease_scorer, holdout_evaluate, popularity_scorer
+from flickpick.science import (
+    cross_validated_fit,
+    ease_scorer,
+    holdout_evaluate,
+    popularity_scorer,
+)
 from flickpick.score import embed_query
 
 HERE = Path(__file__).parent
@@ -36,6 +43,7 @@ REPO = HERE.parent.parent
 ARTIFACTS = HERE / "artifacts_small"
 PARITY = HERE / "parity" / "expected_recommend.json"
 PARITY_EVALUATE = HERE / "parity" / "expected_evaluate.json"
+PARITY_CV_FIT = HERE / "parity" / "expected_cv_fit.json"
 RATINGS = "flickpick/data/examples/movie_ratings_various.csv"
 N_ITEMS, TOPK = 600, 50
 MOOD = "slow-burn melancholic sci-fi"
@@ -73,6 +81,13 @@ EVALUATE_CASES = [
         "scorer": "ease",
         "options": {"folds": 10, "k": 5, "seed": 7},
     },
+]
+
+
+CV_FIT_CASES = [
+    {"name": "default", "options": {"folds": 5, "seed": 0}},
+    {"name": "folds_10_seed_7", "options": {"folds": 10, "seed": 7}},
+    {"name": "folds_3_seed_42", "options": {"folds": 3, "seed": 42}},
 ]
 
 
@@ -137,6 +152,20 @@ def evaluate_cases():
     }
 
 
+def cv_fit_cases():
+    a = read_artifacts(ARTIFACTS)
+    ratings = read_ratings(REPO / RATINGS)
+    cases = [
+        {**case, "expected": cross_validated_fit(ratings, a.catalog, **case["options"])}
+        for case in CV_FIT_CASES
+    ]
+    return {
+        "artifacts": "tests/fixtures/artifacts_small",
+        "ratings": RATINGS,
+        "cases": cases,
+    }
+
+
 if __name__ == "__main__":
     rebuild = "--rebuild" in sys.argv[1:] or not (ARTIFACTS / "manifest.json").exists()
     if rebuild:
@@ -146,4 +175,7 @@ if __name__ == "__main__":
     PARITY.write_text(json.dumps(cases, indent=1, ensure_ascii=False))
     PARITY_EVALUATE.write_text(
         json.dumps(evaluate_cases(), indent=1, ensure_ascii=False) + "\n"
+    )
+    PARITY_CV_FIT.write_text(
+        json.dumps(cv_fit_cases(), indent=1, ensure_ascii=False) + "\n"
     )

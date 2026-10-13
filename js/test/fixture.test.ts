@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
+  crossValidatedFit,
   holdoutEvaluate,
   loadArtifacts,
   parseRatings,
@@ -84,6 +85,19 @@ describe('Python-built fixture artifact set', () => {
     expect(cases.length).toBeGreaterThan(0);
     for (const c of cases) {
       const actual = holdoutEvaluate(artifacts, ratings, { ...c.options, score: scorers[c.scorer] });
+      expectClose(JSON.parse(JSON.stringify(actual)), c.expected, c.name);
+    }
+  });
+  const PARITY_CV_FIT = fileURLToPath(new URL('../../tests/fixtures/parity/expected_cv_fit.json', import.meta.url));
+  it.skipIf(!(ready && existsSync(PARITY_CV_FIT)))('crossValidatedFit matches the Python cross_validated_fit to 1e-6 (#3)', async () => {
+    const artifacts = await loadArtifacts(FIXTURE);
+    const ratings = parseRatings(readFileSync(EXAMPLE, 'utf8'));
+    const { cases } = JSON.parse(readFileSync(PARITY_CV_FIT, 'utf8')) as {
+      cases: { name: string; options: { folds: number; seed: number }; expected: unknown }[];
+    };
+    expect(cases.length).toBeGreaterThan(0);
+    for (const c of cases) {
+      const actual = crossValidatedFit(ratings, artifacts.catalog, c.options);
       expectClose(JSON.parse(JSON.stringify(actual)), c.expected, c.name);
     }
   });

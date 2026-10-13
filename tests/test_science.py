@@ -164,6 +164,27 @@ def test_holdout_parity_file_is_current(small, example_ratings, paths):
         assert _close(json.loads(json.dumps(got)), case["expected"]), case["name"]
 
 
+def test_cv_fit_parity_file_is_current(small, example_ratings, paths):
+    """``expected_cv_fit.json`` (what the TypeScript parity test reads) matches today's
+    ``cross_validated_fit`` (#3); rerun ``tests/fixtures/make_fixtures.py`` after a change."""
+    path = paths["parity_file"].parent / "expected_cv_fit.json"
+    for case in json.loads(path.read_text())["cases"]:
+        got = cross_validated_fit(example_ratings, small.catalog, **case["options"])
+        assert _close(json.loads(json.dumps(got)), case["expected"]), case["name"]
+
+
+def test_cross_validated_fit_uses_the_shared_fold_split():
+    """Folds are the sorted ids shuffled with mulberry32, dealt round-robin (#3): the
+    ratings' input order does not matter, and a no-spread fold predicts the baseline."""
+    ratings, catalog = _linear_user()
+    a = cross_validated_fit(ratings, catalog, folds=4, seed=3)
+    b = cross_validated_fit(list(reversed(ratings)), catalog, folds=4, seed=3)
+    assert a == b
+    flat = [{**c, "mean_rating": 50.0} for c in catalog]
+    fit = cross_validated_fit(ratings, flat, folds=4)
+    assert fit["linear"] == fit["baseline"]
+
+
 def _close(a, b, tol=1e-9) -> bool:
     if isinstance(b, (int, float)) and not isinstance(b, bool):
         return abs(a - b) <= tol
