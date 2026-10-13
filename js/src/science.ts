@@ -318,19 +318,16 @@ export function olsFit(x: readonly number[], y: readonly number[]): { slope: num
 }
 
 /** Pairs (population mean_rating, user score) for rated catalogue items with a mean rating. */
-export function ratingPairs(ratings: readonly Rating[], catalog: readonly CatalogItem[]): { x: number[]; y: number[] } {
+export function ratingPairs(
+  ratings: readonly Rating[],
+  catalog: readonly CatalogItem[],
+): { ids: string[]; x: number[]; y: number[] } {
   const meanById = new Map(catalog.filter((c) => c.mean_rating !== null).map((c) => [c.imdb_id, c.mean_rating!]));
-  const latest = new Map(ratings.map((r) => [r.item_id, r.score]));
-  const x: number[] = [];
-  const y: number[] = [];
-  for (const [id, score] of latest) {
-    const m = meanById.get(id);
-    if (m !== undefined) {
-      x.push(m);
-      y.push(score);
-    }
-  }
-  return { x, y };
+  // Resolved like every other consumer (id, ml:/tmdb: id, or title and year), the later
+  // rating of an item winning; sorted by imdb_id, the order crossValidatedFit shuffles.
+  const latest = new Map(resolveRatings(ratings, catalog).map((r) => [r.item_id, r.score]));
+  const ids = [...latest.keys()].filter((id) => meanById.has(id)).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return { ids, x: ids.map((id) => meanById.get(id)!), y: ids.map((id) => latest.get(id)!) };
 }
 
 export interface Agreement {

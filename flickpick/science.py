@@ -291,11 +291,35 @@ def holdout_evaluate(
 # -------------------------------------------------------------------------- agreement
 
 
+def _paired_items(ratings, catalog) -> tuple[list[str], np.ndarray, np.ndarray]:
+    """``(imdb_ids, mean_rating, user score)`` of the rated catalogue items that have a
+    ``mean_rating``, sorted by ``imdb_id`` (the order :func:`cross_validated_fit` shuffles,
+    as the TypeScript ``ratingPairs``)."""
+    rows = sorted(
+        (catalog[idx]["imdb_id"], catalog[idx]["mean_rating"], r.score)
+        for idx, r in resolve_ratings(catalog, ratings)
+        if catalog[idx].get("mean_rating") is not None
+    )
+    ids = [i for i, _, _ in rows]
+    x = np.array([m for _, m, _ in rows], dtype=float)
+    y = np.array([s for _, _, s in rows], dtype=float)
+    return ids, x, y
+
+
 def _paired_scores(ratings, catalog) -> tuple[np.ndarray, np.ndarray]:
-    pairs = resolve_ratings(catalog, ratings)
-    x = np.array([catalog[idx]["mean_rating"] for idx, _ in pairs], dtype=float)
-    y = np.array([r.score for _, r in pairs], dtype=float)
+    _, x, y = _paired_items(ratings, catalog)
     return x, y
+
+
+def _ols(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
+    """``(slope, intercept)`` of the least-squares line, ``(nan, nan)`` with no spread in
+    ``x`` (closed form, as the TypeScript ``olsFit``)."""
+    mx, my = float(np.mean(x)), float(np.mean(y))
+    sxx = float(np.sum((x - mx) ** 2))
+    if not sxx > 0:
+        return float("nan"), float("nan")
+    slope = float(np.sum((x - mx) * (y - my))) / sxx
+    return slope, my - slope * mx
 
 
 def agreement(ratings: Iterable, catalog: Sequence[Mapping]) -> dict:
@@ -329,20 +353,29 @@ def cross_validated_fit(
     folds: int = DFLT.folds,
     seed: int = DFLT.seed,
 ) -> dict:
-    """K-fold RMSE/MAE of a linear fit on ``mean_rating`` vs the user-mean baseline."""
-    x, y = _paired_scores(ratings, catalog)
+    """K-fold RMSE/MAE of a linear fit on ``mean_rating`` vs the user-mean baseline.
+
+    The folds are the shared split of ``docs/core-contract.md`` (Science): the paired
+    items sorted by ``imdb_id``, shuffled with ``mulberry32(seed)``, position ``p`` in
+    fold ``p mod folds``, so the TypeScript ``crossValidatedFit`` gives the same numbers
+    for the same seed (#3). A training fold with no spread in ``mean_rating`` predicts
+    the baseline.
+    """
+    _, x, y = _paired_items(ratings, catalog)
     if len(x) < folds * MIN_POINTS:
         raise ValueError(
             f"Need at least {folds * MIN_POINTS} rated catalogue items "
             f"for {folds} folds; got {len(x)}."
         )
-    order = np.random.default_rng(seed).permutation(len(x))
+    order = shuffled(range(len(x)), mulberry32(seed))
     pred_lin, pred_base = np.empty_like(y), np.empty_like(y)
-    for test in np.array_split(order, folds):
-        train = np.setdiff1d(order, test)
-        slope, intercept = np.polyfit(x[train], y[train], 1)
-        pred_lin[test] = intercept + slope * x[test]
-        pred_base[test] = y[train].mean()
+    for f in range(folds):
+        test = np.array(order[f::folds], dtype=np.int64)
+        train = np.setdiff1d(np.arange(len(x)), test)
+        base = float(y[train].mean())
+        slope, intercept = _ols(x[train], y[train])
+        pred_lin[test] = intercept + slope * x[test] if np.isfinite(slope) else base
+        pred_base[test] = base
     return {
         "linear": _errors(pred_lin, y),
         "baseline": _errors(pred_base, y),

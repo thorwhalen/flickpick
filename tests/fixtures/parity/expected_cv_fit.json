@@ -1,0 +1,63 @@
+{
+ "artifacts": "tests/fixtures/artifacts_small",
+ "ratings": "flickpick/data/examples/movie_ratings_various.csv",
+ "cases": [
+  {
+   "name": "default",
+   "options": {
+    "folds": 5,
+    "seed": 0
+   },
+   "expected": {
+    "linear": {
+     "rmse": 11.215071138071897,
+     "mae": 8.781023215404058
+    },
+    "baseline": {
+     "rmse": 13.06118501872129,
+     "mae": 10.618469624740252
+    },
+    "n": 101,
+    "folds": 5
+   }
+  },
+  {
+   "name": "folds_10_seed_7",
+   "options": {
+    "folds": 10,
+    "seed": 7
+   },
+   "expected": {
+    "linear": {
+     "rmse": 11.160058464567715,
+     "mae": 8.742061896096503
+    },
+    "baseline": {
+     "rmse": 12.995163484863072,
+     "mae": 10.575156856344975
+    },
+    "n": 101,
+    "folds": 10
+   }
+  },
+  {
+   "name": "folds_3_seed_42",
+   "options": {
+    "folds": 3,
+    "seed": 42
+   },
+   "expected": {
+    "linear": {
+     "rmse": 11.102196096737547,
+     "mae": 8.721507735126265
+    },
+    "baseline": {
+     "rmse": 13.145948312417516,
+     "mae": 10.725234485696157
+    },
+    "n": 101,
+    "folds": 3
+   }
+  }
+ ]
+}
