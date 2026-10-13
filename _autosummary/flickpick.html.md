@@ -195,6 +195,12 @@ which is `embed_texts` with `embedding_model`.
 
 K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.
 
+The folds are the shared split of `docs/core-contract.md` (Science): the paired
+items sorted by `imdb_id`, shuffled with `mulberry32(seed)`, position `p` in
+fold `p mod folds`, so the TypeScript `crossValidatedFit` gives the same numbers
+for the same seed (#3). A training fold with no spread in `mean_rating` predicts
+the baseline.
+
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 

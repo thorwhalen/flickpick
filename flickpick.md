@@ -1,4 +1,4 @@
-> built 2026-10-06 10:29 UTC from a791c0a (main) · flickpick 0.0.1. Details: build_info.json
+> built 2026-10-13 23:07 UTC from 936af10 (main) · flickpick 0.0.2. Details: build_info.json
 
 # index.html.md
 
@@ -729,6 +729,12 @@ which is `embed_texts` with `embedding_model`.
 
 K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.
 
+The folds are the shared split of `docs/core-contract.md` (Science): the paired
+items sorted by `imdb_id`, shuffled with `mulberry32(seed)`, position `p` in
+fold `p mod folds`, so the TypeScript `crossValidatedFit` gives the same numbers
+for the same seed (#3). A training fold with no spread in `mean_rating` predicts
+the baseline.
+
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
@@ -1220,6 +1226,12 @@ quantiles; same draws as the TypeScript `bootstrapMeanCi`).
 
 K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.
 
+The folds are the shared split of `docs/core-contract.md` (Science): the paired
+items sorted by `imdb_id`, shuffled with `mulberry32(seed)`, position `p` in
+fold `p mod folds`, so the TypeScript `crossValidatedFit` gives the same numbers
+for the same seed (#3). A training fold with no spread in `mean_rating` predicts
+the baseline.
+
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
@@ -1554,18 +1566,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-06 10:29 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/a791c0ad1ba308f22361f8a54ecdbf9e3775b90b"><code>a791c0a</code></a> on branch <code>main</code>, for **flickpick 0.0.1** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-13 23:07 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/936af10ac578e2bb9dc3027313d4d6aa8a5aa53d"><code>936af10</code></a> on branch <code>main</code>, for **flickpick 0.0.2** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.1) is behind the latest release on PyPI (0.0.2): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.2) is behind the latest release on PyPI (0.0.3): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/a791c0ad1ba308f22361f8a54ecdbf9e3775b90b"><code>a791c0ad1ba308f22361f8a54ecdbf9e3775b90b</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/936af10ac578e2bb9dc3027313d4d6aa8a5aa53d"><code>936af10ac578e2bb9dc3027313d4d6aa8a5aa53d</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1576,18 +1588,18 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/37449885472">37449885472</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/38482135242">38482135242</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>a791c0ad1ba308f22361f8a54ecdbf9e3775b90b</code> (in the history of the built commit) |
+| Event commit | <code>936af10ac578e2bb9dc3027313d4d6aa8a5aa53d</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.12  |
+| epythet  | 0.2.17  |
 | Sphinx   | 9.1.0   |
 | docutils | 0.22.4  |
-| Python   | 3.12.14 |
+| Python   | 3.12.15 |
 
 ## Configuration as resolved
 
@@ -1603,14 +1615,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.2/">0.0.2</a>, newer than the documented version (0.0.1).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.3/">0.0.3</a>, newer than the documented version (0.0.2).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout a791c0ad1ba308f22361f8a54ecdbf9e3775b90b
-pip install "epythet==0.2.12"
+git checkout 936af10ac578e2bb9dc3027313d4d6aa8a5aa53d
+pip install "epythet==0.2.17"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
