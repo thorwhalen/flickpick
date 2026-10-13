@@ -40,14 +40,10 @@ function AgreementSection() {
   const { stats, points } = useMemo(() => {
     const list = Object.values(ratings);
     const stats = agreement(list, artifacts.catalog);
-    const { x, y } = ratingPairs(list, artifacts.catalog);
-    // ratingPairs keeps the order of the latest rating per id; name each point the same way.
-    const withMean = [...new Map(list.map((r) => [r.item_id, r])).keys()].filter((id) => {
-      const idx = artifacts.idToIdx.get(id);
-      return idx !== undefined && artifacts.catalog[idx]!.mean_rating !== null;
-    });
+    // ratingPairs resolves the ratings and returns each point's imdb_id: name it by that.
+    const { ids, x, y } = ratingPairs(list, artifacts.catalog);
     const points: AgreementPoint[] = x.map((xv, i) => {
-      const item = artifacts.catalog[artifacts.idToIdx.get(withMean[i]!)!]!;
+      const item = artifacts.catalog[artifacts.idToIdx.get(ids[i]!)!]!;
       return { x: xv, y: y[i]!, label: titleYear(item.title, item.year) };
     });
     return { stats, points };
