@@ -82,6 +82,19 @@ describe('correlation and fits', () => {
     expect(fit.baseline.rmse).toBeGreaterThan(5);
     expect(() => crossValidatedFit(ratings.slice(0, 2), catalog, { folds: 5 })).toThrow(/need at least folds=5/);
   });
+
+  it('crossValidatedFit: one item per fold is enough, as in the Python core (#4)', () => {
+    const catalog = syntheticCatalog() as CatalogItem[];
+    const ratings: Rating[] = catalog.map((c) => ({ item_id: c.imdb_id, score: 0.5 * c.mean_rating! + 20 }));
+    expect(() => crossValidatedFit(ratings.slice(0, 4), catalog, { folds: 5 })).toThrow(/need at least folds=5/);
+    const fit = crossValidatedFit(ratings.slice(0, 5), catalog, { folds: 5 });
+    expect(fit.n).toBe(5);
+    expect(fit.linear.rmse).toBeLessThan(1e-9); // 4 training points fit the line
+    // Two folds of one item each: a one-point training fold falls back to the baseline.
+    const two = crossValidatedFit(ratings.slice(0, 2), catalog, { folds: 2 });
+    expect(two.linear.rmse).toBeCloseTo(two.baseline.rmse, 12);
+    expect(two.linear.mae).toBeCloseTo(two.baseline.mae, 12);
+  });
 });
 
 describe('resampling', () => {
