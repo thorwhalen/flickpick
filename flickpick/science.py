@@ -360,12 +360,17 @@ def cross_validated_fit(
     fold ``p mod folds``, so the TypeScript ``crossValidatedFit`` gives the same numbers
     for the same seed (#3). A training fold with no spread in ``mean_rating`` predicts
     the baseline.
+
+    It needs at least ``folds`` paired items, one per held-out fold, as the TypeScript
+    core does (#4): below that a fold would be empty. Small inputs are not refused
+    beyond that, because a training fold too small to fit a line predicts the baseline
+    and the result reports its ``n``.
     """
     _, x, y = _paired_items(ratings, catalog)
-    if len(x) < folds * MIN_POINTS:
+    if len(x) < folds:
         raise ValueError(
-            f"Need at least {folds * MIN_POINTS} rated catalogue items "
-            f"for {folds} folds; got {len(x)}."
+            f"Need at least {folds} rated catalogue items for {folds} folds; "
+            f"got {len(x)}."
         )
     order = shuffled(range(len(x)), mulberry32(seed))
     pred_lin, pred_base = np.empty_like(y), np.empty_like(y)

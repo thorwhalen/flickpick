@@ -193,3 +193,17 @@ def _close(a, b, tol=1e-9) -> bool:
     if isinstance(b, dict):
         return a.keys() == b.keys() and all(_close(a[k], b[k], tol) for k in b)
     return a == b
+
+
+def test_cross_validated_fit_needs_one_item_per_fold_as_typescript_does():
+    """#4: the Python core refused below ``folds * MIN_POINTS`` (15 for 5 folds) where
+    the TypeScript core, and so the web app, accepted anything from ``folds`` up."""
+    ratings, catalog = _linear_user()
+    with pytest.raises(ValueError, match="at least 5 rated catalogue items for 5 folds"):
+        cross_validated_fit(ratings[:4], catalog, folds=5)
+    fit = cross_validated_fit(ratings[:5], catalog, folds=5)
+    assert fit["n"] == 5 and fit["folds"] == 5
+    assert fit["linear"]["rmse"] == pytest.approx(0, abs=1e-9)  # 4 training points fit the line
+    # Two folds of one item each: a one-point training fold falls back to the baseline.
+    two = cross_validated_fit(ratings[:2], catalog, folds=2)
+    assert two["linear"] == pytest.approx(two["baseline"])
