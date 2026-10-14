@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="../_static/documentation_options.js?v=47de8214"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.2" />
+  <meta name="docsearch:version" content="0.0.3" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -511,6 +511,10 @@ items sorted by <code class="docutils literal notranslate"><span class="pre">imd
 fold <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">mod</span> <span class="pre">folds</span></code>, so the TypeScript <code class="docutils literal notranslate"><span class="pre">crossValidatedFit</span></code> gives the same numbers
 for the same seed (#3). A training fold with no spread in <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> predicts
 the baseline.</p>
+<p>It needs at least <code class="docutils literal notranslate"><span class="pre">folds</span></code> paired items, one per held-out fold, as the TypeScript
+core does (#4): below that a fold would be empty. Small inputs are not refused
+beyond that, because a training fold too small to fit a line predicts the baseline
+and the result reports its <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>

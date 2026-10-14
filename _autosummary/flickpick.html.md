@@ -201,6 +201,11 @@ fold `p mod folds`, so the TypeScript `crossValidatedFit` gives the same numbers
 for the same seed (#3). A training fold with no spread in `mean_rating` predicts
 the baseline.
 
+It needs at least `folds` paired items, one per held-out fold, as the TypeScript
+core does (#4): below that a fold would be empty. Small inputs are not refused
+beyond that, because a training fold too small to fit a line predicts the baseline
+and the result reports its `n`.
+
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
