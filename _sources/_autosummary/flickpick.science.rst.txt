@@ -9,7 +9,8 @@ flickpick.science
    .. autosummary::
    
       ITEM_METRICS
-      MIN_POINTS
+      MIN_FOLDS
+      MIN_K
    
    .. rubric:: Functions
 
@@ -17,6 +18,8 @@ flickpick.science
    
       agreement
       bootstrap_ci
+      check_count
+      check_folds
       cross_validated_fit
       ease_scorer
       holdout_evaluate

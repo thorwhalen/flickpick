@@ -34,6 +34,7 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/epythet.css?v=4dd68672" />
   
@@ -43,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=47de8214"></script>
+    <script src="../_static/documentation_options.js?v=8c5712d9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.3" />
+  <meta name="docsearch:version" content="0.0.4" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -420,7 +421,7 @@
 <td><p>Build an artifact set from MovieLens (ml-32m, or ml-latest-small with --sample).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.tools.cli_egress" title="flickpick.tools.cli_egress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli_egress</span></code></a>(result, *[, out, err])</p></td>
-<td><p>Print a list one item per line, a string as is, anything else as JSON.</p></td>
+<td><p>Print a list one item per line, a string as is, anything else as JSON (with <code class="docutils literal notranslate"><span class="pre">NaN</span></code> written as <code class="docutils literal notranslate"><span class="pre">null</span></code>).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.tools.default_artifacts_dir" title="flickpick.tools.default_artifacts_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_artifacts_dir</span></code></a>(*[, sample])</p></td>
 <td><p>Where <code class="docutils literal notranslate"><span class="pre">build</span></code> writes by default: <code class="docutils literal notranslate"><span class="pre">&lt;data</span> <span class="pre">home&gt;/artifacts/&lt;dataset&gt;</span></code>.</p></td>
@@ -456,7 +457,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="flickpick.tools.cli_egress">
 <span class="sig-prename descclassname"><span class="pre">flickpick.tools.</span></span><span class="sig-name descname"><span class="pre">cli_egress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/tools.html#cli_egress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.tools.cli_egress" title="Link to this definition">#</a></dt>
-<dd><p>Print a list one item per line, a string as is, anything else as JSON.</p>
+<dd><p>Print a list one item per line, a string as is, anything else as JSON (with
+<code class="docutils literal notranslate"><span class="pre">NaN</span></code> written as <code class="docutils literal notranslate"><span class="pre">null</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>

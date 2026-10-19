@@ -20,31 +20,31 @@ The formats and the scoring contract are in `docs/artifact-format.md` and
 
 ### Functions
 
-| [`read_artifacts`](#flickpick.read_artifacts)(source)                             | Load and validate the artifact set in directory `source`.                        |
-|-----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| [`validate_artifacts`](#flickpick.validate_artifacts)(a)                              | Raise `ArtifactFormatError` unless every shape and the catalogue agree.          |
-| [`write_artifacts`](#flickpick.write_artifacts)(a, out_dir)                        | Write `a` to `out_dir` (created if needed) and return the directory path.        |
-| [`build_artifacts`](#flickpick.build_artifacts)(ml, \*[, n_items, topk, lam, ...]) | Build an in-memory artifact set from MovieLens tables.                           |
-| [`ease_dense`](#flickpick.ease_dense)(X, \*[, lam, dtype])                    | The dense EASE weight matrix B for a (sparse or dense) binary matrix X.          |
-| [`fit_ease`](#flickpick.fit_ease)(X, \*[, lam, topk, n_items])              | Fit sparse EASE on X restricted to its `n_items` most-rated columns (None: all). |
-| [`sparsify_topk`](#flickpick.sparsify_topk)(B, \*[, topk])                       | Keep each row's `topk` largest positive weights, sorted descending, as CSR.      |
-| [`detect_format`](#flickpick.detect_format)(csv_text)                            | The name of the export format of `csv_text` (a key of `SIGNATURES`).             |
-| [`parse_flickpick`](#flickpick.parse_flickpick)(csv_text)                          | The flickpick CSV (the example file's columns) -> ratings (already 0-100).       |
-| [`parse_imdb`](#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings.                                                  |
-| [`parse_letterboxd`](#flickpick.parse_letterboxd)(csv_text)                         | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).                  |
-| [`parse_movielens`](#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).             |
-| [`parse_ratings`](#flickpick.parse_ratings)(csv_text, \*[, format])              | Parse `csv_text` with the parser for `format` (detected when None).              |
-| [`read_ratings`](#flickpick.read_ratings)(path, \*[, format, encoding])         | Read and parse a ratings CSV file.                                               |
-| [`resolve_ratings`](#flickpick.resolve_ratings)(catalog, ratings)                  | Pair each rating with its catalogue `idx`, dropping the ones not found.          |
-| [`agreement`](#flickpick.agreement)(ratings, catalog)                        | Pearson, Spearman and the OLS line of the user's score on `mean_rating`.         |
-| [`cross_validated_fit`](#flickpick.cross_validated_fit)(ratings, catalog, \*[, ...])   | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.      |
-| [`holdout_evaluate`](#flickpick.holdout_evaluate)(artifacts, ratings, \*[, ...])    | K-fold holdout of the user's liked items, scored over the full catalogue.        |
-| [`ranking_metrics`](#flickpick.ranking_metrics)(recommended_idx, held_out_idx, k)  | Ranking metrics at `k` of one recommendation list against held-out items.        |
-| [`embed_query`](#flickpick.embed_query)(text, embedding)                       | L2-normalised `float32[dim]` embedding of `query_prefix + text`.                 |
-| [`format_recommendations`](#flickpick.format_recommendations)(recs)                       | One line per item: <br/><br/>```<br/>``<br/>```<br/><br/>rank.                   |
-| [`recommend`](#flickpick.recommend)(artifacts, ratings[, query, ...])        | The top `query.k` unrated items for this user and query, explained.              |
-| [`score_cf`](#flickpick.score_cf)(artifacts, ratings)                       | EASE scores `float32[n_items]`; the user's rated items are `-inf`.               |
-| [`score_semantic`](#flickpick.score_semantic)(artifacts, query_embedding)         | Cosine similarity `float32[n_items]` of every item to the query embedding.       |
+| [`read_artifacts`](#flickpick.read_artifacts)(source)                             | Load and validate the artifact set in directory `source`.                                                                              |
+|-----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| [`validate_artifacts`](#flickpick.validate_artifacts)(a)                              | Raise `ArtifactFormatError` unless every shape and the catalogue agree.                                                                |
+| [`write_artifacts`](#flickpick.write_artifacts)(a, out_dir)                        | Write `a` to `out_dir` (created if needed) and return the directory path.                                                              |
+| [`build_artifacts`](#flickpick.build_artifacts)(ml, \*[, n_items, topk, lam, ...]) | Build an in-memory artifact set from MovieLens tables.                                                                                 |
+| [`ease_dense`](#flickpick.ease_dense)(X, \*[, lam, dtype])                    | The dense EASE weight matrix B for a (sparse or dense) binary matrix X.                                                                |
+| [`fit_ease`](#flickpick.fit_ease)(X, \*[, lam, topk, n_items])              | Fit sparse EASE on X restricted to its `n_items` most-rated columns (None: all).                                                       |
+| [`sparsify_topk`](#flickpick.sparsify_topk)(B, \*[, topk])                       | Keep each row's `topk` largest positive weights, sorted descending, as CSR.                                                            |
+| [`detect_format`](#flickpick.detect_format)(csv_text)                            | The name of the export format of `csv_text` (a key of `SIGNATURES`).                                                                   |
+| [`parse_flickpick`](#flickpick.parse_flickpick)(csv_text)                          | The flickpick CSV (the example file's columns) -> ratings (already 0-100).                                                             |
+| [`parse_imdb`](#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings.                                                                                                        |
+| [`parse_letterboxd`](#flickpick.parse_letterboxd)(csv_text)                         | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).                                                                        |
+| [`parse_movielens`](#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).                                                                   |
+| [`parse_ratings`](#flickpick.parse_ratings)(csv_text, \*[, format])              | Parse `csv_text` with the parser for `format` (detected when None).                                                                    |
+| [`read_ratings`](#flickpick.read_ratings)(path, \*[, format, encoding])         | Read and parse a ratings CSV file.                                                                                                     |
+| [`resolve_ratings`](#flickpick.resolve_ratings)(catalog, ratings)                  | Pair each rating with its catalogue `idx`, dropping the ones not found.                                                                |
+| [`agreement`](#flickpick.agreement)(ratings, catalog, \*[, min_points])      | Pearson, Spearman (average ranks) and the OLS line of the user's score on `mean_rating`, over the rated catalogue items that have one. |
+| [`cross_validated_fit`](#flickpick.cross_validated_fit)(ratings, catalog, \*[, ...])   | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.                                                            |
+| [`holdout_evaluate`](#flickpick.holdout_evaluate)(artifacts, ratings, \*[, ...])    | K-fold holdout of the user's liked items, scored over the full catalogue.                                                              |
+| [`ranking_metrics`](#flickpick.ranking_metrics)(recommended_idx, held_out_idx, k)  | Ranking metrics at `k` of one recommendation list against held-out items.                                                              |
+| [`embed_query`](#flickpick.embed_query)(text, embedding)                       | L2-normalised `float32[dim]` embedding of `query_prefix + text`.                                                                       |
+| [`format_recommendations`](#flickpick.format_recommendations)(recs)                       | One line per item: <br/><br/>```<br/>``<br/>```<br/><br/>rank.                                                                         |
+| [`recommend`](#flickpick.recommend)(artifacts, ratings[, query, ...])        | The top `query.k` unrated items for this user and query, explained.                                                                    |
+| [`score_cf`](#flickpick.score_cf)(artifacts, ratings)                       | EASE scores `float32[n_items]`; the user's rated items are `-inf`.                                                                     |
+| [`score_semantic`](#flickpick.score_semantic)(artifacts, query_embedding)         | Cosine similarity `float32[n_items]` of every item to the query embedding.                                                             |
 
 ### Classes
 
@@ -96,7 +96,7 @@ The sparsified EASE item-item matrix B in CSR form (rows = source items).
 
 The same matrix as a `scipy.sparse.csr_matrix` of shape (n, n).
 
-### *class* flickpick.Defaults(ease_lambda=500.0, topk=100, n_items=10000, like_threshold=70.0, min_ratings_for_median=5, normalisation='percentile_rank', w_cf=1.0, w_semantic=1.0, w_popularity=0.1, k=10, n_because=3, embedding_model='BAAI/bge-small-en-v1.5', embedding_dim=384, query_prefix='', embed_batch_size=64, max_tags=50, folds=5, seed=0, n_bootstrap=1000, ci_level=0.95, min_folds_for_fold_ci=10)
+### *class* flickpick.Defaults(ease_lambda=500.0, topk=100, n_items=10000, like_threshold=70.0, min_ratings_for_median=5, normalisation='percentile_rank', w_cf=1.0, w_semantic=1.0, w_popularity=0.1, k=10, n_because=3, embedding_model='BAAI/bge-small-en-v1.5', embedding_dim=384, query_prefix='', embed_batch_size=64, max_tags=50, folds=5, seed=0, n_bootstrap=1000, ci_level=0.95, min_folds_for_fold_ci=10, min_agreement_points=3)
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -115,6 +115,10 @@ a population rating counts as a “like” at or above this, on the 0-100 scale
 #### max_tags *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 50*
 
 cap on the distinct user tags appended to semantic_text (most frequent first)
+
+#### min_agreement_points *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 3*
+
+below this many paired items, agreement’s statistics are NaN (core contract, Science)
 
 #### min_folds_for_fold_ci *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 10*
 
@@ -143,7 +147,7 @@ sum (core contract: “Defaults that are not seams”); the only value is
 
 kept neighbours per item row (98% of dense [NDCG@100](mailto:NDCG@100) in the same probe)
 
-### *class* flickpick.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=<factory>)
+### *class* flickpick.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=Weights())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -174,9 +178,14 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 Fusion weights of the percentile-ranked components.
 
-### flickpick.agreement(ratings, catalog)
+### flickpick.agreement(ratings, catalog, , min_points=3)
 
-Pearson, Spearman and the OLS line of the user’s score on `mean_rating`.
+Pearson, Spearman (average ranks) and the OLS line of the user’s score on
+`mean_rating`, over the rated catalogue items that have one.
+
+Never refuses: with fewer than `min_points` paired items every statistic but `n`
+is `nan`, and so is any that is undefined for lack of spread. The TypeScript
+`agreement` follows the same rule (#7), so both CLIs report the same numbers.
 
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
@@ -204,7 +213,7 @@ the baseline.
 It needs at least `folds` paired items, one per held-out fold, as the TypeScript
 core does (#4): below that a fold would be empty. Small inputs are not refused
 beyond that, because a training fold too small to fit a line predicts the baseline
-and the result reports its `n`.
+and the result reports its `n`. `folds` below `MIN_FOLDS` is refused (#7).
 
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
@@ -308,13 +317,13 @@ Parse `csv_text` with the parser for `format` (detected when None).
 
 Ranking metrics at `k` of one recommendation list against held-out items.
 
-* **Return type:**
-  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
-
 ```pycon
 >>> ranking_metrics([5, 1, 7], [1, 9], 3)['recall']
 0.5
 ```
+
+* **Return type:**
+  [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)
 
 ### flickpick.read_artifacts(source)
 

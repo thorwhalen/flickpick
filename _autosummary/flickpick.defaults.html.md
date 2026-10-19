@@ -17,7 +17,7 @@ caller can override any of them without touching this module.
 | [`Defaults`](#flickpick.defaults.Defaults)([ease_lambda, topk, n_items, ...])   | Every tunable number in one place (see the docs cited on each field).   |
 |------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
 
-### *class* flickpick.defaults.Defaults(ease_lambda=500.0, topk=100, n_items=10000, like_threshold=70.0, min_ratings_for_median=5, normalisation='percentile_rank', w_cf=1.0, w_semantic=1.0, w_popularity=0.1, k=10, n_because=3, embedding_model='BAAI/bge-small-en-v1.5', embedding_dim=384, query_prefix='', embed_batch_size=64, max_tags=50, folds=5, seed=0, n_bootstrap=1000, ci_level=0.95, min_folds_for_fold_ci=10)
+### *class* flickpick.defaults.Defaults(ease_lambda=500.0, topk=100, n_items=10000, like_threshold=70.0, min_ratings_for_median=5, normalisation='percentile_rank', w_cf=1.0, w_semantic=1.0, w_popularity=0.1, k=10, n_because=3, embedding_model='BAAI/bge-small-en-v1.5', embedding_dim=384, query_prefix='', embed_batch_size=64, max_tags=50, folds=5, seed=0, n_bootstrap=1000, ci_level=0.95, min_folds_for_fold_ci=10, min_agreement_points=3)
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
@@ -36,6 +36,10 @@ a population rating counts as a “like” at or above this, on the 0-100 scale
 #### max_tags *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 50*
 
 cap on the distinct user tags appended to semantic_text (most frequent first)
+
+#### min_agreement_points *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 3*
+
+below this many paired items, agreement’s statistics are NaN (core contract, Science)
 
 #### min_folds_for_fold_ci *: [int](https://docs.python.org/3/builtins/functions.html#int)* *= 10*
 

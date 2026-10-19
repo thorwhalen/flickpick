@@ -17,12 +17,12 @@ The command surface: plain functions returning JSON-able values (SSOT for the CL
 
 ### Functions
 
-| [`build`](#flickpick.tools.build)([out, sample, topk, n_items, embeddings])   | Build an artifact set from MovieLens (ml-32m, or ml-latest-small with --sample).   |
-|----------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [`cli_egress`](#flickpick.tools.cli_egress)(result, \*[, out, err])                | Print a list one item per line, a string as is, anything else as JSON.             |
-| [`default_artifacts_dir`](#flickpick.tools.default_artifacts_dir)(\*[, sample])               | Where `build` writes by default: `<data home>/artifacts/<dataset>`.                |
-| [`evaluate`](#flickpick.tools.evaluate)([artifacts, ratings, folds, k, seed])    | Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit.   |
-| [`recommend`](#flickpick.tools.recommend)([artifacts, ratings, mood, ...])        | Recommend `k` unrated films for the ratings in a CSV (any supported export).       |
+| [`build`](#flickpick.tools.build)([out, sample, topk, n_items, embeddings])   | Build an artifact set from MovieLens (ml-32m, or ml-latest-small with --sample).                      |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| [`cli_egress`](#flickpick.tools.cli_egress)(result, \*[, out, err])                | Print a list one item per line, a string as is, anything else as JSON (with `NaN` written as `null`). |
+| [`default_artifacts_dir`](#flickpick.tools.default_artifacts_dir)(\*[, sample])               | Where `build` writes by default: `<data home>/artifacts/<dataset>`.                                   |
+| [`evaluate`](#flickpick.tools.evaluate)([artifacts, ratings, folds, k, seed])    | Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit.                      |
+| [`recommend`](#flickpick.tools.recommend)([artifacts, ratings, mood, ...])        | Recommend `k` unrated films for the ratings in a CSV (any supported export).                          |
 
 ### flickpick.tools.CLI_CONFIG *= {'build': {'embeddings': {'action': <class 'argparse.BooleanOptionalAction'>, 'help': 'embed semantic_text (needs flickpick[embed])'}, 'n_items': {'help': 'number of most-rated films in the artifact set'}, 'out': {'help': 'output directory (default: <data home>/artifacts/<dataset>)'}, 'sample': {'help': 'build from ml-latest-small instead of ml-32m'}, 'topk': {'help': 'neighbours kept per item in the EASE matrix'}}, 'evaluate': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'folds': {'help': 'number of holdout folds'}, 'k': {'help': 'cutoff for the ranking metrics'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'seed': {'help': 'seed of the fold shuffle and the bootstrap (mulberry32)'}}, 'recommend': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'exclude_genres': {'action': 'append', 'help': 'drop films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'include_genres': {'action': 'append', 'help': 'keep films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'json': {'help': 'print full records as JSON'}, 'k': {'help': 'number of recommendations'}, 'mood': {'help': 'free-text mood, matched against the embeddings'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'year_max': {'help': 'latest release year'}, 'year_min': {'help': 'earliest release year'}}}*
 
@@ -40,7 +40,8 @@ Writes to `out` (default: the data home). Returns a summary of what was built.
 
 ### flickpick.tools.cli_egress(result, , out=None, err=None)
 
-Print a list one item per line, a string as is, anything else as JSON.
+Print a list one item per line, a string as is, anything else as JSON (with
+`NaN` written as `null`).
 
 * **Return type:**
   [`int`](https://docs.python.org/3/builtins/functions.html#int)

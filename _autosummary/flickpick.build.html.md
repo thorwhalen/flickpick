@@ -44,15 +44,15 @@ MovieLens `"Matrix, The (1999)"` -> `("The Matrix", 1999)`.
 Parenthesised alternate titles are kept (they help match other services’ titles),
 with their articles moved to the front too.
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
-
 ```pycon
 >>> clean_title('Seven (a.k.a. Se7en) (1995)')
 ('Seven (a.k.a. Se7en)', 1995)
 >>> clean_title('Shawshank Redemption, The (1994)')
 ('The Shawshank Redemption', 1994)
 ```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
 ### flickpick.build.like_matrix(ratings, movie_ids, , like_threshold=70.0)
 

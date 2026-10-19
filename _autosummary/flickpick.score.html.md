@@ -41,7 +41,7 @@ the cosine, which drowned the mood.
 | [`Recommendation`](#flickpick.score.Recommendation)(item_id, idx, title, year, ...) | One recommended item, its fused score, its raw component scores, and why. |
 | [`Rating`](#flickpick.score.Rating)(item_id, score[, rated_at, title])      | One user rating on the canonical 0-100 scale.                             |
 
-### *class* flickpick.score.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=<factory>)
+### *class* flickpick.score.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=Weights())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 

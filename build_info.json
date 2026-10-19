@@ -1,36 +1,36 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-14T01:20:38Z",
+  "built_at": "2026-10-19T11:28:32Z",
   "package": {
     "name": "flickpick",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "display_name": "flickpick",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "763ae9297104b27a0308fa6dfd359f72fb3b7167",
-    "short_commit": "763ae92",
+    "commit": "789c0b70d3c4a12a1573c1e19f2b4231a92003a0",
+    "short_commit": "789c0b7",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/flickpick",
-    "commit_url": "https://github.com/thorwhalen/flickpick/commit/763ae9297104b27a0308fa6dfd359f72fb3b7167",
+    "commit_url": "https://github.com/thorwhalen/flickpick/commit/789c0b70d3c4a12a1573c1e19f2b4231a92003a0",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/flickpick",
-    "sha": "763ae9297104b27a0308fa6dfd359f72fb3b7167",
+    "sha": "789c0b70d3c4a12a1573c1e19f2b4231a92003a0",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "38495010344",
-    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/38495010344",
+    "run_id": "39244682838",
+    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/39244682838",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.17",
+    "epythet": "0.2.18",
     "sphinx": "9.1.0",
     "docutils": "0.22.4",
     "python": "3.12.15"
@@ -56,15 +56,15 @@
   },
   "site": {
     "modules_documented": 12,
-    "objects_documented": 143
+    "objects_documented": 148
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.3",
+    "latest": "0.0.4",
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout 763ae9297104b27a0308fa6dfd359f72fb3b7167\npip install \"epythet==0.2.17\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout 789c0b70d3c4a12a1573c1e19f2b4231a92003a0\npip install \"epythet==0.2.18\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,

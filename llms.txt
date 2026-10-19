@@ -20,7 +20,7 @@
 - [flickpick.score](_autosummary/flickpick.score.html.md): Score and recommend over an artifact set (&#96;docs/core-contract.md&#96;).
 - [flickpick.tools](_autosummary/flickpick.tools.html.md): The command surface: plain functions returning JSON-able values (SSOT for the CLI).
 - [For AI agents](ai-agents.html.md): &#96;flickpick&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-14 01:20 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-19 11:28 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

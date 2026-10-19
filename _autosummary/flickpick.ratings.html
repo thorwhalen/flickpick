@@ -34,6 +34,7 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/epythet.css?v=4dd68672" />
   
@@ -43,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=47de8214"></script>
+    <script src="../_static/documentation_options.js?v=8c5712d9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.3" />
+  <meta name="docsearch:version" content="0.0.4" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -478,32 +479,32 @@ popular) row wins a title-key collision.</p>
 <dt class="sig sig-object py" id="flickpick.ratings.imdb_id">
 <span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">imdb_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#imdb_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.imdb_id" title="Link to this definition">#</a></dt>
 <dd><p>Normalise an IMDb id given as <code class="docutils literal notranslate"><span class="pre">114369</span></code>, <code class="docutils literal notranslate"><span class="pre">'114369'</span></code> or <code class="docutils literal notranslate"><span class="pre">'tt0114369'</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">imdb_id</span><span class="p">(</span><span class="mi">114369</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">'tt0114369'</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">''</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
 <span class="go">('tt0114369', 'tt0114369', None, 'tt12345678')</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="flickpick.ratings.like_threshold">
 <span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">like_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fallback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#like_threshold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.like_threshold" title="Link to this definition">#</a></dt>
 <dd><p>The user’s median score, or <code class="docutils literal notranslate"><span class="pre">fallback</span></code> when they have fewer than <code class="docutils literal notranslate"><span class="pre">min_n</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">like_threshold</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">60</span><span class="p">])</span>
 <span class="go">70</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">like_threshold</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
 <span class="go">70.0</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -522,17 +523,17 @@ popular) row wins a title-key collision.</p>
 <dt class="sig sig-object py" id="flickpick.ratings.split_title_year">
 <span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">split_title_year</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#split_title_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.split_title_year" title="Link to this definition">#</a></dt>
 <dd><p>Split <code class="docutils literal notranslate"><span class="pre">&quot;Toy</span> <span class="pre">Story</span> <span class="pre">(1995)&quot;</span></code> into <code class="docutils literal notranslate"><span class="pre">(&quot;Toy</span> <span class="pre">Story&quot;,</span> <span class="pre">1995)</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
-</dd>
-</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">split_title_year</span><span class="p">(</span><span class="s1">'Toy Story (1995) '</span><span class="p">)</span>
 <span class="go">('Toy Story', 1995)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">split_title_year</span><span class="p">(</span><span class="s1">'Babylon 5'</span><span class="p">)</span>
 <span class="go">('Babylon 5', None)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span>]</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -550,15 +551,15 @@ popular) row wins a title-key collision.</p>
 <dt class="sig sig-object py" id="flickpick.ratings.title_variants">
 <span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">title_variants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#title_variants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.title_variants" title="Link to this definition">#</a></dt>
 <dd><p>The primary title plus any parenthesised alternates, normalised for matching.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">title_variants</span><span class="p">(</span><span class="s1">'Seven (a.k.a. Se7en)'</span><span class="p">)</span>
+<span class="go">['seven', 'se7en']</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">title_variants</span><span class="p">(</span><span class="s1">'Seven (a.k.a. Se7en)'</span><span class="p">)</span>
-<span class="go">['seven', 'se7en']</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>

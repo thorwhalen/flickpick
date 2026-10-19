@@ -51,20 +51,17 @@ popular) row wins a title-key collision.
 
 Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.
 
-* **Return type:**
-  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
-
 ```pycon
 >>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678)
 ('tt0114369', 'tt0114369', None, 'tt12345678')
 ```
 
+* **Return type:**
+  [`str`](https://docs.python.org/3/builtins/stdtypes.html#str) | [`None`](https://docs.python.org/3/builtins/constants.html#None)
+
 ### flickpick.ratings.like_threshold(scores, , min_n=5, fallback=70.0)
 
 The user’s median score, or `fallback` when they have fewer than `min_n`.
-
-* **Return type:**
-  [`float`](https://docs.python.org/3/builtins/functions.html#float)
 
 ```pycon
 >>> like_threshold([90, 50, 70, 80, 60])
@@ -72,6 +69,9 @@ The user’s median score, or `fallback` when they have fewer than `min_n`.
 >>> like_threshold([90, 50])
 70.0
 ```
+
+* **Return type:**
+  [`float`](https://docs.python.org/3/builtins/functions.html#float)
 
 ### flickpick.ratings.resolve_ratings(catalog, ratings)
 
@@ -86,15 +86,15 @@ A later rating of the same item replaces an earlier one.
 
 Split `"Toy Story (1995)"` into `("Toy Story", 1995)`.
 
-* **Return type:**
-  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
-
 ```pycon
 >>> split_title_year('Toy Story (1995) ')
 ('Toy Story', 1995)
 >>> split_title_year('Babylon 5')
 ('Babylon 5', None)
 ```
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int) | [`None`](https://docs.python.org/3/builtins/constants.html#None)]
 
 ### flickpick.ratings.title_keys(title, year)
 
@@ -107,10 +107,10 @@ Matching keys `"normalised title|year"` for a title and its alternates.
 
 The primary title plus any parenthesised alternates, normalised for matching.
 
-* **Return type:**
-  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]
-
 ```pycon
 >>> title_variants('Seven (a.k.a. Se7en)')
 ['seven', 'se7en']
 ```
+
+* **Return type:**
+  [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str)]

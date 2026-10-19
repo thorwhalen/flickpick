@@ -34,6 +34,7 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d75fae25" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/epythet.css?v=4dd68672" />
   
@@ -43,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=47de8214"></script>
+    <script src="../_static/documentation_options.js?v=8c5712d9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.3" />
+  <meta name="docsearch:version" content="0.0.4" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -408,7 +409,8 @@ algorithm is specified step by step in <code class="docutils literal notranslate
 implemented identically by the TypeScript <code class="docutils literal notranslate"><span class="pre">holdoutEvaluate</span></code>; a parity fixture
 (<code class="docutils literal notranslate"><span class="pre">tests/fixtures/parity/expected_evaluate.json</span></code>) holds the two together.</p></li>
 <li><p><a class="reference internal" href="#flickpick.science.agreement" title="flickpick.science.agreement"><code class="xref py py-func docutils literal notranslate"><span class="pre">agreement()</span></code></a>: correlation and regression of the user’s scores against the
-population <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>.</p></li>
+population <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>; <code class="docutils literal notranslate"><span class="pre">NaN</span></code> where undefined (too few points, no spread), as
+the TypeScript <code class="docutils literal notranslate"><span class="pre">agreement</span></code>.</p></li>
 <li><p><a class="reference internal" href="#flickpick.science.cross_validated_fit" title="flickpick.science.cross_validated_fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_validated_fit()</span></code></a>: how well <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> predicts the user’s score
 (linear fit) versus always predicting the user’s mean.</p></li>
 </ul>
@@ -421,8 +423,11 @@ generators have no TypeScript twin). <code class="docutils literal notranslate">
 <tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.ITEM_METRICS" title="flickpick.science.ITEM_METRICS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ITEM_METRICS</span></code></a></p></td>
 <td><p>metrics that are a mean of per-held-out-item contributions (bootstrapped per item); <code class="docutils literal notranslate"><span class="pre">hit_rate</span></code> is a per-fold &quot;any hit&quot; and is bootstrapped over folds, if at all</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.MIN_POINTS" title="flickpick.science.MIN_POINTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_POINTS</span></code></a></p></td>
-<td><p>fewer points than this make a correlation or a fold meaningless</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.MIN_FOLDS" title="flickpick.science.MIN_FOLDS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a></p></td>
+<td><p>a k-fold split needs a training fold besides the held-out one (core contract, Science)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.MIN_K" title="flickpick.science.MIN_K"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_K</span></code></a></p></td>
+<td><p>the ranking metrics are at a cutoff of at least one item</p></td>
 </tr>
 </tbody>
 </table>
@@ -430,11 +435,17 @@ generators have no TypeScript twin). <code class="docutils literal notranslate">
 <p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.agreement" title="flickpick.science.agreement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">agreement</span></code></a>(ratings, catalog)</p></td>
-<td><p>Pearson, Spearman and the OLS line of the user's score on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.agreement" title="flickpick.science.agreement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">agreement</span></code></a>(ratings, catalog, *[, min_points])</p></td>
+<td><p>Pearson, Spearman (average ranks) and the OLS line of the user's score on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>, over the rated catalogue items that have one.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.bootstrap_ci" title="flickpick.science.bootstrap_ci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bootstrap_ci</span></code></a>(values, *[, n_boot, level, seed])</p></td>
 <td><p>Percentile bootstrap interval of the mean of <code class="docutils literal notranslate"><span class="pre">values</span></code> (linear-interpolated quantiles; same draws as the TypeScript <code class="docutils literal notranslate"><span class="pre">bootstrapMeanCi</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.check_count" title="flickpick.science.check_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_count</span></code></a>(name, value, minimum)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">value</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, or a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> with the message of the TypeScript <code class="docutils literal notranslate"><span class="pre">checkCount</span></code> when it is not a whole number of at least <code class="docutils literal notranslate"><span class="pre">minimum</span></code> (a whole float such as <code class="docutils literal notranslate"><span class="pre">2.0</span></code> passes, as it must in JavaScript, where it is the number 2).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.check_folds" title="flickpick.science.check_folds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_folds</span></code></a>(folds)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">folds</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, refused below <a class="reference internal" href="#flickpick.science.MIN_FOLDS" title="flickpick.science.MIN_FOLDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a> (#7).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.cross_validated_fit" title="flickpick.science.cross_validated_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validated_fit</span></code></a>(ratings, catalog, *[, ...])</p></td>
 <td><p>K-fold RMSE/MAE of a linear fit on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> vs the user-mean baseline.</p></td>
@@ -474,15 +485,25 @@ generators have no TypeScript twin). <code class="docutils literal notranslate">
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="flickpick.science.MIN_POINTS">
-<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">MIN_POINTS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#flickpick.science.MIN_POINTS" title="Link to this definition">#</a></dt>
-<dd><p>fewer points than this make a correlation or a fold meaningless</p>
+<dt class="sig sig-object py" id="flickpick.science.MIN_FOLDS">
+<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">MIN_FOLDS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#flickpick.science.MIN_FOLDS" title="Link to this definition">#</a></dt>
+<dd><p>a k-fold split needs a training fold besides the held-out one (core contract, Science)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="flickpick.science.MIN_K">
+<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">MIN_K</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#flickpick.science.MIN_K" title="Link to this definition">#</a></dt>
+<dd><p>the ranking metrics are at a cutoff of at least one item</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="flickpick.science.agreement">
-<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">agreement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#agreement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.agreement" title="Link to this definition">#</a></dt>
-<dd><p>Pearson, Spearman and the OLS line of the user’s score on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>.</p>
+<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">agreement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#agreement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.agreement" title="Link to this definition">#</a></dt>
+<dd><p>Pearson, Spearman (average ranks) and the OLS line of the user’s score on
+<code class="docutils literal notranslate"><span class="pre">mean_rating</span></code>, over the rated catalogue items that have one.</p>
+<p>Never refuses: with fewer than <code class="docutils literal notranslate"><span class="pre">min_points</span></code> paired items every statistic but <code class="docutils literal notranslate"><span class="pre">n</span></code>
+is <code class="docutils literal notranslate"><span class="pre">nan</span></code>, and so is any that is undefined for lack of spread. The TypeScript
+<code class="docutils literal notranslate"><span class="pre">agreement</span></code> follows the same rule (#7), so both CLIs report the same numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
@@ -503,6 +524,36 @@ quantiles; same draws as the TypeScript <code class="docutils literal notranslat
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="flickpick.science.check_count">
+<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">check_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#check_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.check_count" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">value</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, or a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> with the message of the TypeScript
+<code class="docutils literal notranslate"><span class="pre">checkCount</span></code> when it is not a whole number of at least <code class="docutils literal notranslate"><span class="pre">minimum</span></code> (a whole float
+such as <code class="docutils literal notranslate"><span class="pre">2.0</span></code> passes, as it must in JavaScript, where it is the number 2).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_count</span><span class="p">(</span><span class="s2">"folds"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">  </span><span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">folds must be an integer of at least 2; got 1</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.science.check_folds">
+<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">check_folds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#check_folds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.check_folds" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">folds</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, refused below <a class="reference internal" href="#flickpick.science.MIN_FOLDS" title="flickpick.science.MIN_FOLDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a> (#7).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="flickpick.science.cross_validated_fit">
 <span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">cross_validated_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">folds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#cross_validated_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.cross_validated_fit" title="Link to this definition">#</a></dt>
 <dd><p>K-fold RMSE/MAE of a linear fit on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> vs the user-mean baseline.</p>
@@ -514,7 +565,7 @@ the baseline.</p>
 <p>It needs at least <code class="docutils literal notranslate"><span class="pre">folds</span></code> paired items, one per held-out fold, as the TypeScript
 core does (#4): below that a fold would be empty. Small inputs are not refused
 beyond that, because a training fold too small to fit a line predicts the baseline
-and the result reports its <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+and the result reports its <code class="docutils literal notranslate"><span class="pre">n</span></code>. <code class="docutils literal notranslate"><span class="pre">folds</span></code> below <a class="reference internal" href="#flickpick.science.MIN_FOLDS" title="flickpick.science.MIN_FOLDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a> is refused (#7).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
@@ -556,15 +607,15 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <dt class="sig sig-object py" id="flickpick.science.mulberry32">
 <span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">mulberry32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#mulberry32"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.mulberry32" title="Link to this definition">#</a></dt>
 <dd><p>Seeded PRNG returning floats in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>; bit-identical to the TypeScript one.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">mulberry32</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">(),</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="go">[0.601104, 0.448291, 0.852466]</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">mulberry32</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">(),</span> <span class="mi">6</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-<span class="go">[0.601104, 0.448291, 0.852466]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -573,15 +624,15 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <dd><p>Outputs <code class="docutils literal notranslate"><span class="pre">start</span> <span class="pre">..</span> <span class="pre">start</span> <span class="pre">+</span> <span class="pre">n</span> <span class="pre">-</span> <span class="pre">1</span></code> of <a class="reference internal" href="#flickpick.science.mulberry32" title="flickpick.science.mulberry32"><code class="xref py py-func docutils literal notranslate"><span class="pre">mulberry32()</span></code></a> (vectorised).</p>
 <p>mulberry32 is counter-based: output <code class="docutils literal notranslate"><span class="pre">i</span></code> depends only on
 <code class="docutils literal notranslate"><span class="pre">a_i</span> <span class="pre">=</span> <span class="pre">seed</span> <span class="pre">+</span> <span class="pre">(i</span> <span class="pre">+</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">0x6D2B79F5</span> <span class="pre">(mod</span> <span class="pre">2**32)</span></code>, so a block can be computed at once.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mulberry32_floats</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="n">f</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">mulberry32</span><span class="p">(</span><span class="mi">42</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mulberry32_floats</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="n">f</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">[</span><span class="n">mulberry32</span><span class="p">(</span><span class="mi">42</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
-<span class="go">True</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -611,15 +662,15 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <dt class="sig sig-object py" id="flickpick.science.ranking_metrics">
 <span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">ranking_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recommended_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">held_out_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#ranking_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.ranking_metrics" title="Link to this definition">#</a></dt>
 <dd><p>Ranking metrics at <code class="docutils literal notranslate"><span class="pre">k</span></code> of one recommendation list against held-out items.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ranking_metrics</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">3</span><span class="p">)[</span><span class="s1">'recall'</span><span class="p">]</span>
+<span class="go">0.5</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
 </dd>
 </dl>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ranking_metrics</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="mi">3</span><span class="p">)[</span><span class="s1">'recall'</span><span class="p">]</span>
-<span class="go">0.5</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -684,9 +735,12 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.ITEM_METRICS"><code class="docutils literal notranslate"><span class="pre">ITEM_METRICS</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.MIN_POINTS"><code class="docutils literal notranslate"><span class="pre">MIN_POINTS</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.MIN_FOLDS"><code class="docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.MIN_K"><code class="docutils literal notranslate"><span class="pre">MIN_K</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.agreement"><code class="docutils literal notranslate"><span class="pre">agreement()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.bootstrap_ci"><code class="docutils literal notranslate"><span class="pre">bootstrap_ci()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.check_count"><code class="docutils literal notranslate"><span class="pre">check_count()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.check_folds"><code class="docutils literal notranslate"><span class="pre">check_folds()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.cross_validated_fit"><code class="docutils literal notranslate"><span class="pre">cross_validated_fit()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.ease_scorer"><code class="docutils literal notranslate"><span class="pre">ease_scorer()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.holdout_evaluate"><code class="docutils literal notranslate"><span class="pre">holdout_evaluate()</span></code></a></li>
