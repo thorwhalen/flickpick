@@ -90,3 +90,14 @@ def test_missing_ratings_is_a_usage_error(paths, capsys):
     """Exit 2 with Node's first line, as for any other usage error."""
     assert main(["evaluate", "--artifacts", str(paths["fixture_dir"])]) == 2
     assert capsys.readouterr().err == "flickpick: --ratings is required\n"
+
+
+def test_a_count_beyond_2_to_the_53_is_refused_without_its_value(paths, capsys):
+    """#13: JavaScript cannot hold it exactly, so both CLIs refuse it with one message
+    (the case ``js/test/cli.test.ts`` pins for the Node CLI)."""
+    args = ["recommend", "--artifacts", str(paths["fixture_dir"])]
+    args += ["--ratings", str(paths["example_ratings"]), "--k", "99999999999999999999"]
+    assert main(args) == 1
+    assert capsys.readouterr().err.splitlines()[-1] == (
+        "flickpick: k must be an integer of at most 9007199254740991 in absolute value"
+    )

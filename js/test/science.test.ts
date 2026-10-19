@@ -4,6 +4,7 @@ import {
   agreement,
   averageRanks,
   bootstrapMeanCi,
+  checkCount,
   crossValidatedFit,
   holdoutEvaluate,
   loadArtifacts,
@@ -230,5 +231,15 @@ describe('holdoutEvaluate', () => {
 
   it.each([-1, 0, 1.5])('refuses k=%s with the Python check_count message', (k) => {
     expect(() => holdoutEvaluate(art, ratings, { k })).toThrow(`k must be an integer of at least 1; got ${k}`);
+  });
+});
+
+describe('checkCount (#13)', () => {
+  it('refuses beyond 2^53 - 1 without the value, and accepts up to it', () => {
+    const tooBig = 'k must be an integer of at most 9007199254740991 in absolute value';
+    expect(() => checkCount('k', 2 ** 53, 1)).toThrow(tooBig);
+    expect(() => checkCount('k', -1e20, 1)).toThrow(tooBig);
+    expect(() => checkCount('k', 2 ** 53 - 1, 1)).not.toThrow();
+    expect(() => checkCount('k', Infinity, 1)).toThrow('k must be an integer of at least 1; got Infinity');
   });
 });

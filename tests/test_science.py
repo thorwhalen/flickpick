@@ -239,7 +239,7 @@ def test_whole_float_folds_pass_as_in_typescript(small, example_ratings):
     )
     with pytest.raises(ValueError, match="got 0$"):
         check_folds(0.0)
-    with pytest.raises(ValueError, match="got nan$"):
+    with pytest.raises(ValueError, match="got NaN$"):
         check_folds(float("nan"))
 
 
