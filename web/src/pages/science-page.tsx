@@ -54,8 +54,8 @@ function AgreementSection() {
       <p className="text-sm text-muted-foreground">
         Each dot is a film you rated that is in the catalogue: your score against the mean MovieLens rating (rescaled to 0-100). A correlation near 1 means you rate like the crowd; near 0, that the crowd says little about you.
       </p>
-      {stats.n < 2 ? (
-        <Notice>Rate at least two catalogue titles to see this.</Notice>
+      {stats.n < coreDefaults.science.minAgreementPoints ? (
+        <Notice>Rate at least {coreDefaults.science.minAgreementPoints} catalogue titles to see this.</Notice>
       ) : (
         <>
           <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">

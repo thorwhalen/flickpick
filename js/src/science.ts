@@ -10,7 +10,8 @@
  *   against the population `mean_rating`.
  * - `crossValidatedFit`: k-fold RMSE / MAE of that linear fit versus the user-mean baseline.
  *
- * Undefined statistics (too few points, zero variance) are `NaN`, never a thrown error.
+ * Undefined statistics (too few points, zero variance) are `NaN`, never a thrown error. Inputs a
+ * computation cannot run on at all (fewer than 2 folds, fewer items than folds) are refused.
  */
 import { defaults } from './defaults.js';
 import { resolveRatings } from './importers.js';
@@ -43,6 +44,21 @@ export function shuffled<T>(items: readonly T[], random: () => number): T[] {
   }
   return out;
 }
+
+/** A k-fold split needs a training fold besides the held-out one (core contract, Science). */
+export const MIN_FOLDS = 2;
+/** The ranking metrics are at a cutoff of at least one item. */
+export const MIN_K = 1;
+
+/** Refuse a count that is not an integer of at least `minimum`, with the Python `check_count` message. */
+export function checkCount(name: string, value: number, minimum: number): void {
+  if (!Number.isInteger(value) || value < minimum) {
+    throw new RangeError(`${name} must be an integer of at least ${minimum}; got ${value}`);
+  }
+}
+
+/** Refuse a fold count below `MIN_FOLDS` (#7). */
+export const checkFolds = (folds: number): void => checkCount('folds', folds, MIN_FOLDS);
 
 /** Split into `folds` round-robin groups (sizes differ by at most one). */
 export function kFolds<T>(items: readonly T[], folds: number): T[][] {
@@ -225,6 +241,8 @@ export function holdoutEvaluate(artifacts: Artifacts, ratings: readonly Rating[]
     minFoldsForFoldCi = defaults.science.minFoldsForFoldCi,
     score = (a: Artifacts, r: readonly Rating[]) => scoreCf(a, r, options),
   } = options;
+  checkFolds(folds);
+  checkCount('k', k, MIN_K);
   const rated = catalogueRatings(artifacts, ratings);
   const threshold = likeThreshold(rated, options);
   const liked = rated
@@ -338,9 +356,17 @@ export interface Agreement {
   intercept: number;
 }
 
-/** How the user's scores line up with the population's `mean_rating`. */
-export function agreement(ratings: readonly Rating[], catalog: readonly CatalogItem[]): Agreement {
+/**
+ * How the user's scores line up with the population's `mean_rating`. Never throws: with fewer
+ * than `minPoints` paired items every statistic but `n` is NaN, as in the Python `agreement` (#7).
+ */
+export function agreement(
+  ratings: readonly Rating[],
+  catalog: readonly CatalogItem[],
+  { minPoints = defaults.science.minAgreementPoints }: { minPoints?: number } = {},
+): Agreement {
   const { x, y } = ratingPairs(ratings, catalog);
+  if (x.length < minPoints) return { pearson: NaN, spearman: NaN, n: x.length, slope: NaN, intercept: NaN };
   return { pearson: pearson(x, y), spearman: spearman(x, y), n: x.length, ...olsFit(x, y) };
 }
 
@@ -359,13 +385,15 @@ export interface CrossValidatedFit {
 /**
  * k-fold cross-validated errors of predicting the user's score from `mean_rating` with an OLS
  * line (`linear`), against predicting the training-fold mean of the user's scores (`baseline`).
- * A training fold with no spread in `mean_rating` falls back to the baseline prediction.
+ * A training fold with no spread in `mean_rating` falls back to the baseline prediction. Refuses
+ * `folds` below `MIN_FOLDS` and fewer paired items than `folds`.
  */
 export function crossValidatedFit(
   ratings: readonly Rating[],
   catalog: readonly CatalogItem[],
   { folds = defaults.science.folds, seed = defaults.science.seed }: { folds?: number; seed?: number } = {},
 ): CrossValidatedFit {
+  checkFolds(folds);
   const { x, y } = ratingPairs(ratings, catalog);
   if (x.length < folds) throw new Error(`crossValidatedFit: ${x.length} ratings matched the catalogue, need at least folds=${folds}`);
   const groups = kFolds(shuffled([...x.keys()], mulberry32(seed)), folds);

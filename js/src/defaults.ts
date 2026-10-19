@@ -99,6 +99,8 @@ export const defaults = {
     ciLevel: 0.95,
     /** hit_rate is per fold; below this many folds its (fold) bootstrap interval is not reported. */
     minFoldsForFoldCi: 10,
+    /** Below this many paired items, agreement's statistics are NaN (core contract, Science). */
+    minAgreementPoints: 3,
   },
 
   /** CLI output formatting. */
