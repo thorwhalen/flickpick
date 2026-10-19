@@ -78,8 +78,10 @@ type Values = ReturnType<typeof parseArgs<{ options: typeof OPTIONS; allowPositi
 function intOption(values: Values, name: keyof Values): number | undefined {
   const raw = values[name];
   if (raw === undefined) return undefined;
-  // Digits only, as Python's int(): no 1e1, 0x10 or 1.0.
-  const n = /^-?\d+$/.test(String(raw)) ? Number(raw) : NaN;
+  // What Python's int() takes (sign, surrounding spaces, digit-group underscores), so both CLIs
+  // accept the same numbers: no 1e1, 0x10 or 1.0.
+  const text = String(raw).trim();
+  const n = /^[+-]?\d+(_\d+)*$/.test(text) ? Number(text.replaceAll('_', '')) : NaN;
   if (!Number.isInteger(n)) throw new UsageError(`--${String(name)} must be an integer, got "${String(raw)}"`);
   return n;
 }

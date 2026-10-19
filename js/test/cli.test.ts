@@ -100,6 +100,11 @@ describe('flickpick CLI', () => {
     expect(stderr).toMatch(/^flickpick: /);
   });
 
+  it.each(['+2', ' 2 ', '1_0'])('--k %s is accepted, as by int() in Python', async (v) => {
+    const { code } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--k', v);
+    expect(code).toBe(0);
+  });
+
   it('a missing --ratings is a usage error with the Python first line', async () => {
     const { code, stderr } = await cli('evaluate', '--artifacts', artifacts);
     expect(code).toBe(2);
