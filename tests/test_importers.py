@@ -171,3 +171,51 @@ def test_bom_crlf_and_quoted_fields():
     )
     [r] = parse_ratings(text)
     assert (r.score, r.title) == (90.0, "Crouching Tiger, Hidden Dragon (2000)")
+
+
+#: #12: one row per case, each a whole CSV, and whether it matches "The Matrix" (1999).
+#: The same table is in ``js/test/importers.test.ts`` ('an id is authoritative').
+ID_AUTHORITATIVE_CASES = [
+    ("Const,Your Rating,Title,Year\ntt9999999,8,The Matrix,1999\n", False),
+    ("Const,Your Rating,Title,Year\ntt0133093,8,Wrong Title,1999\n", True),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        "99999,9999999,,80,,The Matrix (1999)\n",
+        False,
+    ),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        ",,99999,80,,The Matrix (1999)\n",
+        False,
+    ),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        ",,603,80,,Wrong Title (2000)\n",
+        True,
+    ),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        ",,,80,,The Matrix (1999)\n",
+        True,
+    ),
+    ("movieId,rating,title\n99999,4,The Matrix (1999)\n", False),
+    ("Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,The Matrix,1999,u,4\n", True),
+]
+
+
+@pytest.mark.parametrize("text, matches", ID_AUTHORITATIVE_CASES)
+def test_an_id_is_authoritative(text, matches):
+    """#12: a rating with an id matches by that id only, never by a same-title row; a
+    rating without one matches by title and year."""
+    catalog = [
+        {
+            "idx": 0,
+            "imdb_id": "tt0133093",
+            "tmdb_id": 603,
+            "ml_id": 2571,
+            "title": "The Matrix",
+            "year": 1999,
+        }
+    ]
+    resolved = resolve_ratings(catalog, parse_ratings(text))
+    assert [idx for idx, _ in resolved] == ([0] if matches else [])

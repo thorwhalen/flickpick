@@ -22,6 +22,9 @@ TMDB_PREFIX = "tmdb:"
 _YEAR_SUFFIX = re.compile(r"\s*\((\d{4})(?:[-–]\d{0,4})?\)\s*$")
 _PARENTHETICAL = re.compile(r"\s*\(([^()]*)\)")
 _AKA = re.compile(r"^(?:a\.k\.a\.|aka)\s+", re.IGNORECASE)
+#: an ``item_id`` that names one film: an IMDb id, ``ml:<id>`` or ``tmdb:<id>``
+#: (``CATALOGUE_ID`` in ``js/src/importers.ts``)
+_CATALOGUE_ID = re.compile(r"^(?:tt\d+|ml:\d+|tmdb:\d+)$")
 
 
 @dataclass(frozen=True)
@@ -122,8 +125,16 @@ def catalog_lookup(catalog: Sequence[Mapping]) -> dict[str, int]:
 
 
 def _rating_idx(rating: Rating, lookup: Mapping[str, int]) -> int | None:
-    if rating.item_id and rating.item_id in lookup:
+    """The catalogue ``idx`` a rating names, or ``None``.
+
+    An id is authoritative (#12): a rating whose ``item_id`` is an IMDb, ``ml:`` or
+    ``tmdb:`` id matches by that id or not at all, never by a same-title row. Only a
+    rating without one (Letterboxd) is matched by title and year.
+    """
+    if rating.item_id in lookup:
         return lookup[rating.item_id]
+    if _CATALOGUE_ID.match(rating.item_id or ""):
+        return None
     if rating.title:
         for key in title_keys(*split_title_year(rating.title)):
             if key in lookup:
