@@ -60,7 +60,8 @@ describe('flickpick CLI', () => {
     expect(out.holdout.per_fold).toHaveLength(5);
     expect(out.holdout.ci95.hit_rate).toBeNull();
     expect(out.agreement.n).toBe(10);
-    expect(out.fit.folds).toBe(5);
+    expect(Object.keys(out)).toEqual(['holdout', 'agreement', 'cross_validated_fit']);
+    expect(out.cross_validated_fit.folds).toBe(5);
   });
 
   it('evaluate --folds 0 is refused, not silently replaced by the default (#7)', async () => {

@@ -116,7 +116,8 @@ async function runEvaluate(values: Values): Promise<string> {
   const holdout = holdoutEvaluate(artifacts, ratings, opts);
   const agree = agreement(ratings, artifacts.catalog);
   const fit = crossValidatedFit(ratings, artifacts.catalog, { ...(folds !== undefined ? { folds } : {}), ...(seed !== undefined ? { seed } : {}) });
-  if (values.json) return JSON.stringify({ holdout, agreement: agree, fit }, null, 2);
+  // The same keys as the Python CLI (core contract, CLI).
+  if (values.json) return JSON.stringify({ holdout, agreement: agree, cross_validated_fit: fit }, null, 2);
   const d = defaults.cli.metricDigits;
   const metricLines = (Object.keys(holdout.mean) as (keyof typeof holdout.mean)[]).map((m) => {
     const ci = holdout.ci95[m];

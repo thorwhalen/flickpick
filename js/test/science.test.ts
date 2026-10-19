@@ -80,7 +80,9 @@ describe('correlation and fits', () => {
     expect(fit.linear.rmse).toBeLessThan(1e-9);
     expect(fit.linear.mae).toBeLessThan(1e-9);
     expect(fit.baseline.rmse).toBeGreaterThan(5);
-    expect(() => crossValidatedFit(ratings.slice(0, 2), catalog, { folds: 5 })).toThrow(/need at least folds=5/);
+    expect(() => crossValidatedFit(ratings.slice(0, 2), catalog, { folds: 5 })).toThrow(
+      'need at least 5 rated catalogue items with a mean_rating for 5 folds; got 2',
+    );
   });
 
   it('agreement: the minimum and no-spread rule of the Python core (#7)', () => {
@@ -112,7 +114,7 @@ describe('correlation and fits', () => {
   it('crossValidatedFit: one item per fold is enough, as in the Python core (#4)', () => {
     const catalog = syntheticCatalog() as CatalogItem[];
     const ratings: Rating[] = catalog.map((c) => ({ item_id: c.imdb_id, score: 0.5 * c.mean_rating! + 20 }));
-    expect(() => crossValidatedFit(ratings.slice(0, 4), catalog, { folds: 5 })).toThrow(/need at least folds=5/);
+    expect(() => crossValidatedFit(ratings.slice(0, 4), catalog, { folds: 5 })).toThrow(/for 5 folds; got 4$/);
     const fit = crossValidatedFit(ratings.slice(0, 5), catalog, { folds: 5 });
     expect(fit.n).toBe(5);
     expect(fit.linear.rmse).toBeLessThan(1e-9); // 4 training points fit the line
@@ -217,7 +219,9 @@ describe('holdoutEvaluate', () => {
   });
 
   it('needs at least as many liked items as folds', () => {
-    expect(() => holdoutEvaluate(art, ratings.slice(0, 2), { folds: 5 })).toThrow(/need at least folds=5/);
+    expect(() => holdoutEvaluate(art, ratings.slice(0, 2), { folds: 5 })).toThrow(
+      'need at least 5 liked items in the catalogue for 5 folds; got 2',
+    );
   });
 
   it.each([-1, 0, 1, 2.5])('refuses folds=%s before reading the ratings (#7)', (folds) => {

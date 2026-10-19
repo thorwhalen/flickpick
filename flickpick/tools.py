@@ -13,6 +13,8 @@ import math
 import sys
 from pathlib import Path
 
+import numpy as np
+
 from flickpick import science as _science
 from flickpick import score as _score
 from flickpick.artifacts import read_artifacts, write_artifacts
@@ -195,8 +197,11 @@ CLI_CONFIG = {
 
 
 def _finite_or_none(obj):
-    """``obj`` with every non-finite float replaced by ``None``, so the JSON is strict and
-    matches the Node CLI (``JSON.stringify`` writes ``NaN`` as ``null``)."""
+    """``obj`` with numpy values made Python ones and every non-finite float replaced by
+    ``None``, so the JSON is strict and matches the Node CLI (``JSON.stringify`` writes
+    ``NaN`` as ``null``)."""
+    if isinstance(obj, (np.ndarray, np.generic)):
+        obj = obj.tolist()  # also unwraps scalars; arrays become (nested) lists
     if isinstance(obj, float):
         return obj if math.isfinite(obj) else None
     if isinstance(obj, dict):
