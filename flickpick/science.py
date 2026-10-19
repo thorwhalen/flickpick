@@ -267,8 +267,8 @@ def holdout_evaluate(
     liked = sorted(r.item_id for r in rated if r.score >= threshold)
     if len(liked) < folds:
         raise ValueError(
-            f"Need at least {folds} liked items in the catalogue for "
-            f"{folds}-fold evaluation; found {len(liked)}."
+            f"need at least {folds} liked items in the catalogue for {folds} folds; "
+            f"got {len(liked)}"
         )
     order = shuffled(liked, mulberry32(seed))
     to_idx = artifacts.imdb_to_idx
@@ -430,8 +430,8 @@ def cross_validated_fit(
     _, x, y = _paired_items(ratings, catalog)
     if len(x) < folds:
         raise ValueError(
-            f"Need at least {folds} rated catalogue items for {folds} folds; "
-            f"got {len(x)}."
+            f"need at least {folds} rated catalogue items with a mean_rating for "
+            f"{folds} folds; got {len(x)}"
         )
     order = shuffled(range(len(x)), mulberry32(seed))
     pred_lin, pred_base = np.empty_like(y), np.empty_like(y)

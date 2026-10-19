@@ -202,7 +202,8 @@ def test_cross_validated_fit_needs_one_item_per_fold_as_typescript_does():
     the TypeScript core, and so the web app, accepted anything from ``folds`` up."""
     ratings, catalog = _linear_user()
     with pytest.raises(
-        ValueError, match="at least 5 rated catalogue items for 5 folds"
+        ValueError,
+        match="^need at least 5 rated catalogue items with a mean_rating for 5 folds; got 4$",
     ):
         cross_validated_fit(ratings[:4], catalog, folds=5)
     fit = cross_validated_fit(ratings[:5], catalog, folds=5)
@@ -287,4 +288,64 @@ def test_cli_json_writes_nan_as_null():
     )
     assert json.loads(out.getvalue()) == {
         "agreement": {"pearson": None, "n": 2, "ci": [None, 1.0]}
+    }
+
+
+def test_too_few_items_messages_are_the_typescript_ones(small, example_ratings):
+    """#8: the same refusal text as ``js/test/science.test.ts`` pins for
+    ``holdoutEvaluate`` and ``crossValidatedFit``."""
+    with pytest.raises(
+        ValueError,
+        match="^need at least 5 liked items in the catalogue for 5 folds; got 2$",
+    ):
+        holdout_evaluate(small, example_ratings[:2], folds=5)
+    ratings, catalog = _linear_user()
+    with pytest.raises(
+        ValueError,
+        match="^need at least 5 rated catalogue items with a mean_rating for 5 folds; got 2$",
+    ):
+        cross_validated_fit(ratings[:2], catalog, folds=5)
+
+
+def test_cli_json_converts_numpy_values():
+    """#8: numpy scalars and arrays are numbers in the JSON, not their ``str``."""
+    import io
+
+    out = io.StringIO()
+    cli_egress(
+        {
+            "a": np.array([1.0, np.nan]),
+            "b": np.int64(3),
+            "c": np.float32("nan"),
+            "d": (np.float32(0.5),),
+        },
+        out=out,
+    )
+    assert json.loads(out.getvalue()) == {
+        "a": [1.0, None],
+        "b": 3,
+        "c": None,
+        "d": [0.5],
+    }
+
+
+def test_evaluate_json_has_the_node_cli_keys(paths):
+    """#8: ``evaluate``'s JSON shape is the one ``js/test/cli.test.ts`` pins for the
+    Node CLI (core contract, CLI)."""
+    import io
+
+    from flickpick.tools import evaluate
+
+    result = evaluate(str(paths["fixture_dir"]), str(paths["example_ratings"]))
+    assert list(result) == ["holdout", "agreement", "cross_validated_fit"]
+    out = io.StringIO()
+    cli_egress(result, out=out)
+    printed = json.loads(out.getvalue())
+    assert printed["cross_validated_fit"]["folds"] == 5
+    assert set(printed["agreement"]) == {
+        "pearson",
+        "spearman",
+        "n",
+        "slope",
+        "intercept",
     }

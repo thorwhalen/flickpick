@@ -250,7 +250,7 @@ export function holdoutEvaluate(artifacts: Artifacts, ratings: readonly Rating[]
     .map((r) => r.item_id)
     .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   if (liked.length < folds) {
-    throw new Error(`holdoutEvaluate: ${liked.length} liked items in the catalogue, need at least folds=${folds}`);
+    throw new Error(`need at least ${folds} liked items in the catalogue for ${folds} folds; got ${liked.length}`);
   }
   const toIdx = (id: string) => artifacts.idToIdx.get(id)!;
   const contributions: number[][] = [];
@@ -395,7 +395,7 @@ export function crossValidatedFit(
 ): CrossValidatedFit {
   checkFolds(folds);
   const { x, y } = ratingPairs(ratings, catalog);
-  if (x.length < folds) throw new Error(`crossValidatedFit: ${x.length} ratings matched the catalogue, need at least folds=${folds}`);
+  if (x.length < folds) throw new Error(`need at least ${folds} rated catalogue items with a mean_rating for ${folds} folds; got ${x.length}`);
   const groups = kFolds(shuffled([...x.keys()], mulberry32(seed)), folds);
   const linErr: number[] = [];
   const baseErr: number[] = [];
