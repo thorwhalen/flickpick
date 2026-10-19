@@ -327,3 +327,25 @@ def test_cli_json_converts_numpy_values():
         "c": None,
         "d": [0.5],
     }
+
+
+def test_evaluate_json_has_the_node_cli_keys(paths):
+    """#8: ``evaluate``'s JSON shape is the one ``js/test/cli.test.ts`` pins for the
+    Node CLI (core contract, CLI)."""
+    import io
+
+    from flickpick.tools import evaluate
+
+    result = evaluate(str(paths["fixture_dir"]), str(paths["example_ratings"]))
+    assert list(result) == ["holdout", "agreement", "cross_validated_fit"]
+    out = io.StringIO()
+    cli_egress(result, out=out)
+    printed = json.loads(out.getvalue())
+    assert printed["cross_validated_fit"]["folds"] == 5
+    assert set(printed["agreement"]) == {
+        "pearson",
+        "spearman",
+        "n",
+        "slope",
+        "intercept",
+    }
