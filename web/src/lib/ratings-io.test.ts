@@ -60,6 +60,14 @@ describe('ratings import', () => {
     expect(previewImport(csv, artifacts).matched).toBe(0);
   });
 
+  it('an unmatched row keeps its other ids through import and export (#15)', async () => {
+    const artifacts = await fixtureArtifacts();
+    const csv = 'movie_id,imdb_id,tmdb_id,rating,average_rating,title\n999999,9999999,888888,80,,Nowhere (1900)\n';
+    const [row] = previewImport(csv, artifacts).rows;
+    expect(row).toMatchObject({ item_id: 'tt9999999', alt_ids: ['ml:999999', 'tmdb:888888'] });
+    expect(toFlickpickCsv([row!], artifacts).split('\n')[1]!.startsWith('999999,tt9999999,888888,80,')).toBe(true);
+  });
+
   it('an unknown file is refused with its header in the message', async () => {
     const { dispatch } = await makeTestServices();
     const result = await dispatch(CMD.importRatings, { csv: 'foo,bar\n1,2\n' });

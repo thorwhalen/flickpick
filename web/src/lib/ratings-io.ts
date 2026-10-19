@@ -55,11 +55,12 @@ export function toFlickpickCsv(rows: readonly RatingRow[], artifacts: Artifacts 
     const title = row.title ?? item?.title ?? '';
     // An unmatched ml:/tmdb: id is exported as that id, not dropped: a blank-id row would be
     // matched by its title on re-import, which an id never is (#12).
-    const ref = /^(ml|tmdb):(\d+)$/.exec(row.item_id);
+    const ids = [row.item_id, ...(row.alt_ids ?? [])];
+    const ref = (prefix: string) => ids.find((i) => new RegExp(`^${prefix}:\\d+$`).test(i))?.slice(prefix.length + 1) ?? '';
     const record: Record<(typeof FLICKPICK_COLUMNS)[number], unknown> = {
-      movie_id: item?.ml_id ?? (ref?.[1] === 'ml' ? ref[2] : ''),
+      movie_id: item?.ml_id ?? ref('ml'),
       imdb_id: row.needs_resolution ? '' : row.item_id,
-      tmdb_id: item?.tmdb_id ?? (ref?.[1] === 'tmdb' ? ref[2] : ''),
+      tmdb_id: item?.tmdb_id ?? ref('tmdb'),
       rating: row.score,
       average_rating: item?.mean_rating ?? '',
       title: year ? `${title} (${year})` : title,

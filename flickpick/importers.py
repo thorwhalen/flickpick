@@ -17,7 +17,7 @@ present wins, in this order -- the rules of ``docs/core-contract.md``, Importers
   holding several users needs ``user_id=``.
 
 >>> parse_ratings("Const,Your Rating,Title,Year\\ntt0114369,9,Se7en,1995\\n")
-[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)')]
+[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)', alt_ids=())]
 """
 
 import csv
@@ -142,27 +142,32 @@ def parse_movielens(csv_text: str, *, user_id=None) -> list[Rating]:
     ]
 
 
-def _flickpick_id(row: dict) -> str:
+def _flickpick_ids(row: dict) -> list[str]:
+    """The row's ids, in the order they are tried: ``imdb_id``, ``movie_id``, ``tmdb_id``
+    (an ``imdb_id`` of 0 names no film)."""
+    ids = []
     if not _blank(row.get("imdb_id")) and imdb_id(row["imdb_id"]):
-        return imdb_id(row["imdb_id"])
+        ids.append(imdb_id(row["imdb_id"]))
     if not _blank(row.get("movie_id")):
-        return f"{ML_PREFIX}{int(row['movie_id'])}"
+        ids.append(f"{ML_PREFIX}{int(row['movie_id'])}")
     if not _blank(row.get("tmdb_id")):
-        return f"{TMDB_PREFIX}{int(row['tmdb_id'])}"
-    return ""
+        ids.append(f"{TMDB_PREFIX}{int(row['tmdb_id'])}")
+    return ids
 
 
 def parse_flickpick(csv_text: str) -> list[Rating]:
     """The flickpick CSV (the example file's columns) -> ratings (already 0-100)."""
     return [
         Rating(
-            item_id=_flickpick_id(r),
+            item_id=ids[0] if ids else "",
             score=_score(r["rating"], 1),
             rated_at=r.get("rated_at") or None,
             title=r.get("title") or None,
+            alt_ids=tuple(ids[1:]),
         )
         for r in _rows(csv_text)
         if not _blank(r.get("rating"))
+        for ids in [_flickpick_ids(r)]
     ]
 
 
