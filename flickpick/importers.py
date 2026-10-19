@@ -173,7 +173,8 @@ def parse_movielens(csv_text: str, *, user_id=None) -> list[Rating]:
 
     def rating(n: int, r: dict) -> Rating:
         cell = dict(fmt="movielens", row=n)
-        imdb = _imdb(_id_cell(r.get("imdbid"), column="imdbId", **cell))
+        imdb_cell = r.get("imdbid") or r.get("imdb_id")  # TS reads both spellings
+        imdb = _imdb(_id_cell(imdb_cell, column="imdbId", imdb=True, **cell))
         ml = _id_cell(r.get("movieid"), column="movieId", **cell)
         ids = [i for i in (imdb, ml and f"{ML_PREFIX}{ml}") if i]
         return Rating(

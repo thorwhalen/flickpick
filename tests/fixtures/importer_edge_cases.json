@@ -67,6 +67,26 @@
       "csv": "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n, 2571 ,,80,,X\n",
       "expect": false,
       "why": "spaces around an id are trimmed (imdb_id 2571 is not the Matrix)"
+    },
+    {
+      "csv": "movieId,imdbId,rating\n99999,tt0133093,4\n",
+      "expect": true,
+      "why": "movielens: a tt-prefixed imdbId"
+    },
+    {
+      "csv": "movieId,imdb_id,rating\n99999,0133093,4\n",
+      "expect": true,
+      "why": "movielens: the imdb_id spelling is read too"
+    },
+    {
+      "csv": "Const,Your Rating,Title,Year\n99999999999999999999999,8,The Matrix,1999\n",
+      "expect": false,
+      "why": "an id past 2^53 stays an id (no title fallback)"
+    },
+    {
+      "csv": "Const,Your Rating,Title,Year\nN/A,xyz,The Matrix,1999\n",
+      "expect": "imdb: row 2: Const is not an id: \"N/A\"",
+      "why": "id cells are checked before the rating"
     }
   ]
 }

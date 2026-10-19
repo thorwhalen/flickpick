@@ -109,19 +109,19 @@ export function splitTitleYear(raw: string): { title: string; year?: number } {
 const ID_CELL = /^(?:tt)?([0-9]+)$/i;
 
 /**
- * The number in an id cell; null when it is blank or 0 (which names no film). Anything else
- * (`356.0`, `0x164`, `N/A`) is refused, naming the row and column, with the Python `_id_cell`
- * message.
+ * The digits of an id cell, without leading zeros (kept as text: an id past 2^53 must not round);
+ * null when it is blank or 0 (which names no film). Anything else (`356.0`, `0x164`, `N/A`) is
+ * refused, naming the row and column, with the Python `_id_cell` message.
  */
-function idCell(value: string, what: string, row: number, col: string, { imdb = false } = {}): number | null {
+function idCell(value: string, what: string, row: number, col: string, { imdb = false } = {}): string | null {
   const s = value.trim();
   if (!s) return null;
   const match = ID_CELL.exec(s);
   if (!match || (!imdb && /^tt/i.test(s))) throw new Error(`${what}: row ${row}: ${col} is not an id: "${s}"`);
-  return Number(match[1]) || null;
+  return match[1]!.replace(/^0+/, '') || null;
 }
 
-const imdbOf = (n: number | null): string | null => (n ? normalizeImdbId(n) : null);
+const imdbOf = (digits: string | null): string | null => (digits ? normalizeImdbId(digits) : null);
 
 function toNumber(value: string, what: string, row: number): number | undefined {
   if (value === '') return undefined;
@@ -182,10 +182,11 @@ export function parseLetterboxd(csvText: string): Rating[] {
 /** IMDb "Your ratings" export. */
 export function parseImdb(csvText: string): Rating[] {
   return mapRows(csvText, 'imdb', (r, row) => {
-    const score = toNumber(column(r, 'Your Rating'), 'imdb', row);
-    if (score === undefined) return null;
+    // Unrated rows are skipped; then the id cells, then the score, as in Python.
+    if (column(r, 'Your Rating') === '') return null;
     // A blank or 0 Const names no film: the row is matched by title, as a Letterboxd one.
     const id = imdbOf(idCell(column(r, 'Const'), 'imdb', row, 'Const', { imdb: true }));
+    const score = toNumber(column(r, 'Your Rating'), 'imdb', row)!;
     const title = column(r, 'Title');
     const year = toYear(column(r, 'Year'));
     return {
@@ -211,12 +212,12 @@ export function parseMovielens(csvText: string, { userId }: { userId?: string | 
   }
   return mapRows(csvText, 'movielens', (r, row) => {
     if (userId !== undefined && column(r, 'userId') !== String(userId)) return null;
-    const stars = toNumber(column(r, 'rating'), 'movielens', row);
-    if (stars === undefined) return null;
+    if (column(r, 'rating') === '') return null;
     const imdb = imdbOf(idCell(column(r, 'imdbId', 'imdb_id'), 'movielens', row, 'imdbId', { imdb: true }));
+    const movieId = idCell(column(r, 'movieId'), 'movielens', row, 'movieId');
+    const stars = toNumber(column(r, 'rating'), 'movielens', row)!;
     const { title, year } = splitTitleYear(column(r, 'title'));
     const ts = toNumber(column(r, 'timestamp'), 'movielens', row);
-    const movieId = idCell(column(r, 'movieId'), 'movielens', row, 'movieId');
     const ids = [imdb, movieId && `ml:${movieId}`].filter((x): x is string => Boolean(x));
     return {
       item_id: ids[0] ?? noIdPlaceholder(title, year, row),
@@ -234,14 +235,14 @@ export function parseMovielens(csvText: string, { userId }: { userId?: string | 
 /** flickpick's own format: `movie_id, imdb_id, tmdb_id, rating (0-100), average_rating, title`. */
 export function parseFlickpick(csvText: string): Rating[] {
   return mapRows(csvText, 'flickpick', (r, row) => {
-    const score = toNumber(column(r, 'rating'), 'flickpick', row);
-    if (score === undefined) return null;
-    const id = imdbOf(idCell(column(r, 'imdb_id'), 'flickpick', row, 'imdb_id', { imdb: true }));
-    const { title, year } = splitTitleYear(column(r, 'title'));
+    if (column(r, 'rating') === '') return null;
     // Every id, tried in this order: imdb_id, movie_id, tmdb_id (the Python `_flickpick_ids`); a row
     // with none is matched by title.
+    const id = imdbOf(idCell(column(r, 'imdb_id'), 'flickpick', row, 'imdb_id', { imdb: true }));
     const movieId = idCell(column(r, 'movie_id'), 'flickpick', row, 'movie_id');
     const tmdbId = idCell(column(r, 'tmdb_id'), 'flickpick', row, 'tmdb_id');
+    const score = toNumber(column(r, 'rating'), 'flickpick', row)!;
+    const { title, year } = splitTitleYear(column(r, 'title'));
     const ids = [id, movieId && `ml:${movieId}`, tmdbId && `tmdb:${tmdbId}`].filter((x): x is string => Boolean(x));
     return {
       item_id: ids[0] ?? noIdPlaceholder(title, year, row),
