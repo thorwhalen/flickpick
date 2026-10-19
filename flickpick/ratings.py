@@ -54,8 +54,10 @@ def as_rating(x) -> Rating:
 def imdb_id(value) -> str | None:
     """Normalise an IMDb id given as ``114369``, ``'114369'`` or ``'tt0114369'``.
 
-    >>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678)
-    ('tt0114369', 'tt0114369', None, 'tt12345678')
+    ``0`` names no film and gives ``None``, as the TypeScript ``normalizeImdbId``.
+
+    >>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678), imdb_id(0)
+    ('tt0114369', 'tt0114369', None, 'tt12345678', None)
     """
     if value is None:
         return None
@@ -66,6 +68,8 @@ def imdb_id(value) -> str | None:
         s = s[len(IMDB_PREFIX) :]
     if not s.isdigit():
         raise ValueError(f"Not an IMDb id: {value!r}")
+    if int(s) == 0:
+        return None
     return f"{IMDB_PREFIX}{int(s):0{IMDB_DIGITS}d}"
 
 

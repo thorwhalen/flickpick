@@ -3,7 +3,7 @@ import { parseRatings } from 'flickpick';
 import { describe, expect, it } from 'vitest';
 import { CMD } from '@/commands/index';
 import { fixtureArtifacts, makeTestServices, readExampleCsv } from '@/test-helpers/services';
-import { previewImport } from './ratings-io';
+import { previewImport, toFlickpickCsv } from './ratings-io';
 
 /** Data rows of the example file (header excluded, blank lines ignored). */
 const exampleRowCount = () => readExampleCsv().trim().split(/\r?\n/).length - 1;
@@ -45,6 +45,19 @@ describe('ratings import', () => {
     expect(preview.format).toBe('letterboxd');
     expect(preview.rows[0]).toMatchObject({ item_id: item.imdb_id, score: 90 });
     expect(preview.matched).toBe(1);
+  });
+
+  it('an unmatched ml:/tmdb: id survives an export round trip, so it is not re-matched by title (#12)', async () => {
+    const artifacts = await fixtureArtifacts();
+    const known = artifacts.catalog[0]!;
+    const rows = [
+      { item_id: 'ml:999999', score: 80, title: known.title, year: known.year ?? undefined, needs_resolution: true },
+      { item_id: 'tmdb:999999', score: 70, title: known.title, year: known.year ?? undefined, needs_resolution: true },
+    ];
+    const csv = toFlickpickCsv(rows, artifacts);
+    expect(csv.split('\n')[1]!.startsWith('999999,,,80,')).toBe(true);
+    expect(csv.split('\n')[2]!.startsWith(',,999999,70,')).toBe(true);
+    expect(previewImport(csv, artifacts).matched).toBe(0);
   });
 
   it('an unknown file is refused with its header in the message', async () => {

@@ -200,6 +200,15 @@ ID_AUTHORITATIVE_CASES = [
     ),
     ("movieId,rating,title\n99999,4,The Matrix (1999)\n", False),
     ("Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,The Matrix,1999,u,4\n", True),
+    # imdb_id 0 names no film: the next id (movie_id) decides
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        "2571,0,,80,,Wrong Title (2000)\n",
+        True,
+    ),
+    ("movieId,rating\n02571,4\n", True),  # leading zeros in a MovieLens id
+    # a title that looks like an id is still a title
+    ("Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,tt0133093,,u,4\n", False),
 ]
 
 
