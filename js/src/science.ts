@@ -47,13 +47,18 @@ export function shuffled<T>(items: readonly T[], random: () => number): T[] {
 
 /** A k-fold split needs a training fold besides the held-out one (core contract, Science). */
 export const MIN_FOLDS = 2;
+/** The ranking metrics are at a cutoff of at least one item. */
+export const MIN_K = 1;
 
-/** Refuse a fold count below `MIN_FOLDS` (or not an integer), with the Python `check_folds` message. */
-export function checkFolds(folds: number): void {
-  if (!Number.isInteger(folds) || folds < MIN_FOLDS) {
-    throw new RangeError(`folds must be an integer of at least ${MIN_FOLDS}; got ${folds}`);
+/** Refuse a count that is not an integer of at least `minimum`, with the Python `check_count` message. */
+export function checkCount(name: string, value: number, minimum: number): void {
+  if (!Number.isInteger(value) || value < minimum) {
+    throw new RangeError(`${name} must be an integer of at least ${minimum}; got ${value}`);
   }
 }
+
+/** Refuse a fold count below `MIN_FOLDS` (#7). */
+export const checkFolds = (folds: number): void => checkCount('folds', folds, MIN_FOLDS);
 
 /** Split into `folds` round-robin groups (sizes differ by at most one). */
 export function kFolds<T>(items: readonly T[], folds: number): T[][] {
@@ -237,6 +242,7 @@ export function holdoutEvaluate(artifacts: Artifacts, ratings: readonly Rating[]
     score = (a: Artifacts, r: readonly Rating[]) => scoreCf(a, r, options),
   } = options;
   checkFolds(folds);
+  checkCount('k', k, MIN_K);
   const rated = catalogueRatings(artifacts, ratings);
   const threshold = likeThreshold(rated, options);
   const liked = rated

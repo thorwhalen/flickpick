@@ -225,8 +225,31 @@ def test_folds_below_two_are_refused_by_both_evaluations(folds, small, example_r
         cross_validated_fit(ratings, catalog, folds=folds)
     with pytest.raises(ValueError, match=message.replace(".", r"\.")):
         holdout_evaluate(small, example_ratings, folds=folds)
-    check_folds(2)  # the smallest accepted
+    assert check_folds(2) == 2  # the smallest accepted
     assert cross_validated_fit(ratings, catalog, folds=2)["folds"] == 2
+
+
+def test_whole_float_folds_pass_as_in_typescript(small, example_ratings):
+    """``2.0`` is the number 2 in JavaScript, so the Python core accepts it too."""
+    ratings, catalog = _linear_user()
+    assert check_folds(2.0) == 2 and check_folds(np.float64(3.0)) == 3
+    assert cross_validated_fit(ratings, catalog, folds=2.0) == cross_validated_fit(
+        ratings, catalog, folds=2
+    )
+    with pytest.raises(ValueError, match="got 0$"):
+        check_folds(0.0)
+    with pytest.raises(ValueError, match="got nan$"):
+        check_folds(float("nan"))
+
+
+@pytest.mark.parametrize("k", [-1, 0, 1.5])
+def test_holdout_refuses_k_below_one(k, small, example_ratings):
+    """``k = 0`` divided by zero and ``k = -1`` gave a negative precision; the
+    TypeScript core refuses both with the same message."""
+    with pytest.raises(
+        ValueError, match=f"k must be an integer of at least 1; got {k}$"
+    ):
+        holdout_evaluate(small, example_ratings, k=k)
 
 
 def _nan_free(d):

@@ -33,6 +33,8 @@ METRICS = ("hit_rate", "recall", "ndcg", "precision")
 ITEM_METRICS = ("recall", "ndcg", "precision")
 #: a k-fold split needs a training fold besides the held-out one (core contract, Science)
 MIN_FOLDS = 2
+#: the ranking metrics are at a cutoff of at least one item
+MIN_K = 1
 
 _U32 = 0xFFFFFFFF
 _TWO_32 = 4294967296.0
@@ -173,23 +175,33 @@ def rank_unrated(
     return [int(i) for i in cand[order[:k]]]
 
 
-def check_folds(folds) -> None:
-    """Refuse a fold count below :data:`MIN_FOLDS` (or not an integer), with the message
-    the TypeScript ``checkFolds`` uses.
+def check_count(name: str, value, minimum: int) -> int:
+    """``value`` as an ``int``, or a ``ValueError`` with the message of the TypeScript
+    ``checkCount`` when it is not a whole number of at least ``minimum`` (a whole float
+    such as ``2.0`` passes, as it must in JavaScript, where it is the number 2).
 
-    >>> check_folds(1)
+    >>> check_count("folds", 1, 2)
     Traceback (most recent call last):
       ...
     ValueError: folds must be an integer of at least 2; got 1
     """
-    if (
-        isinstance(folds, bool)
-        or not isinstance(folds, (int, np.integer))
-        or folds < MIN_FOLDS
-    ):
+    ok = (
+        isinstance(value, (int, float, np.integer, np.floating))
+        and not isinstance(value, bool)
+        and float(value).is_integer()  # False for nan and inf
+        and value >= minimum
+    )
+    if not ok:
+        shown = int(value) if isinstance(value, float) and value.is_integer() else value
         raise ValueError(
-            f"folds must be an integer of at least {MIN_FOLDS}; got {folds}"
+            f"{name} must be an integer of at least {minimum}; got {shown}"
         )
+    return int(value)
+
+
+def check_folds(folds) -> int:
+    """``folds`` as an ``int``, refused below :data:`MIN_FOLDS` (#7)."""
+    return check_count("folds", folds, MIN_FOLDS)
 
 
 def _catalogue_ratings(artifacts: Artifacts, ratings: Iterable) -> list[Rating]:
@@ -249,7 +261,7 @@ def holdout_evaluate(
 
     Returns ``{folds, k, n_liked, n_rated, per_fold, mean, ci95, note}``.
     """
-    check_folds(folds)
+    folds, k = check_folds(folds), check_count("k", k, MIN_K)
     rated = _catalogue_ratings(artifacts, ratings)
     threshold = like_threshold([r.score for r in rated])
     liked = sorted(r.item_id for r in rated if r.score >= threshold)
@@ -414,7 +426,7 @@ def cross_validated_fit(
     beyond that, because a training fold too small to fit a line predicts the baseline
     and the result reports its ``n``. ``folds`` below :data:`MIN_FOLDS` is refused (#7).
     """
-    check_folds(folds)
+    folds = check_folds(folds)
     _, x, y = _paired_items(ratings, catalog)
     if len(x) < folds:
         raise ValueError(

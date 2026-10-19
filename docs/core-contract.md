@@ -36,7 +36,7 @@ A MovieLens file whose `userId` column holds more than one user is refused unles
 
 `holdoutEvaluate` / `holdout_evaluate` is one algorithm, implemented identically in both languages; `tests/fixtures/parity/expected_evaluate.json` (written by `tests/fixtures/make_fixtures.py`) is the Python output and the TS test must match it to 1e-6.
 
-**`folds` is an integer of at least 2** in `holdoutEvaluate` and `crossValidatedFit` (a split needs a training fold besides the held-out one); both cores refuse anything else before reading the ratings, with the message `folds must be an integer of at least 2; got <folds>` (#7).
+**`folds` is an integer of at least 2** in `holdoutEvaluate` and `crossValidatedFit` (a split needs a training fold besides the held-out one); both cores refuse anything else before reading the ratings, with the message `folds must be an integer of at least 2; got <folds>` (#7). `holdoutEvaluate` likewise refuses a `k` below 1: `k must be an integer of at least 1; got <k>`.
 
 Randomness is **mulberry32** with a 32-bit seed, chosen because it is one line in both languages. State `a = seed mod 2^32`; each call does, in unsigned 32-bit arithmetic (`imul` = low 32 bits of the product): `a += 0x6D2B79F5; t = a; t = imul(t ^ (t >> 15), t | 1); t ^= t + imul(t ^ (t >> 7), t | 61); return (t ^ (t >> 14)) / 2^32`. A **shuffle** is Fisher-Yates: for `i` from `n - 1` down to 1, swap positions `i` and `floor(random() * (i + 1))`.
 

@@ -223,4 +223,8 @@ describe('holdoutEvaluate', () => {
   it.each([-1, 0, 1, 2.5])('refuses folds=%s before reading the ratings (#7)', (folds) => {
     expect(() => holdoutEvaluate(art, ratings, { folds })).toThrow(`folds must be an integer of at least 2; got ${folds}`);
   });
+
+  it.each([-1, 0, 1.5])('refuses k=%s with the Python check_count message', (k) => {
+    expect(() => holdoutEvaluate(art, ratings, { k })).toThrow(`k must be an integer of at least 1; got ${k}`);
+  });
 });
