@@ -52,6 +52,27 @@ const OPTIONS = {
   help: { type: 'boolean', short: 'h', default: false },
 } as const;
 
+/**
+ * `--folds -1` as `--folds=-1`: `parseArgs` reads a value that starts with `-` as an option, so
+ * a negative number after a string option would be a usage error instead of reaching the core's
+ * check (as it does in the Python CLI, #10).
+ */
+function joinNegativeValues(argv: readonly string[]): string[] {
+  const takesValue = (arg: string) => {
+    const name = arg.startsWith('--') && !arg.includes('=') ? arg.slice(2) : undefined;
+    return name !== undefined && (OPTIONS as Record<string, { type: string }>)[name]?.type === 'string';
+  };
+  const out: string[] = [];
+  for (let i = 0; i < argv.length; i++) {
+    const [arg, next] = [argv[i]!, argv[i + 1]];
+    if (takesValue(arg) && next !== undefined && /^-\d/.test(next)) {
+      out.push(`${arg}=${next}`);
+      i++;
+    } else out.push(arg);
+  }
+  return out;
+}
+
 type Values = ReturnType<typeof parseArgs<{ options: typeof OPTIONS; allowPositionals: true }>>['values'];
 
 function intOption(values: Values, name: keyof Values): number | undefined {
@@ -140,7 +161,7 @@ const COMMANDS: Record<string, (values: Values) => Promise<string>> = { recommen
 /** Run the CLI with `argv` (without node and script); returns the exit code. */
 export async function runCli(argv: readonly string[]): Promise<number> {
   try {
-    const { values, positionals } = parseArgs({ args: [...argv], options: OPTIONS, allowPositionals: true, strict: true });
+    const { values, positionals } = parseArgs({ args: joinNegativeValues(argv), options: OPTIONS, allowPositionals: true, strict: true });
     const [command, ...extra] = positionals;
     if (values.help || !command) {
       process.stdout.write(`${USAGE}\n`);

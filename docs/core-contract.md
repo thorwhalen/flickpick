@@ -68,6 +68,8 @@ python -m flickpick evaluate --artifacts <dir> --ratings <csv> [--folds 5] [--k 
 
 Both CLIs accept `--include-genre`/`--exclude-genre` and the plural spellings.
 
+Both CLIs write results to stdout and everything else to stderr. Ratings that name no catalogue item give `note: <matched> of <total> ratings matched the catalogue; the rest are ignored`, counting repeats. A refusal by the core, such as `--folds 1` or `--folds -1`, or an unreadable file prints `flickpick: <message>` and exits 1, with no traceback. A usage error, such as an unknown option or a missing value, exits 2 (#10).
+
 Output of `evaluate --json` (the Python CLI always prints JSON): `{ holdout, agreement, cross_validated_fit }`, the results of `holdoutEvaluate`, `agreement` and `crossValidatedFit`, with `NaN` written as `null` (#8).
 
 Output of `recommend`: one line per item, `rank. title (year)  score=…  because: …`, or JSON with `--json`.
