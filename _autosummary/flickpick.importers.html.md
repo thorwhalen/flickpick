@@ -20,7 +20,7 @@ present wins, in this order – the rules of `docs/core-contract.md`, Importers)
 
 ```pycon
 >>> parse_ratings("Const,Your Rating,Title,Year\ntt0114369,9,Se7en,1995\n")
-[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)')]
+[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)', alt_ids=())]
 ```
 
 ### Module Attributes

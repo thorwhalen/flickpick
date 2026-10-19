@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=53b53b71"></script>
+    <script src="../../_static/documentation_options.js?v=f7cdbf68"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -411,7 +411,7 @@ window.runMermaid = runMermaid;</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.8" />
+  <meta name="docsearch:version" content="0.0.9" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -750,7 +750,10 @@ window.runMermaid = runMermaid;</script>
     <span class="n">item_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">score</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">rated_at</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">#: the source's other ids for the same film (``ml:&lt;id&gt;``, ``tmdb:&lt;id&gt;``), tried after</span>
+    <span class="c1">#: ``item_id`` when it misses the catalogue (#15)</span>
+    <span class="n">alt_ids</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span></div>
 
 
 
@@ -766,9 +769,17 @@ window.runMermaid = runMermaid;</script>
             <span class="n">score</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]),</span>
             <span class="n">rated_at</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"rated_at"</span><span class="p">),</span>
             <span class="n">title</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"title"</span><span class="p">),</span>
+            <span class="n">alt_ids</span><span class="o">=</span><span class="n">_as_ids</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"alt_ids"</span><span class="p">)),</span>
         <span class="p">)</span>
     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected a Rating or a mapping, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">x</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_as_ids</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""``alt_ids`` as a tuple: one id given as a string is one id, not its characters."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="p">,)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="imdb_id">
@@ -866,13 +877,16 @@ window.runMermaid = runMermaid;</script>
 <span class="k">def</span><span class="w"> </span><span class="nf">_rating_idx</span><span class="p">(</span><span class="n">rating</span><span class="p">:</span> <span class="n">Rating</span><span class="p">,</span> <span class="n">lookup</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""The catalogue ``idx`` a rating names, or ``None``.</span>
 
-<span class="sd">    An id is authoritative (#12): a rating whose ``item_id`` is an IMDb, ``ml:`` or</span>
-<span class="sd">    ``tmdb:`` id matches by that id or not at all, never by a same-title row. Only a</span>
-<span class="sd">    rating without one (Letterboxd) is matched by title and year.</span>
+<span class="sd">    An id is authoritative (#12): a rating with an IMDb, ``ml:`` or ``tmdb:`` id</span>
+<span class="sd">    matches by its ids (``item_id``, then each of ``alt_ids``, #15) or not at all, never</span>
+<span class="sd">    by a same-title row. Only a rating without one (Letterboxd) is matched by title and</span>
+<span class="sd">    year.</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">rating</span><span class="o">.</span><span class="n">item_id</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">lookup</span><span class="p">[</span><span class="n">rating</span><span class="o">.</span><span class="n">item_id</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">_CATALOGUE_ID</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rating</span><span class="o">.</span><span class="n">item_id</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">):</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">rating</span><span class="o">.</span><span class="n">item_id</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span> <span class="o">*</span><span class="n">rating</span><span class="o">.</span><span class="n">alt_ids</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lookup</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">_CATALOGUE_ID</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">rating</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">title_keys</span><span class="p">(</span><span class="o">*</span><span class="n">split_title_year</span><span class="p">(</span><span class="n">rating</span><span class="o">.</span><span class="n">title</span><span class="p">)):</span>

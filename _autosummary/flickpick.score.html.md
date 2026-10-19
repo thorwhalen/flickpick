@@ -39,7 +39,7 @@ the cosine, which drowned the mood.
 |-------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
 | [`Query`](#flickpick.score.Query)([mood, like_ids, include_genres, ...])   | What the user asks for, beyond their ratings (all fields optional).       |
 | [`Recommendation`](#flickpick.score.Recommendation)(item_id, idx, title, year, ...) | One recommended item, its fused score, its raw component scores, and why. |
-| [`Rating`](#flickpick.score.Rating)(item_id, score[, rated_at, title])      | One user rating on the canonical 0-100 scale.                             |
+| [`Rating`](#flickpick.score.Rating)(item_id, score[, rated_at, title, ...]) | One user rating on the canonical 0-100 scale.                             |
 
 ### *class* flickpick.score.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=Weights())
 
@@ -47,11 +47,16 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What the user asks for, beyond their ratings (all fields optional).
 
-### *class* flickpick.score.Rating(item_id, score, rated_at=None, title=None)
+### *class* flickpick.score.Rating(item_id, score, rated_at=None, title=None, alt_ids=())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One user rating on the canonical 0-100 scale.
+
+#### alt_ids *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ()*
+
+the source’s other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after
+`item_id` when it misses the catalogue (#15)
 
 ### *class* flickpick.score.Recommendation(item_id, idx, title, year, score, cf_score, semantic_score, popularity_score, reasons, because_of)
 

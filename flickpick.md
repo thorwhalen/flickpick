@@ -1,4 +1,4 @@
-> built 2026-10-19 12:14 UTC from f97619e (main) · flickpick 0.0.8. Details: build_info.json
+> built 2026-10-19 12:32 UTC from 9b18018 (main) · flickpick 0.0.9. Details: build_info.json
 
 # index.html.md
 
@@ -637,7 +637,7 @@ The formats and the scoring contract are in `docs/artifact-format.md` and
 |-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | [`Artifacts`](_autosummary/flickpick.html.md#flickpick.Artifacts)(manifest, catalog, cf[, embeddings]) | One loaded artifact set: manifest, catalogue, CF matrix, optional embeddings. |
 | [`Defaults`](_autosummary/flickpick.html.md#flickpick.Defaults)([ease_lambda, topk, n_items, ...])    | Every tunable number in one place (see the docs cited on each field).         |
-| [`Rating`](_autosummary/flickpick.html.md#flickpick.Rating)(item_id, score[, rated_at, title])      | One user rating on the canonical 0-100 scale.                                 |
+| [`Rating`](_autosummary/flickpick.html.md#flickpick.Rating)(item_id, score[, rated_at, title, ...]) | One user rating on the canonical 0-100 scale.                                 |
 | [`Query`](_autosummary/flickpick.html.md#flickpick.Query)([mood, like_ids, include_genres, ...])   | What the user asks for, beyond their ratings (all fields optional).           |
 | [`Recommendation`](_autosummary/flickpick.html.md#flickpick.Recommendation)(item_id, idx, title, year, ...) | One recommended item, its fused score, its raw component scores, and why.     |
 | [`Weights`](_autosummary/flickpick.html.md#flickpick.Weights)([cf, semantic, popularity])            | Fusion weights of the percentile-ranked components.                           |
@@ -738,11 +738,16 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What the user asks for, beyond their ratings (all fields optional).
 
-### *class* flickpick.Rating(item_id, score, rated_at=None, title=None)
+### *class* flickpick.Rating(item_id, score, rated_at=None, title=None, alt_ids=())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One user rating on the canonical 0-100 scale.
+
+#### alt_ids *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ()*
+
+the source’s other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after
+`item_id` when it misses the catalogue (#15)
 
 ### *class* flickpick.Recommendation(item_id, idx, title, year, score, cf_score, semantic_score, popularity_score, reasons, because_of)
 
@@ -1020,7 +1025,7 @@ present wins, in this order – the rules of `docs/core-contract.md`, Importers)
 
 ```pycon
 >>> parse_ratings("Const,Your Rating,Title,Year\ntt0114369,9,Se7en,1995\n")
-[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)')]
+[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)', alt_ids=())]
 ```
 
 ### Module Attributes
@@ -1122,14 +1127,19 @@ that do not (Letterboxd, MovieLens) emit a prefixed reference instead – `ml:<m
 
 ### Classes
 
-| [`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)(item_id, score[, rated_at, title])   | One user rating on the canonical 0-100 scale.   |
-|----------------------------------------------------------------------------------------------|-------------------------------------------------|
+| [`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)(item_id, score[, rated_at, title, ...])   | One user rating on the canonical 0-100 scale.   |
+|---------------------------------------------------------------------------------------------------|-------------------------------------------------|
 
-### *class* flickpick.ratings.Rating(item_id, score, rated_at=None, title=None)
+### *class* flickpick.ratings.Rating(item_id, score, rated_at=None, title=None, alt_ids=())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One user rating on the canonical 0-100 scale.
+
+#### alt_ids *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ()*
+
+the source’s other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after
+`item_id` when it misses the catalogue (#15)
 
 ### flickpick.ratings.as_rating(x)
 
@@ -1469,7 +1479,7 @@ the cosine, which drowned the mood.
 |-------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
 | [`Query`](_autosummary/flickpick.score.html.md#flickpick.score.Query)([mood, like_ids, include_genres, ...])   | What the user asks for, beyond their ratings (all fields optional).       |
 | [`Recommendation`](_autosummary/flickpick.score.html.md#flickpick.score.Recommendation)(item_id, idx, title, year, ...) | One recommended item, its fused score, its raw component scores, and why. |
-| [`Rating`](_autosummary/flickpick.score.html.md#flickpick.score.Rating)(item_id, score[, rated_at, title])      | One user rating on the canonical 0-100 scale.                             |
+| [`Rating`](_autosummary/flickpick.score.html.md#flickpick.score.Rating)(item_id, score[, rated_at, title, ...]) | One user rating on the canonical 0-100 scale.                             |
 
 ### *class* flickpick.score.Query(mood=None, like_ids=(), include_genres=(), exclude_genres=(), year_min=None, year_max=None, min_ratings=None, exclude_ids=(), k=10, weights=Weights())
 
@@ -1477,11 +1487,16 @@ Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 What the user asks for, beyond their ratings (all fields optional).
 
-### *class* flickpick.score.Rating(item_id, score, rated_at=None, title=None)
+### *class* flickpick.score.Rating(item_id, score, rated_at=None, title=None, alt_ids=())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One user rating on the canonical 0-100 scale.
+
+#### alt_ids *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ()*
+
+the source’s other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after
+`item_id` when it misses the catalogue (#15)
 
 ### *class* flickpick.score.Recommendation(item_id, idx, title, year, score, cf_score, semantic_score, popularity_score, reasons, because_of)
 
@@ -1683,18 +1698,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-19 12:14 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/f97619ec0df6b7702289ef6438a6036a4c1c2d27"><code>f97619e</code></a> on branch <code>main</code>, for **flickpick 0.0.8** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 12:32 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/9b18018f34e40760f5f1c3eab95c4f7bcc7584a4"><code>9b18018</code></a> on branch <code>main</code>, for **flickpick 0.0.9** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.8) is behind the latest release on PyPI (0.0.9): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.9) is behind the latest release on PyPI (0.0.10): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/f97619ec0df6b7702289ef6438a6036a4c1c2d27"><code>f97619ec0df6b7702289ef6438a6036a4c1c2d27</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/9b18018f34e40760f5f1c3eab95c4f7bcc7584a4"><code>9b18018f34e40760f5f1c3eab95c4f7bcc7584a4</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1705,9 +1720,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39250301976">39250301976</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39252647440">39252647440</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>f97619ec0df6b7702289ef6438a6036a4c1c2d27</code> (in the history of the built commit) |
+| Event commit | <code>9b18018f34e40760f5f1c3eab95c4f7bcc7584a4</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1732,13 +1747,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.9/">0.0.9</a>, newer than the documented version (0.0.8).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.10/">0.0.10</a>, newer than the documented version (0.0.9).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout f97619ec0df6b7702289ef6438a6036a4c1c2d27
+git checkout 9b18018f34e40760f5f1c3eab95c4f7bcc7584a4
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

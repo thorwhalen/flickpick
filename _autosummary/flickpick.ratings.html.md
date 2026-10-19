@@ -22,14 +22,19 @@ that do not (Letterboxd, MovieLens) emit a prefixed reference instead – `ml:<m
 
 ### Classes
 
-| [`Rating`](#flickpick.ratings.Rating)(item_id, score[, rated_at, title])   | One user rating on the canonical 0-100 scale.   |
-|----------------------------------------------------------------------------------------------|-------------------------------------------------|
+| [`Rating`](#flickpick.ratings.Rating)(item_id, score[, rated_at, title, ...])   | One user rating on the canonical 0-100 scale.   |
+|---------------------------------------------------------------------------------------------------|-------------------------------------------------|
 
-### *class* flickpick.ratings.Rating(item_id, score, rated_at=None, title=None)
+### *class* flickpick.ratings.Rating(item_id, score, rated_at=None, title=None, alt_ids=())
 
 Bases: [`object`](https://docs.python.org/3/builtins/functions.html#object)
 
 One user rating on the canonical 0-100 scale.
+
+#### alt_ids *: [tuple](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[str](https://docs.python.org/3/builtins/stdtypes.html#str), ...]* *= ()*
+
+the source’s other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after
+`item_id` when it misses the catalogue (#15)
 
 ### flickpick.ratings.as_rating(x)
 
