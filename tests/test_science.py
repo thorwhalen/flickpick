@@ -7,9 +7,11 @@ import numpy as np
 import pytest
 
 from flickpick.ratings import Rating
+from flickpick.tools import cli_egress
 from flickpick.science import (
     agreement,
     bootstrap_ci,
+    check_folds,
     cross_validated_fit,
     ease_scorer,
     holdout_evaluate,
@@ -199,11 +201,67 @@ def test_cross_validated_fit_needs_one_item_per_fold_as_typescript_does():
     """#4: the Python core refused below ``folds * MIN_POINTS`` (15 for 5 folds) where
     the TypeScript core, and so the web app, accepted anything from ``folds`` up."""
     ratings, catalog = _linear_user()
-    with pytest.raises(ValueError, match="at least 5 rated catalogue items for 5 folds"):
+    with pytest.raises(
+        ValueError, match="at least 5 rated catalogue items for 5 folds"
+    ):
         cross_validated_fit(ratings[:4], catalog, folds=5)
     fit = cross_validated_fit(ratings[:5], catalog, folds=5)
     assert fit["n"] == 5 and fit["folds"] == 5
-    assert fit["linear"]["rmse"] == pytest.approx(0, abs=1e-9)  # 4 training points fit the line
+    assert fit["linear"]["rmse"] == pytest.approx(
+        0, abs=1e-9
+    )  # 4 training points fit the line
     # Two folds of one item each: a one-point training fold falls back to the baseline.
     two = cross_validated_fit(ratings[:2], catalog, folds=2)
     assert two["linear"] == pytest.approx(two["baseline"])
+
+
+@pytest.mark.parametrize("folds", [-1, 0, 1, 2.5, True])
+def test_folds_below_two_are_refused_by_both_evaluations(folds, small, example_ratings):
+    """#7: ``folds <= 0`` returned uninitialised numbers and ``folds = 1`` all-NaN; both
+    cores now refuse with the message of the TypeScript ``checkFolds``."""
+    ratings, catalog = _linear_user()
+    message = f"folds must be an integer of at least 2; got {folds}"
+    with pytest.raises(ValueError, match=message.replace(".", r"\.")):
+        cross_validated_fit(ratings, catalog, folds=folds)
+    with pytest.raises(ValueError, match=message.replace(".", r"\.")):
+        holdout_evaluate(small, example_ratings, folds=folds)
+    check_folds(2)  # the smallest accepted
+    assert cross_validated_fit(ratings, catalog, folds=2)["folds"] == 2
+
+
+def _nan_free(d):
+    return {
+        k: (None if isinstance(v, float) and math.isnan(v) else v) for k, v in d.items()
+    }
+
+
+def test_agreement_minimum_is_the_typescript_rule():
+    """#7: below ``min_agreement_points`` (3) paired items the statistics are NaN, not an
+    error, and a set with no spread gives NaN rather than scipy's ValueError. The same
+    cases are pinned in ``js/test/science.test.ts`` ('agreement: the minimum ...')."""
+    ratings, catalog = _linear_user()
+    nan_stats = {"pearson": None, "spearman": None, "slope": None, "intercept": None}
+    assert _nan_free(agreement(ratings[:2], catalog)) == {**nan_stats, "n": 2}
+    assert _nan_free(agreement([], catalog)) == {**nan_stats, "n": 0}
+    three = agreement(ratings[:3], catalog)
+    assert three == pytest.approx(
+        {"pearson": 1.0, "spearman": 1.0, "n": 3, "slope": 2.0, "intercept": -50.0}
+    )
+    flat = [{**c, "mean_rating": 60.0} for c in catalog]  # no spread in mean_rating
+    assert _nan_free(agreement(ratings[:4], flat)) == {**nan_stats, "n": 4}
+    assert agreement(ratings[:2], catalog, min_points=2)["slope"] == pytest.approx(2.0)
+
+
+def test_cli_json_writes_nan_as_null():
+    """``NaN`` is not JSON; the Node CLI's ``JSON.stringify`` writes ``null`` and so does
+    this one."""
+    import io
+
+    out = io.StringIO()
+    cli_egress(
+        {"agreement": {"pearson": float("nan"), "n": 2, "ci": [float("inf"), 1.0]}},
+        out=out,
+    )
+    assert json.loads(out.getvalue()) == {
+        "agreement": {"pearson": None, "n": 2, "ci": [None, 1.0]}
+    }

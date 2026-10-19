@@ -9,6 +9,7 @@
 
 import argparse
 import json as _json
+import math
 import sys
 from pathlib import Path
 
@@ -193,8 +194,21 @@ CLI_CONFIG = {
 }
 
 
+def _finite_or_none(obj):
+    """``obj`` with every non-finite float replaced by ``None``, so the JSON is strict and
+    matches the Node CLI (``JSON.stringify`` writes ``NaN`` as ``null``)."""
+    if isinstance(obj, float):
+        return obj if math.isfinite(obj) else None
+    if isinstance(obj, dict):
+        return {k: _finite_or_none(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_finite_or_none(v) for v in obj]
+    return obj
+
+
 def cli_egress(result, *, out=None, err=None) -> int:
-    """Print a list one item per line, a string as is, anything else as JSON."""
+    """Print a list one item per line, a string as is, anything else as JSON (with
+    ``NaN`` written as ``null``)."""
     out = out or sys.stdout
     if result is None:
         return 0
@@ -203,5 +217,14 @@ def cli_egress(result, *, out=None, err=None) -> int:
     elif isinstance(result, str):
         out.write(result + "\n")
     else:
-        out.write(_json.dumps(result, indent=2, ensure_ascii=False, default=str) + "\n")
+        out.write(
+            _json.dumps(
+                _finite_or_none(result),
+                indent=2,
+                ensure_ascii=False,
+                default=str,
+                allow_nan=False,
+            )
+            + "\n"
+        )
     return 0

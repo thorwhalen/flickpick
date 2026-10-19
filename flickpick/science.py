@@ -9,7 +9,8 @@
   implemented identically by the TypeScript ``holdoutEvaluate``; a parity fixture
   (``tests/fixtures/parity/expected_evaluate.json``) holds the two together.
 - :func:`agreement`: correlation and regression of the user's scores against the
-  population ``mean_rating``.
+  population ``mean_rating``; ``NaN`` where undefined (too few points, no spread), as
+  the TypeScript ``agreement``.
 - :func:`cross_validated_fit`: how well ``mean_rating`` predicts the user's score
   (linear fit) versus always predicting the user's mean.
 
@@ -30,8 +31,8 @@ METRICS = ("hit_rate", "recall", "ndcg", "precision")
 #: metrics that are a mean of per-held-out-item contributions (bootstrapped per item);
 #: ``hit_rate`` is a per-fold "any hit" and is bootstrapped over folds, if at all
 ITEM_METRICS = ("recall", "ndcg", "precision")
-#: fewer points than this make a correlation or a fold meaningless
-MIN_POINTS = 3
+#: a k-fold split needs a training fold besides the held-out one (core contract, Science)
+MIN_FOLDS = 2
 
 _U32 = 0xFFFFFFFF
 _TWO_32 = 4294967296.0
@@ -172,6 +173,25 @@ def rank_unrated(
     return [int(i) for i in cand[order[:k]]]
 
 
+def check_folds(folds) -> None:
+    """Refuse a fold count below :data:`MIN_FOLDS` (or not an integer), with the message
+    the TypeScript ``checkFolds`` uses.
+
+    >>> check_folds(1)
+    Traceback (most recent call last):
+      ...
+    ValueError: folds must be an integer of at least 2; got 1
+    """
+    if (
+        isinstance(folds, bool)
+        or not isinstance(folds, (int, np.integer))
+        or folds < MIN_FOLDS
+    ):
+        raise ValueError(
+            f"folds must be an integer of at least {MIN_FOLDS}; got {folds}"
+        )
+
+
 def _catalogue_ratings(artifacts: Artifacts, ratings: Iterable) -> list[Rating]:
     """Step (a): ratings found in the catalogue, one per item (the latest wins),
     re-keyed to the catalogue ``imdb_id``, in catalogue ``idx`` order."""
@@ -229,6 +249,7 @@ def holdout_evaluate(
 
     Returns ``{folds, k, n_liked, n_rated, per_fold, mean, ci95, note}``.
     """
+    check_folds(folds)
     rated = _catalogue_ratings(artifacts, ratings)
     threshold = like_threshold([r.score for r in rated])
     liked = sorted(r.item_id for r in rated if r.score >= threshold)
@@ -322,22 +343,49 @@ def _ols(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
     return slope, my - slope * mx
 
 
-def agreement(ratings: Iterable, catalog: Sequence[Mapping]) -> dict:
-    """Pearson, Spearman and the OLS line of the user's score on ``mean_rating``."""
-    from scipy import stats  # heavy: imported on first use, not with the package
+def _pearson(x: np.ndarray, y: np.ndarray) -> float:
+    """Pearson correlation, ``nan`` when either side has no spread (as the TypeScript
+    ``pearson``)."""
+    dx, dy = x - x.mean(), y - y.mean()
+    sxx, syy = float(np.sum(dx**2)), float(np.sum(dy**2))
+    if not (sxx > 0 and syy > 0):
+        return float("nan")
+    return float(np.sum(dx * dy)) / float(np.sqrt(sxx * syy))
+
+
+def agreement(
+    ratings: Iterable,
+    catalog: Sequence[Mapping],
+    *,
+    min_points: int = DFLT.min_agreement_points,
+) -> dict:
+    """Pearson, Spearman (average ranks) and the OLS line of the user's score on
+    ``mean_rating``, over the rated catalogue items that have one.
+
+    Never refuses: with fewer than ``min_points`` paired items every statistic but ``n``
+    is ``nan``, and so is any that is undefined for lack of spread. The TypeScript
+    ``agreement`` follows the same rule (#7), so both CLIs report the same numbers.
+    """
+    # heavy: imported on first use, not with the package
+    from scipy.stats import rankdata
 
     x, y = _paired_scores(ratings, catalog)
-    if len(x) < MIN_POINTS:
-        raise ValueError(
-            f"Need at least {MIN_POINTS} rated catalogue items; got {len(x)}."
-        )
-    fit = stats.linregress(x, y)
+    nan = float("nan")
+    if len(x) < min_points:
+        return {
+            "pearson": nan,
+            "spearman": nan,
+            "n": int(len(x)),
+            "slope": nan,
+            "intercept": nan,
+        }
+    slope, intercept = _ols(x, y)
     return {
-        "pearson": float(stats.pearsonr(x, y)[0]),
-        "spearman": float(stats.spearmanr(x, y)[0]),
+        "pearson": _pearson(x, y),
+        "spearman": _pearson(rankdata(x), rankdata(y)),
         "n": int(len(x)),
-        "slope": float(fit.slope),
-        "intercept": float(fit.intercept),
+        "slope": slope,
+        "intercept": intercept,
     }
 
 
@@ -364,8 +412,9 @@ def cross_validated_fit(
     It needs at least ``folds`` paired items, one per held-out fold, as the TypeScript
     core does (#4): below that a fold would be empty. Small inputs are not refused
     beyond that, because a training fold too small to fit a line predicts the baseline
-    and the result reports its ``n``.
+    and the result reports its ``n``. ``folds`` below :data:`MIN_FOLDS` is refused (#7).
     """
+    check_folds(folds)
     _, x, y = _paired_items(ratings, catalog)
     if len(x) < folds:
         raise ValueError(

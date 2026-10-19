@@ -83,6 +83,32 @@ describe('correlation and fits', () => {
     expect(() => crossValidatedFit(ratings.slice(0, 2), catalog, { folds: 5 })).toThrow(/need at least folds=5/);
   });
 
+  it('agreement: the minimum and no-spread rule of the Python core (#7)', () => {
+    // Same cases as tests/test_science.py::test_agreement_minimum_is_the_typescript_rule.
+    const catalog = Array.from({ length: 20 }, (_, i) => ({ ...(syntheticCatalog()[0] as CatalogItem), imdb_id: imdbId(i), mean_rating: 40 + 2 * i }));
+    const ratings: Rating[] = catalog.map((c) => ({ item_id: c.imdb_id, score: 2 * c.mean_rating! - 50 }));
+    const undefinedStats = { pearson: NaN, spearman: NaN, slope: NaN, intercept: NaN };
+    expect(agreement(ratings.slice(0, 2), catalog)).toEqual({ ...undefinedStats, n: 2 });
+    expect(agreement([], catalog)).toEqual({ ...undefinedStats, n: 0 });
+    const three = agreement(ratings.slice(0, 3), catalog);
+    expect(three.n).toBe(3);
+    expect(three.pearson).toBeCloseTo(1, 12);
+    expect(three.spearman).toBeCloseTo(1, 12);
+    expect(three.slope).toBeCloseTo(2, 12);
+    expect(three.intercept).toBeCloseTo(-50, 12);
+    const flat = catalog.map((c) => ({ ...c, mean_rating: 60 })); // no spread in mean_rating
+    expect(agreement(ratings.slice(0, 4), flat)).toEqual({ ...undefinedStats, n: 4 });
+    expect(agreement(ratings.slice(0, 2), catalog, { minPoints: 2 }).slope).toBeCloseTo(2, 12);
+  });
+
+  it.each([-1, 0, 1, 2.5])('folds=%s is refused with the Python check_folds message (#7)', (folds) => {
+    const catalog = syntheticCatalog() as CatalogItem[];
+    const ratings: Rating[] = catalog.map((c) => ({ item_id: c.imdb_id, score: 0.5 * c.mean_rating! + 20 }));
+    const message = `folds must be an integer of at least 2; got ${folds}`;
+    expect(() => crossValidatedFit(ratings, catalog, { folds })).toThrow(message);
+    expect(crossValidatedFit(ratings, catalog, { folds: 2 }).folds).toBe(2);
+  });
+
   it('crossValidatedFit: one item per fold is enough, as in the Python core (#4)', () => {
     const catalog = syntheticCatalog() as CatalogItem[];
     const ratings: Rating[] = catalog.map((c) => ({ item_id: c.imdb_id, score: 0.5 * c.mean_rating! + 20 }));
@@ -192,5 +218,9 @@ describe('holdoutEvaluate', () => {
 
   it('needs at least as many liked items as folds', () => {
     expect(() => holdoutEvaluate(art, ratings.slice(0, 2), { folds: 5 })).toThrow(/need at least folds=5/);
+  });
+
+  it.each([-1, 0, 1, 2.5])('refuses folds=%s before reading the ratings (#7)', (folds) => {
+    expect(() => holdoutEvaluate(art, ratings, { folds })).toThrow(`folds must be an integer of at least 2; got ${folds}`);
   });
 });

@@ -63,6 +63,12 @@ describe('flickpick CLI', () => {
     expect(out.fit.folds).toBe(5);
   });
 
+  it('evaluate --folds 0 is refused, not silently replaced by the default (#7)', async () => {
+    const { code, stderr } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', '0', '--json');
+    expect(code).not.toBe(0);
+    expect(stderr).toMatch(/folds must be an integer of at least 2; got 0/);
+  });
+
   it('evaluate prints a readable summary', async () => {
     const { code, stdout } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', '5');
     expect(code).toBe(0);

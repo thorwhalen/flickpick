@@ -62,6 +62,8 @@ class Defaults:
     #: hit_rate is a per-fold quantity; below this many folds its bootstrap interval
     #: (over folds) is too coarse to report (core contract, Science)
     min_folds_for_fold_ci: int = 10
+    #: below this many paired items, agreement's statistics are NaN (core contract, Science)
+    min_agreement_points: int = 3
 
 
 DFLT = Defaults()

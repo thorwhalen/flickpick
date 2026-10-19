@@ -111,10 +111,11 @@ async function runEvaluate(values: Values): Promise<string> {
   const folds = intOption(values, 'folds');
   const k = intOption(values, 'k');
   const seed = intOption(values, 'seed');
-  const opts = { ...(folds ? { folds } : {}), ...(k ? { k } : {}), ...(seed !== undefined ? { seed } : {}) };
+  // `!== undefined`, not truthiness: `--folds 0` must reach the core's check, not become the default.
+  const opts = { ...(folds !== undefined ? { folds } : {}), ...(k !== undefined ? { k } : {}), ...(seed !== undefined ? { seed } : {}) };
   const holdout = holdoutEvaluate(artifacts, ratings, opts);
   const agree = agreement(ratings, artifacts.catalog);
-  const fit = crossValidatedFit(ratings, artifacts.catalog, { ...(folds ? { folds } : {}), ...(seed !== undefined ? { seed } : {}) });
+  const fit = crossValidatedFit(ratings, artifacts.catalog, { ...(folds !== undefined ? { folds } : {}), ...(seed !== undefined ? { seed } : {}) });
   if (values.json) return JSON.stringify({ holdout, agreement: agree, fit }, null, 2);
   const d = defaults.cli.metricDigits;
   const metricLines = (Object.keys(holdout.mean) as (keyof typeof holdout.mean)[]).map((m) => {
