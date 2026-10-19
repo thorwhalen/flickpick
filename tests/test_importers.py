@@ -110,8 +110,8 @@ def test_movielens():
 def test_flickpick():
     r = parse_flickpick(FLICKPICK)
     assert r == [
-        Rating("tt0114369", 95.0, None, "Se7en (1995)"),
-        Rating("tt0133093", 70.0, None, "Matrix, The (1999)"),
+        Rating("tt0114369", 95.0, None, "Se7en (1995)", ("ml:47", "tmdb:807")),
+        Rating("tt0133093", 70.0, None, "Matrix, The (1999)", ("ml:2571", "tmdb:603")),
     ]
 
 
@@ -207,6 +207,22 @@ ID_AUTHORITATIVE_CASES = [
         True,
     ),
     ("movieId,rating\n02571,4\n", True),  # leading zeros in a MovieLens id
+    # #15: every id of a row is tried, in order, and the title never is
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        "2571,9999999,,80,,Wrong Title (2000)\n",
+        True,
+    ),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        "99999,9999999,603,80,,Wrong Title (2000)\n",
+        True,
+    ),
+    (
+        "movie_id,imdb_id,tmdb_id,rating,average_rating,title\n"
+        "99999,9999999,99999,80,,The Matrix (1999)\n",
+        False,
+    ),
     # a title that looks like an id is still a title
     ("Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,tt0133093,,u,4\n", False),
 ]

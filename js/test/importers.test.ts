@@ -69,22 +69,22 @@ describe('importers', () => {
 
   it('MovieLens: stars x20, numeric imdbId normalised, timestamp to ISO, title split', () => {
     const [a, b] = parseMovielens(MOVIELENS);
-    expect(a).toEqual({ item_id: 'tt0114369', score: 90, rated_at: '2000-07-30T18:40:00.000Z', title: 'Se7en', year: 1995 });
+    expect(a).toEqual({ item_id: 'tt0114369', alt_ids: ['ml:47'], score: 90, rated_at: '2000-07-30T18:40:00.000Z', title: 'Se7en', year: 1995 });
     expect(b).toMatchObject({ item_id: 'tt0133093', score: 100, title: 'Matrix, The', year: 1999 });
     expect(parseMovielens('movieId,rating\n1,3.5\n')).toEqual([{ item_id: 'ml:1', score: 70, needs_resolution: true }]);
   });
 
   it('flickpick: 0-100 kept, numeric or tt imdb ids', () => {
     expect(parseFlickpick(FLICKPICK)).toEqual([
-      { item_id: 'tt0114369', score: 95, title: 'Se7en', year: 1995 },
-      { item_id: 'tt0114814', score: 98, title: 'The Usual Suspects', year: 1995 },
+      { item_id: 'tt0114369', alt_ids: ['ml:47', 'tmdb:807'], score: 95, title: 'Se7en', year: 1995 },
+      { item_id: 'tt0114814', alt_ids: ['ml:50', 'tmdb:629'], score: 98, title: 'The Usual Suspects', year: 1995 },
     ]);
   });
 
   it('parses the example ratings file', () => {
     const ratings = parseRatings(readFileSync(EXAMPLE, 'utf8'));
     expect(ratings.length).toBeGreaterThan(100);
-    expect(ratings[0]).toEqual({ item_id: 'tt0114369', score: 95, title: 'Se7en', year: 1995 });
+    expect(ratings[0]).toEqual({ item_id: 'tt0114369', alt_ids: ['ml:47', 'tmdb:807'], score: 95, title: 'Se7en', year: 1995 });
     expect(ratings.every((r) => /^tt\d{7,}$/.test(r.item_id))).toBe(true);
   });
 
@@ -184,6 +184,10 @@ describe('an id is authoritative (#12)', () => {
     // imdb_id 0 names no film: the next id (movie_id) decides
     ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n2571,0,,80,,Wrong Title (2000)\n', true],
     ['movieId,rating\n02571,4\n', true], // leading zeros in a MovieLens id
+    // #15: every id of a row is tried, in order, and the title never is
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n2571,9999999,,80,,Wrong Title (2000)\n', true],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n99999,9999999,603,80,,Wrong Title (2000)\n', true],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n99999,9999999,99999,80,,The Matrix (1999)\n', false],
     // a title that looks like an id is still a title
     ['Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,tt0133093,,u,4\n', false],
   ];

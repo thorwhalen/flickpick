@@ -35,6 +35,9 @@ class Rating:
     score: float
     rated_at: str | None = None
     title: str | None = None
+    #: the source's other ids for the same film (``ml:<id>``, ``tmdb:<id>``), tried after
+    #: ``item_id`` when it misses the catalogue (#15)
+    alt_ids: tuple[str, ...] = ()
 
 
 def as_rating(x) -> Rating:
@@ -47,8 +50,16 @@ def as_rating(x) -> Rating:
             score=float(x["score"]),
             rated_at=x.get("rated_at"),
             title=x.get("title"),
+            alt_ids=_as_ids(x.get("alt_ids")),
         )
     raise TypeError(f"Expected a Rating or a mapping, got {type(x).__name__}: {x!r}")
+
+
+def _as_ids(value) -> tuple[str, ...]:
+    """``alt_ids`` as a tuple: one id given as a string is one id, not its characters."""
+    if not value:
+        return ()
+    return (value,) if isinstance(value, str) else tuple(value)
 
 
 def imdb_id(value) -> str | None:
@@ -131,13 +142,16 @@ def catalog_lookup(catalog: Sequence[Mapping]) -> dict[str, int]:
 def _rating_idx(rating: Rating, lookup: Mapping[str, int]) -> int | None:
     """The catalogue ``idx`` a rating names, or ``None``.
 
-    An id is authoritative (#12): a rating whose ``item_id`` is an IMDb, ``ml:`` or
-    ``tmdb:`` id matches by that id or not at all, never by a same-title row. Only a
-    rating without one (Letterboxd) is matched by title and year.
+    An id is authoritative (#12): a rating with an IMDb, ``ml:`` or ``tmdb:`` id
+    matches by its ids (``item_id``, then each of ``alt_ids``, #15) or not at all, never
+    by a same-title row. Only a rating without one (Letterboxd) is matched by title and
+    year.
     """
-    if rating.item_id in lookup:
-        return lookup[rating.item_id]
-    if _CATALOGUE_ID.match(rating.item_id or ""):
+    ids = [rating.item_id or "", *rating.alt_ids]
+    for i in ids:
+        if i in lookup:
+            return lookup[i]
+    if any(_CATALOGUE_ID.match(i) for i in ids):
         return None
     if rating.title:
         for key in title_keys(*split_title_year(rating.title)):

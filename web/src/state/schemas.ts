@@ -28,6 +28,8 @@ export const RatingRowSchema = z.object({
     .meta({ title: 'Your score', editWidget: 'slider', inlineEditable: true }),
   rated_at: z.string().optional().meta({ title: 'Rated' }),
   needs_resolution: z.boolean().optional().meta({ title: 'Unmatched', hidden: true }),
+  /** The import's other ids for an unmatched row, kept so a later catalogue can match it (#15). */
+  alt_ids: z.array(z.string()).optional().meta({ title: 'Other ids', hidden: true }),
 });
 export type RatingRow = z.infer<typeof RatingRowSchema>;
 
@@ -44,6 +46,7 @@ export const ratingsCollection = defineCollection(RatingRowSchema, {
   fields: {
     item_id: { hidden: true, visible: false },
     needs_resolution: { hidden: true, visible: false },
+    alt_ids: { hidden: true, visible: false },
     title: { searchable: true, order: 0 },
     year: { order: 1 },
     score: { editWidget: 'slider', inlineEditable: true, order: 2 },

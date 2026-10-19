@@ -2,6 +2,7 @@
 import { parseRatings } from 'flickpick';
 import { describe, expect, it } from 'vitest';
 import { CMD } from '@/commands/index';
+import { createMemoryProviders } from '@/state/providers';
 import { fixtureArtifacts, makeTestServices, readExampleCsv } from '@/test-helpers/services';
 import { previewImport, toFlickpickCsv } from './ratings-io';
 
@@ -58,6 +59,25 @@ describe('ratings import', () => {
     expect(csv.split('\n')[1]!.startsWith('999999,,,80,')).toBe(true);
     expect(csv.split('\n')[2]!.startsWith(',,999999,70,')).toBe(true);
     expect(previewImport(csv, artifacts).matched).toBe(0);
+  });
+
+  it('an unmatched row keeps its other ids through import and export (#15)', async () => {
+    const artifacts = await fixtureArtifacts();
+    const csv = 'movie_id,imdb_id,tmdb_id,rating,average_rating,title\n999999,9999999,888888,80,,Nowhere (1900)\n';
+    const [row] = previewImport(csv, artifacts).rows;
+    expect(row).toMatchObject({ item_id: 'tt9999999', alt_ids: ['ml:999999', 'tmdb:888888'] });
+    expect(toFlickpickCsv([row!], artifacts).split('\n')[1]!.startsWith('999999,tt9999999,888888,80,')).toBe(true);
+  });
+
+  it('a stored row that missed by its first id is matched by another id when the catalogue loads (#15)', async () => {
+    const artifacts = await fixtureArtifacts();
+    const film = artifacts.catalog.find((c) => c.ml_id !== null)!;
+    const stored = { item_id: 'tt9999999', alt_ids: [`ml:${film.ml_id}`], score: 80 };
+    const { dispatch, deps } = await makeTestServices({ providers: createMemoryProviders({ ratings: [stored] }) });
+    await dispatch(CMD.load);
+    const ratings = deps.store.getState().ratings;
+    expect(Object.keys(ratings)).toEqual([film.imdb_id]);
+    expect(ratings[film.imdb_id]).toEqual({ item_id: film.imdb_id, score: 80 });
   });
 
   it('an unknown file is refused with its header in the message', async () => {

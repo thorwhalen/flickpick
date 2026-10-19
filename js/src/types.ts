@@ -25,6 +25,8 @@ export const RatingSchema = z.object({
    * the catalogue.
    */
   needs_resolution: z.boolean().optional(),
+  /** The source's other ids for the same film (`ml:<id>`, `tmdb:<id>`), tried after `item_id` (#15). */
+  alt_ids: z.array(z.string()).optional(),
 });
 export type Rating = z.infer<typeof RatingSchema>;
 

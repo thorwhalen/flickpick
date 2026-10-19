@@ -192,8 +192,10 @@ export function parseMovielens(csvText: string, { userId }: { userId?: string | 
     const imdb = normalizeImdbId(column(r, 'imdbId', 'imdb_id'));
     const { title, year } = splitTitleYear(column(r, 'title'));
     const ts = toNumber(column(r, 'timestamp'), 'movielens', row);
+    const ml = `ml:${Number(column(r, 'movieId'))}`;
     return {
-      item_id: imdb ?? `ml:${Number(column(r, 'movieId'))}`,
+      item_id: imdb ?? ml,
+      ...(imdb ? { alt_ids: [ml] } : {}),
       score: stars * defaults.importers.starsFactor,
       rated_at: ts === undefined ? undefined : new Date(ts * defaults.importers.msPerSecond).toISOString(),
       title: title || undefined,
@@ -211,13 +213,14 @@ export function parseFlickpick(csvText: string): Rating[] {
     if (score === undefined) return null;
     const id = normalizeImdbId(column(r, 'imdb_id'));
     const { title, year } = splitTitleYear(column(r, 'title'));
-    // imdb_id, else movie_id, else tmdb_id, else no id (matched by title): the Python `_flickpick_id`.
+    // Every id, tried in this order: imdb_id, movie_id, tmdb_id (the Python `_flickpick_ids`); a row
+    // with none is matched by title.
     const movieId = column(r, 'movie_id');
     const tmdbId = column(r, 'tmdb_id');
+    const ids = [id, movieId && `ml:${Number(movieId)}`, tmdbId && `tmdb:${Number(tmdbId)}`].filter((x): x is string => Boolean(x));
     return {
-      item_id:
-        id ??
-        (movieId ? `ml:${Number(movieId)}` : tmdbId ? `tmdb:${Number(tmdbId)}` : noIdPlaceholder(title, year, row)),
+      item_id: ids[0] ?? noIdPlaceholder(title, year, row),
+      ...(ids.length > 1 ? { alt_ids: ids.slice(1) } : {}),
       score,
       rated_at: column(r, 'rated_at') || undefined,
       title: title || undefined,
@@ -325,17 +328,19 @@ export function catalogLookup(catalog: readonly CatalogItem[]): Map<string, stri
 }
 
 /**
- * Map ratings flagged `needs_resolution` onto catalogue `imdb_id`s: by `ml:`/`tmdb:` id, or, for a
- * rating with no id (Letterboxd), by title + year (a `"Title (Year)"` title works too). Unmatched ratings are returned
+ * Map ratings flagged `needs_resolution` (or carrying `alt_ids`) onto catalogue `imdb_id`s: by any
+ * of their ids (`item_id`, then each of `alt_ids`, #15), or, for a rating with no id (Letterboxd),
+ * by title + year (a `"Title (Year)"` title works too). Unmatched ratings are returned
  * unchanged (still flagged), so callers can report them; the scorers ignore them.
  */
 export function resolveRatings(ratings: readonly Rating[], catalog: readonly CatalogItem[]): Rating[] {
   const lookup = catalogLookup(catalog);
   const find = (r: Rating): string | undefined => {
-    const byId = lookup.get(r.item_id);
+    const ids = [r.item_id, ...(r.alt_ids ?? [])];
+    const byId = ids.map((i) => lookup.get(i)).find((x) => x !== undefined);
     if (byId) return byId;
-    // An id is authoritative (#12): one that misses the catalogue is not rescued by a same-title row.
-    if (CATALOGUE_ID.test(r.item_id) || !r.title) return undefined;
+    // An id is authoritative (#12): ids that miss the catalogue are not rescued by a same-title row.
+    if (ids.some((i) => CATALOGUE_ID.test(i)) || !r.title) return undefined;
     const split = splitTitleYear(r.title);
     const year = r.year ?? split.year;
     return titleKeys(split.title, year)
@@ -343,10 +348,10 @@ export function resolveRatings(ratings: readonly Rating[], catalog: readonly Cat
       .find((id) => id !== undefined);
   };
   return ratings.map((r) => {
-    if (!r.needs_resolution) return r;
+    if (!r.needs_resolution && !r.alt_ids?.length) return r;
     const id = find(r);
     if (!id) return r;
-    const { needs_resolution: _drop, ...rest } = r;
+    const { needs_resolution: _drop, alt_ids: _alts, ...rest } = r;
     return { ...rest, item_id: id };
   });
 }
