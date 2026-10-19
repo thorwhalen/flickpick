@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=1fd71caa"></script>
+    <script src="../_static/documentation_options.js?v=bbaf98b3"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.6" />
+  <meta name="docsearch:version" content="0.0.7" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -495,8 +495,9 @@ repeats, as the Node CLI’s <code class="docutils literal notranslate"><span cl
 <dt class="sig sig-object py" id="flickpick.ratings.imdb_id">
 <span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">imdb_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#imdb_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.imdb_id" title="Link to this definition">#</a></dt>
 <dd><p>Normalise an IMDb id given as <code class="docutils literal notranslate"><span class="pre">114369</span></code>, <code class="docutils literal notranslate"><span class="pre">'114369'</span></code> or <code class="docutils literal notranslate"><span class="pre">'tt0114369'</span></code>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">imdb_id</span><span class="p">(</span><span class="mi">114369</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">'tt0114369'</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">''</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span>
-<span class="go">('tt0114369', 'tt0114369', None, 'tt12345678')</span>
+<p><code class="docutils literal notranslate"><span class="pre">0</span></code> names no film and gives <code class="docutils literal notranslate"><span class="pre">None</span></code>, as the TypeScript <code class="docutils literal notranslate"><span class="pre">normalizeImdbId</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">imdb_id</span><span class="p">(</span><span class="mi">114369</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">'tt0114369'</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="s1">''</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="mi">12345678</span><span class="p">),</span> <span class="n">imdb_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">('tt0114369', 'tt0114369', None, 'tt12345678', None)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

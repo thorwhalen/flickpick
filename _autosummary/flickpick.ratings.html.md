@@ -60,9 +60,11 @@ repeats, as the Node CLI’s `note: <matched> of <total> ratings matched`.
 
 Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.
 
+`0` names no film and gives `None`, as the TypeScript `normalizeImdbId`.
+
 ```pycon
->>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678)
-('tt0114369', 'tt0114369', None, 'tt12345678')
+>>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678), imdb_id(0)
+('tt0114369', 'tt0114369', None, 'tt12345678', None)
 ```
 
 * **Return type:**

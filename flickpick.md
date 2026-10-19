@@ -1,4 +1,4 @@
-> built 2026-10-19 11:50 UTC from de0dc9e (main) · flickpick 0.0.6. Details: build_info.json
+> built 2026-10-19 12:06 UTC from 73803f5 (main) · flickpick 0.0.7. Details: build_info.json
 
 # index.html.md
 
@@ -1144,9 +1144,11 @@ repeats, as the Node CLI’s `note: <matched> of <total> ratings matched`.
 
 Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.
 
+`0` names no film and gives `None`, as the TypeScript `normalizeImdbId`.
+
 ```pycon
->>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678)
-('tt0114369', 'tt0114369', None, 'tt12345678')
+>>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678), imdb_id(0)
+('tt0114369', 'tt0114369', None, 'tt12345678', None)
 ```
 
 * **Return type:**
@@ -1665,18 +1667,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-19 11:50 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/de0dc9e054dd077b9e7aceaec11a905d7399918a"><code>de0dc9e</code></a> on branch <code>main</code>, for **flickpick 0.0.6** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 12:06 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/73803f59e9f5c683c6a914eef0494e1c38f719d7"><code>73803f5</code></a> on branch <code>main</code>, for **flickpick 0.0.7** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.6) is behind the latest release on PyPI (0.0.7): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.7) is behind the latest release on PyPI (0.0.8): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/de0dc9e054dd077b9e7aceaec11a905d7399918a"><code>de0dc9e054dd077b9e7aceaec11a905d7399918a</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/73803f59e9f5c683c6a914eef0494e1c38f719d7"><code>73803f59e9f5c683c6a914eef0494e1c38f719d7</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1687,9 +1689,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39247318742">39247318742</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39249274356">39249274356</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>de0dc9e054dd077b9e7aceaec11a905d7399918a</code> (in the history of the built commit) |
+| Event commit | <code>73803f59e9f5c683c6a914eef0494e1c38f719d7</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1714,13 +1716,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.7/">0.0.7</a>, newer than the documented version (0.0.6).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.8/">0.0.8</a>, newer than the documented version (0.0.7).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout de0dc9e054dd077b9e7aceaec11a905d7399918a
+git checkout 73803f59e9f5c683c6a914eef0494e1c38f719d7
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

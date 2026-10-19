@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=1fd71caa"></script>
+    <script src="../../_static/documentation_options.js?v=bbaf98b3"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -411,7 +411,7 @@ window.runMermaid = runMermaid;</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.6" />
+  <meta name="docsearch:version" content="0.0.7" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -796,6 +796,7 @@ window.runMermaid = runMermaid;</script>
         <span class="n">stats</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ml</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"movieId"</span><span class="p">),</span> <span class="n">how</span><span class="o">=</span><span class="s2">"inner"</span><span class="p">)</span>
         <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ml</span><span class="o">.</span><span class="n">movies</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">"movieId"</span><span class="p">),</span> <span class="n">how</span><span class="o">=</span><span class="s2">"inner"</span><span class="p">)</span>
         <span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">"imdbId"</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">"imdbId"</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 0 names no film (ratings.imdb_id gives None)</span>
         <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
         <span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">"n_ratings"</span><span class="p">,</span> <span class="s2">"movieId"</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
     <span class="p">)</span>
