@@ -94,12 +94,16 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
     if (expired.length) await providers.enrichment.deleteMany(expired).catch(() => undefined);
   }
 
-  /** Map stored title-only ratings onto the newly loaded catalogue, and store the upgrades. */
+  /**
+   * Map stored unmatched ratings (title-only, or carrying other ids, #15) onto the newly loaded
+   * catalogue, and store the upgrades. `resolveRatings` clears both markers on a match.
+   */
   async function resolveStored(a: Artifacts): Promise<void> {
-    const pending = ratingList().filter((r) => r.needs_resolution);
+    const unmatched = (r: { needs_resolution?: boolean; alt_ids?: string[] }) => Boolean(r.needs_resolution || r.alt_ids?.length);
+    const pending = ratingList().filter(unmatched);
     if (!pending.length) return;
     const resolved = resolveRatings(pending, a.catalog);
-    const upgrades = resolved.flatMap((r, i) => (r.needs_resolution ? [] : [{ from: pending[i]!.item_id, row: toRow(r) }]));
+    const upgrades = resolved.flatMap((r, i) => (unmatched(r) ? [] : [{ from: pending[i]!.item_id, row: toRow(r) }]));
     for (const { from, row } of upgrades) {
       await providers.ratings.delete(from).catch(() => undefined);
       await upsertRow(providers.ratings, row.item_id, row);

@@ -50,9 +50,16 @@ def as_rating(x) -> Rating:
             score=float(x["score"]),
             rated_at=x.get("rated_at"),
             title=x.get("title"),
-            alt_ids=tuple(x.get("alt_ids") or ()),
+            alt_ids=_as_ids(x.get("alt_ids")),
         )
     raise TypeError(f"Expected a Rating or a mapping, got {type(x).__name__}: {x!r}")
+
+
+def _as_ids(value) -> tuple[str, ...]:
+    """``alt_ids`` as a tuple: one id given as a string is one id, not its characters."""
+    if not value:
+        return ()
+    return (value,) if isinstance(value, str) else tuple(value)
 
 
 def imdb_id(value) -> str | None:
