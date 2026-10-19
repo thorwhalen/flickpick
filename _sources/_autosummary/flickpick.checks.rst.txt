@@ -1,0 +1,12 @@
+flickpick.checks
+================
+
+.. automodule:: flickpick.checks
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      check_count
+   

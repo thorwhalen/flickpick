@@ -10,6 +10,7 @@ flickpick.ratings
    
       as_rating
       catalog_lookup
+      count_matched
       imdb_id
       like_threshold
       resolve_ratings

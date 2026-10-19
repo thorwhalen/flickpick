@@ -9,15 +9,16 @@ that do not (Letterboxd, MovieLens) emit a prefixed reference instead – `ml:<m
 
 ### Functions
 
-| [`as_rating`](#flickpick.ratings.as_rating)(x)                                  | Coerce a `Rating` or a mapping with the same keys into a `Rating`.            |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| [`catalog_lookup`](#flickpick.ratings.catalog_lookup)(catalog)                       | Map every way a rating can name an item to its catalogue `idx`.               |
-| [`imdb_id`](#flickpick.ratings.imdb_id)(value)                                | Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.          |
-| [`like_threshold`](#flickpick.ratings.like_threshold)(scores, \*[, min_n, fallback]) | The user's median score, or `fallback` when they have fewer than `min_n`.     |
-| [`resolve_ratings`](#flickpick.ratings.resolve_ratings)(catalog, ratings)             | Pair each rating with its catalogue `idx`, dropping the ones not found.       |
-| [`split_title_year`](#flickpick.ratings.split_title_year)(text)                        | Split `"Toy Story (1995)"` into `("Toy Story", 1995)`.                        |
-| [`title_keys`](#flickpick.ratings.title_keys)(title, year)                       | Matching keys `"normalised title|year"` for a title and its alternates.       |
-| [`title_variants`](#flickpick.ratings.title_variants)(title)                         | The primary title plus any parenthesised alternates, normalised for matching. |
+| [`as_rating`](#flickpick.ratings.as_rating)(x)                                  | Coerce a `Rating` or a mapping with the same keys into a `Rating`.                                                                                 |
+|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`catalog_lookup`](#flickpick.ratings.catalog_lookup)(catalog)                       | Map every way a rating can name an item to its catalogue `idx`.                                                                                    |
+| [`count_matched`](#flickpick.ratings.count_matched)(catalog, ratings)               | `(matched, total)`: how many of `ratings` name a catalogue item, counting repeats, as the Node CLI's `note: <matched> of <total> ratings matched`. |
+| [`imdb_id`](#flickpick.ratings.imdb_id)(value)                                | Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.                                                                               |
+| [`like_threshold`](#flickpick.ratings.like_threshold)(scores, \*[, min_n, fallback]) | The user's median score, or `fallback` when they have fewer than `min_n`.                                                                          |
+| [`resolve_ratings`](#flickpick.ratings.resolve_ratings)(catalog, ratings)             | Pair each rating with its catalogue `idx`, dropping the ones not found.                                                                            |
+| [`split_title_year`](#flickpick.ratings.split_title_year)(text)                        | Split `"Toy Story (1995)"` into `("Toy Story", 1995)`.                                                                                             |
+| [`title_keys`](#flickpick.ratings.title_keys)(title, year)                       | Matching keys `"normalised title|year"` for a title and its alternates.                                                                            |
+| [`title_variants`](#flickpick.ratings.title_variants)(title)                         | The primary title plus any parenthesised alternates, normalised for matching.                                                                      |
 
 ### Classes
 
@@ -46,6 +47,14 @@ popular) row wins a title-key collision.
 
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
+
+### flickpick.ratings.count_matched(catalog, ratings)
+
+`(matched, total)`: how many of `ratings` name a catalogue item, counting
+repeats, as the Node CLI’s `note: <matched> of <total> ratings matched`.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
 
 ### flickpick.ratings.imdb_id(value)
 

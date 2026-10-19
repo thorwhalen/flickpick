@@ -137,6 +137,8 @@ and get 0.
 
 The top `query.k` unrated items for this user and query, explained.
 
+Refuses `k` below 1 and a negative `min_ratings` with the TypeScript messages.
+
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Recommendation`](#flickpick.score.Recommendation)]
 

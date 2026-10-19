@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "built_at": "2026-10-19T11:36:59Z",
+  "built_at": "2026-10-19T11:50:23Z",
   "package": {
     "name": "flickpick",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "display_name": "flickpick",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "7d2dfea8780b16ab8f7b3a341348b8ca08450746",
-    "short_commit": "7d2dfea",
+    "commit": "de0dc9e054dd077b9e7aceaec11a905d7399918a",
+    "short_commit": "de0dc9e",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/flickpick",
-    "commit_url": "https://github.com/thorwhalen/flickpick/commit/7d2dfea8780b16ab8f7b3a341348b8ca08450746",
+    "commit_url": "https://github.com/thorwhalen/flickpick/commit/de0dc9e054dd077b9e7aceaec11a905d7399918a",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/flickpick",
-    "sha": "7d2dfea8780b16ab8f7b3a341348b8ca08450746",
+    "sha": "de0dc9e054dd077b9e7aceaec11a905d7399918a",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "39245700449",
-    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/39245700449",
+    "run_id": "39247318742",
+    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/39247318742",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -55,21 +55,21 @@
     "docs_dir": "docsrc"
   },
   "site": {
-    "modules_documented": 12,
-    "objects_documented": 148
+    "modules_documented": 13,
+    "objects_documented": 150
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.6",
+    "latest": "0.0.7",
     "relation": "behind",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout 7d2dfea8780b16ab8f7b3a341348b8ca08450746\npip install \"epythet==0.2.18\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout de0dc9e054dd077b9e7aceaec11a905d7399918a\npip install \"epythet==0.2.18\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": false,
     "notes": [
-      "The documented version (0.0.5) is behind the latest release on PyPI (0.0.6): `pip install flickpick` gives newer code than these docs describe."
+      "The documented version (0.0.6) is behind the latest release on PyPI (0.0.7): `pip install flickpick` gives newer code than these docs describe."
     ]
   }
 }

@@ -35,20 +35,19 @@ generators have no TypeScript twin). `scipy` is imported only by [`agreement()`]
 
 ### Functions
 
-| [`agreement`](#flickpick.science.agreement)(ratings, catalog, \*[, min_points])     | Pearson, Spearman (average ranks) and the OLS line of the user's score on `mean_rating`, over the rated catalogue items that have one.                                                                                               |
-|----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`bootstrap_ci`](#flickpick.science.bootstrap_ci)(values, \*[, n_boot, level, seed])   | Percentile bootstrap interval of the mean of `values` (linear-interpolated quantiles; same draws as the TypeScript `bootstrapMeanCi`).                                                                                               |
-| [`check_count`](#flickpick.science.check_count)(name, value, minimum)                 | `value` as an `int`, or a `ValueError` with the message of the TypeScript `checkCount` when it is not a whole number of at least `minimum` (a whole float such as `2.0` passes, as it must in JavaScript, where it is the number 2). |
-| [`check_folds`](#flickpick.science.check_folds)(folds)                                | `folds` as an `int`, refused below [`MIN_FOLDS`](#flickpick.science.MIN_FOLDS) (#7).                                                                                                                                  |
-| [`cross_validated_fit`](#flickpick.science.cross_validated_fit)(ratings, catalog, \*[, ...])  | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.                                                                                                                                                          |
-| [`ease_scorer`](#flickpick.science.ease_scorer)(artifacts, ratings)                   | The EASE row sum ([`flickpick.score.score_cf()`](flickpick.score.html.md#flickpick.score.score_cf)), the default scorer.                                                                                         |
-| [`holdout_evaluate`](#flickpick.science.holdout_evaluate)(artifacts, ratings, \*[, ...])   | K-fold holdout of the user's liked items, scored over the full catalogue.                                                                                                                                                            |
-| [`mulberry32`](#flickpick.science.mulberry32)(seed)                                  | Seeded PRNG returning floats in `[0, 1)`; bit-identical to the TypeScript one.                                                                                                                                                       |
-| [`mulberry32_floats`](#flickpick.science.mulberry32_floats)(seed, n, \*[, start])           | Outputs <br/><br/>```<br/>``<br/>```<br/><br/>start .                                                                                                                                                                                |
-| [`popularity_scorer`](#flickpick.science.popularity_scorer)(artifacts, ratings)             | `log1p(n_ratings)`: the baseline every personal scorer should beat.                                                                                                                                                                  |
-| [`rank_unrated`](#flickpick.science.rank_unrated)(artifacts, scores, exclude, k)       | Top `k` rows by `scores`, skipping `exclude` and non-finite scores.                                                                                                                                                                  |
-| [`ranking_metrics`](#flickpick.science.ranking_metrics)(recommended_idx, held_out_idx, k) | Ranking metrics at `k` of one recommendation list against held-out items.                                                                                                                                                            |
-| [`shuffled`](#flickpick.science.shuffled)(items, random)                           | Fisher-Yates shuffle into a new list: `i` from `n - 1` down to 1 swaps `i` with `j = floor(random() * (i + 1))` (as the TypeScript `shuffled`).                                                                                      |
+| [`agreement`](#flickpick.science.agreement)(ratings, catalog, \*[, min_points])     | Pearson, Spearman (average ranks) and the OLS line of the user's score on `mean_rating`, over the rated catalogue items that have one.          |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`bootstrap_ci`](#flickpick.science.bootstrap_ci)(values, \*[, n_boot, level, seed])   | Percentile bootstrap interval of the mean of `values` (linear-interpolated quantiles; same draws as the TypeScript `bootstrapMeanCi`).          |
+| [`check_folds`](#flickpick.science.check_folds)(folds)                                | `folds` as an `int`, refused below [`MIN_FOLDS`](#flickpick.science.MIN_FOLDS) (#7).                                             |
+| [`cross_validated_fit`](#flickpick.science.cross_validated_fit)(ratings, catalog, \*[, ...])  | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.                                                                     |
+| [`ease_scorer`](#flickpick.science.ease_scorer)(artifacts, ratings)                   | The EASE row sum ([`flickpick.score.score_cf()`](flickpick.score.html.md#flickpick.score.score_cf)), the default scorer.    |
+| [`holdout_evaluate`](#flickpick.science.holdout_evaluate)(artifacts, ratings, \*[, ...])   | K-fold holdout of the user's liked items, scored over the full catalogue.                                                                       |
+| [`mulberry32`](#flickpick.science.mulberry32)(seed)                                  | Seeded PRNG returning floats in `[0, 1)`; bit-identical to the TypeScript one.                                                                  |
+| [`mulberry32_floats`](#flickpick.science.mulberry32_floats)(seed, n, \*[, start])           | Outputs <br/><br/>```<br/>``<br/>```<br/><br/>start .                                                                                           |
+| [`popularity_scorer`](#flickpick.science.popularity_scorer)(artifacts, ratings)             | `log1p(n_ratings)`: the baseline every personal scorer should beat.                                                                             |
+| [`rank_unrated`](#flickpick.science.rank_unrated)(artifacts, scores, exclude, k)       | Top `k` rows by `scores`, skipping `exclude` and non-finite scores.                                                                             |
+| [`ranking_metrics`](#flickpick.science.ranking_metrics)(recommended_idx, held_out_idx, k) | Ranking metrics at `k` of one recommendation list against held-out items.                                                                       |
+| [`shuffled`](#flickpick.science.shuffled)(items, random)                           | Fisher-Yates shuffle into a new list: `i` from `n - 1` down to 1 swaps `i` with `j = floor(random() * (i + 1))` (as the TypeScript `shuffled`). |
 
 ### flickpick.science.ITEM_METRICS *= ('recall', 'ndcg', 'precision')*
 
@@ -82,22 +81,6 @@ quantiles; same draws as the TypeScript `bootstrapMeanCi`).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
-
-### flickpick.science.check_count(name, value, minimum)
-
-`value` as an `int`, or a `ValueError` with the message of the TypeScript
-`checkCount` when it is not a whole number of at least `minimum` (a whole float
-such as `2.0` passes, as it must in JavaScript, where it is the number 2).
-
-```pycon
->>> check_count("folds", 1, 2)
-Traceback (most recent call last):
-  ...
-ValueError: folds must be an integer of at least 2; got 1
-```
-
-* **Return type:**
-  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ### flickpick.science.check_folds(folds)
 

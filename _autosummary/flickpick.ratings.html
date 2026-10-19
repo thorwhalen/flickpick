@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=282f96c0"></script>
+    <script src="../_static/documentation_options.js?v=1fd71caa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.5" />
+  <meta name="docsearch:version" content="0.0.6" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -322,6 +322,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="flickpick.html">flickpick</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="flickpick.artifacts.html">flickpick.artifacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.build.html">flickpick.build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.checks.html">flickpick.checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.data.html">flickpick.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.defaults.html">flickpick.defaults</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.ease.html">flickpick.ease</a></li>
@@ -412,22 +413,25 @@ that do not (Letterboxd, MovieLens) emit a prefixed reference instead – <code 
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.catalog_lookup" title="flickpick.ratings.catalog_lookup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">catalog_lookup</span></code></a>(catalog)</p></td>
 <td><p>Map every way a rating can name an item to its catalogue <code class="docutils literal notranslate"><span class="pre">idx</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.imdb_id" title="flickpick.ratings.imdb_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imdb_id</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.count_matched" title="flickpick.ratings.count_matched"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count_matched</span></code></a>(catalog, ratings)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">(matched,</span> <span class="pre">total)</span></code>: how many of <code class="docutils literal notranslate"><span class="pre">ratings</span></code> name a catalogue item, counting repeats, as the Node CLI's <code class="docutils literal notranslate"><span class="pre">note:</span> <span class="pre">&lt;matched&gt;</span> <span class="pre">of</span> <span class="pre">&lt;total&gt;</span> <span class="pre">ratings</span> <span class="pre">matched</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.imdb_id" title="flickpick.ratings.imdb_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">imdb_id</span></code></a>(value)</p></td>
 <td><p>Normalise an IMDb id given as <code class="docutils literal notranslate"><span class="pre">114369</span></code>, <code class="docutils literal notranslate"><span class="pre">'114369'</span></code> or <code class="docutils literal notranslate"><span class="pre">'tt0114369'</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.like_threshold" title="flickpick.ratings.like_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">like_threshold</span></code></a>(scores, *[, min_n, fallback])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.like_threshold" title="flickpick.ratings.like_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">like_threshold</span></code></a>(scores, *[, min_n, fallback])</p></td>
 <td><p>The user's median score, or <code class="docutils literal notranslate"><span class="pre">fallback</span></code> when they have fewer than <code class="docutils literal notranslate"><span class="pre">min_n</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.resolve_ratings" title="flickpick.ratings.resolve_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_ratings</span></code></a>(catalog, ratings)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.resolve_ratings" title="flickpick.ratings.resolve_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_ratings</span></code></a>(catalog, ratings)</p></td>
 <td><p>Pair each rating with its catalogue <code class="docutils literal notranslate"><span class="pre">idx</span></code>, dropping the ones not found.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.split_title_year" title="flickpick.ratings.split_title_year"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_title_year</span></code></a>(text)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.split_title_year" title="flickpick.ratings.split_title_year"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_title_year</span></code></a>(text)</p></td>
 <td><p>Split <code class="docutils literal notranslate"><span class="pre">&quot;Toy</span> <span class="pre">Story</span> <span class="pre">(1995)&quot;</span></code> into <code class="docutils literal notranslate"><span class="pre">(&quot;Toy</span> <span class="pre">Story&quot;,</span> <span class="pre">1995)</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.title_keys" title="flickpick.ratings.title_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_keys</span></code></a>(title, year)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.title_keys" title="flickpick.ratings.title_keys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_keys</span></code></a>(title, year)</p></td>
 <td><p>Matching keys <code class="docutils literal notranslate"><span class="pre">&quot;normalised</span> <span class="pre">title|year&quot;</span></code> for a title and its alternates.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.ratings.title_variants" title="flickpick.ratings.title_variants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_variants</span></code></a>(title)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.ratings.title_variants" title="flickpick.ratings.title_variants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_variants</span></code></a>(title)</p></td>
 <td><p>The primary title plus any parenthesised alternates, normalised for matching.</p></td>
 </tr>
 </tbody>
@@ -471,6 +475,18 @@ popular) row wins a title-key collision.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="flickpick.ratings.count_matched">
+<span class="sig-prename descclassname"><span class="pre">flickpick.ratings.</span></span><span class="sig-name descname"><span class="pre">count_matched</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/ratings.html#count_matched"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.ratings.count_matched" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">(matched,</span> <span class="pre">total)</span></code>: how many of <code class="docutils literal notranslate"><span class="pre">ratings</span></code> name a catalogue item, counting
+repeats, as the Node CLI’s <code class="docutils literal notranslate"><span class="pre">note:</span> <span class="pre">&lt;matched&gt;</span> <span class="pre">of</span> <span class="pre">&lt;total&gt;</span> <span class="pre">ratings</span> <span class="pre">matched</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -614,6 +630,7 @@ popular) row wins a title-key collision.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.Rating"><code class="docutils literal notranslate"><span class="pre">Rating</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.as_rating"><code class="docutils literal notranslate"><span class="pre">as_rating()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.catalog_lookup"><code class="docutils literal notranslate"><span class="pre">catalog_lookup()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.count_matched"><code class="docutils literal notranslate"><span class="pre">count_matched()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.imdb_id"><code class="docutils literal notranslate"><span class="pre">imdb_id()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.like_threshold"><code class="docutils literal notranslate"><span class="pre">like_threshold()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.ratings.resolve_ratings"><code class="docutils literal notranslate"><span class="pre">resolve_ratings()</span></code></a></li>

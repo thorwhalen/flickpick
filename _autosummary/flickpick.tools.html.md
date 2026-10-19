@@ -24,10 +24,21 @@ The command surface: plain functions returning JSON-able values (SSOT for the CL
 | [`evaluate`](#flickpick.tools.evaluate)([artifacts, ratings, folds, k, seed])    | Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit.                      |
 | [`recommend`](#flickpick.tools.recommend)([artifacts, ratings, mood, ...])        | Recommend `k` unrated films for the ratings in a CSV (any supported export).                          |
 
+### Exceptions
+
+| [`UsageError`](#flickpick.tools.UsageError)   | A command line that cannot run (a missing option): exit 2, as the Node CLI.   |
+|---------------------------------------------------------------|-------------------------------------------------------------------------------|
+
 ### flickpick.tools.CLI_CONFIG *= {'build': {'embeddings': {'action': <class 'argparse.BooleanOptionalAction'>, 'help': 'embed semantic_text (needs flickpick[embed])'}, 'n_items': {'help': 'number of most-rated films in the artifact set'}, 'out': {'help': 'output directory (default: <data home>/artifacts/<dataset>)'}, 'sample': {'help': 'build from ml-latest-small instead of ml-32m'}, 'topk': {'help': 'neighbours kept per item in the EASE matrix'}}, 'evaluate': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'folds': {'help': 'number of holdout folds'}, 'k': {'help': 'cutoff for the ranking metrics'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'seed': {'help': 'seed of the fold shuffle and the bootstrap (mulberry32)'}}, 'recommend': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'exclude_genres': {'action': 'append', 'help': 'drop films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'include_genres': {'action': 'append', 'help': 'keep films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'json': {'help': 'print full records as JSON'}, 'k': {'help': 'number of recommendations'}, 'mood': {'help': 'free-text mood, matched against the embeddings'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'year_max': {'help': 'latest release year'}, 'year_min': {'help': 'earliest release year'}}}*
 
 per-parameter argparse settings (help texts; repeatable genre options;
 –embeddings/–no-embeddings)
+
+### *exception* flickpick.tools.UsageError
+
+Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueError)
+
+A command line that cannot run (a missing option): exit 2, as the Node CLI.
 
 ### flickpick.tools.build(out=None, , sample=False, topk=100, n_items=10000, embeddings=True)
 

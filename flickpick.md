@@ -1,4 +1,4 @@
-> built 2026-10-19 11:36 UTC from 7d2dfea (main) · flickpick 0.0.5. Details: build_info.json
+> built 2026-10-19 11:50 UTC from de0dc9e (main) · flickpick 0.0.6. Details: build_info.json
 
 # index.html.md
 
@@ -261,6 +261,37 @@ One row per CF item (movieId, imdbId, tmdbId, title, genres, n_ratings, mean).
 
 * **Return type:**
   `DataFrame`
+
+
+# _autosummary/flickpick.checks.html.md
+
+# flickpick.checks
+
+Argument checks shared by the cores, with the messages of `js/src/checks.ts`.
+
+A refusal here is a `ValueError` whose text is the same in both languages (core
+contract), so the two CLIs print the same `flickpick: <message>` line.
+
+### Functions
+
+| [`check_count`](_autosummary/flickpick.checks.html.md#flickpick.checks.check_count)(name, value, minimum)   | `value` as an `int`, or a `ValueError` with the message of the TypeScript `checkCount` when it is not a whole number of at least `minimum` (a whole float such as `2.0` passes, as it must in JavaScript, where it is the number 2).   |
+|--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+### flickpick.checks.check_count(name, value, minimum)
+
+`value` as an `int`, or a `ValueError` with the message of the TypeScript
+`checkCount` when it is not a whole number of at least `minimum` (a whole float
+such as `2.0` passes, as it must in JavaScript, where it is the number 2).
+
+```pycon
+>>> check_count("folds", 1, 2)
+Traceback (most recent call last):
+  ...
+ValueError: folds must be an integer of at least 2; got 1
+```
+
+* **Return type:**
+  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 
 # _autosummary/flickpick.data.html.md
@@ -881,6 +912,8 @@ Read and parse a ratings CSV file.
 
 The top `query.k` unrated items for this user and query, explained.
 
+Refuses `k` below 1 and a negative `min_ratings` with the TypeScript messages.
+
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Recommendation`](_autosummary/flickpick.score.html.md#flickpick.score.Recommendation)]
 
@@ -935,6 +968,7 @@ The manifest’s `files` entry is (re)computed from the arrays.
 | [`artifacts`](_autosummary/flickpick.artifacts.html.md#module-flickpick.artifacts)   | Write and read an artifact set as specified in `docs/artifact-format.md`.           |
 |-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
 | [`build`](_autosummary/flickpick.build.html.md#module-flickpick.build)           | The build pipeline: MovieLens tables -> catalogue, sparse EASE matrix, embeddings.  |
+| [`checks`](_autosummary/flickpick.checks.html.md#module-flickpick.checks)         | Argument checks shared by the cores, with the messages of `js/src/checks.ts`.       |
 | [`data`](_autosummary/flickpick.data.html.md#module-flickpick.data)             | Download (with a cache) and parse the MovieLens datasets the build uses.            |
 | [`defaults`](_autosummary/flickpick.defaults.html.md#module-flickpick.defaults)     | Named defaults shared by the build pipeline, the scorer and the CLI.                |
 | [`ease`](_autosummary/flickpick.ease.html.md#module-flickpick.ease)             | EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.       |
@@ -1059,15 +1093,16 @@ that do not (Letterboxd, MovieLens) emit a prefixed reference instead – `ml:<m
 
 ### Functions
 
-| [`as_rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.as_rating)(x)                                  | Coerce a `Rating` or a mapping with the same keys into a `Rating`.            |
-|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| [`catalog_lookup`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.catalog_lookup)(catalog)                       | Map every way a rating can name an item to its catalogue `idx`.               |
-| [`imdb_id`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.imdb_id)(value)                                | Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.          |
-| [`like_threshold`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.like_threshold)(scores, \*[, min_n, fallback]) | The user's median score, or `fallback` when they have fewer than `min_n`.     |
-| [`resolve_ratings`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.resolve_ratings)(catalog, ratings)             | Pair each rating with its catalogue `idx`, dropping the ones not found.       |
-| [`split_title_year`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.split_title_year)(text)                        | Split `"Toy Story (1995)"` into `("Toy Story", 1995)`.                        |
-| [`title_keys`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.title_keys)(title, year)                       | Matching keys `"normalised title|year"` for a title and its alternates.       |
-| [`title_variants`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.title_variants)(title)                         | The primary title plus any parenthesised alternates, normalised for matching. |
+| [`as_rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.as_rating)(x)                                  | Coerce a `Rating` or a mapping with the same keys into a `Rating`.                                                                                 |
+|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`catalog_lookup`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.catalog_lookup)(catalog)                       | Map every way a rating can name an item to its catalogue `idx`.                                                                                    |
+| [`count_matched`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.count_matched)(catalog, ratings)               | `(matched, total)`: how many of `ratings` name a catalogue item, counting repeats, as the Node CLI's `note: <matched> of <total> ratings matched`. |
+| [`imdb_id`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.imdb_id)(value)                                | Normalise an IMDb id given as `114369`, `'114369'` or `'tt0114369'`.                                                                               |
+| [`like_threshold`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.like_threshold)(scores, \*[, min_n, fallback]) | The user's median score, or `fallback` when they have fewer than `min_n`.                                                                          |
+| [`resolve_ratings`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.resolve_ratings)(catalog, ratings)             | Pair each rating with its catalogue `idx`, dropping the ones not found.                                                                            |
+| [`split_title_year`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.split_title_year)(text)                        | Split `"Toy Story (1995)"` into `("Toy Story", 1995)`.                                                                                             |
+| [`title_keys`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.title_keys)(title, year)                       | Matching keys `"normalised title|year"` for a title and its alternates.                                                                            |
+| [`title_variants`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.title_variants)(title)                         | The primary title plus any parenthesised alternates, normalised for matching.                                                                      |
 
 ### Classes
 
@@ -1096,6 +1131,14 @@ popular) row wins a title-key collision.
 
 * **Return type:**
   [`dict`](https://docs.python.org/3/builtins/stdtypes.html#dict)[[`str`](https://docs.python.org/3/builtins/stdtypes.html#str), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
+
+### flickpick.ratings.count_matched(catalog, ratings)
+
+`(matched, total)`: how many of `ratings` name a catalogue item, counting
+repeats, as the Node CLI’s `note: <matched> of <total> ratings matched`.
+
+* **Return type:**
+  [`tuple`](https://docs.python.org/3/builtins/stdtypes.html#tuple)[[`int`](https://docs.python.org/3/builtins/functions.html#int), [`int`](https://docs.python.org/3/builtins/functions.html#int)]
 
 ### flickpick.ratings.imdb_id(value)
 
@@ -1205,20 +1248,19 @@ generators have no TypeScript twin). `scipy` is imported only by [`agreement()`]
 
 ### Functions
 
-| [`agreement`](_autosummary/flickpick.science.html.md#flickpick.science.agreement)(ratings, catalog, \*[, min_points])     | Pearson, Spearman (average ranks) and the OLS line of the user's score on `mean_rating`, over the rated catalogue items that have one.                                                                                               |
-|----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`bootstrap_ci`](_autosummary/flickpick.science.html.md#flickpick.science.bootstrap_ci)(values, \*[, n_boot, level, seed])   | Percentile bootstrap interval of the mean of `values` (linear-interpolated quantiles; same draws as the TypeScript `bootstrapMeanCi`).                                                                                               |
-| [`check_count`](_autosummary/flickpick.science.html.md#flickpick.science.check_count)(name, value, minimum)                 | `value` as an `int`, or a `ValueError` with the message of the TypeScript `checkCount` when it is not a whole number of at least `minimum` (a whole float such as `2.0` passes, as it must in JavaScript, where it is the number 2). |
-| [`check_folds`](_autosummary/flickpick.science.html.md#flickpick.science.check_folds)(folds)                                | `folds` as an `int`, refused below [`MIN_FOLDS`](_autosummary/flickpick.science.html.md#flickpick.science.MIN_FOLDS) (#7).                                                                                                                                  |
-| [`cross_validated_fit`](_autosummary/flickpick.science.html.md#flickpick.science.cross_validated_fit)(ratings, catalog, \*[, ...])  | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.                                                                                                                                                          |
-| [`ease_scorer`](_autosummary/flickpick.science.html.md#flickpick.science.ease_scorer)(artifacts, ratings)                   | The EASE row sum ([`flickpick.score.score_cf()`](_autosummary/flickpick.score.html.md#flickpick.score.score_cf)), the default scorer.                                                                                         |
-| [`holdout_evaluate`](_autosummary/flickpick.science.html.md#flickpick.science.holdout_evaluate)(artifacts, ratings, \*[, ...])   | K-fold holdout of the user's liked items, scored over the full catalogue.                                                                                                                                                            |
-| [`mulberry32`](_autosummary/flickpick.science.html.md#flickpick.science.mulberry32)(seed)                                  | Seeded PRNG returning floats in `[0, 1)`; bit-identical to the TypeScript one.                                                                                                                                                       |
-| [`mulberry32_floats`](_autosummary/flickpick.science.html.md#flickpick.science.mulberry32_floats)(seed, n, \*[, start])           | Outputs <br/><br/>```<br/>``<br/>```<br/><br/>start .                                                                                                                                                                                |
-| [`popularity_scorer`](_autosummary/flickpick.science.html.md#flickpick.science.popularity_scorer)(artifacts, ratings)             | `log1p(n_ratings)`: the baseline every personal scorer should beat.                                                                                                                                                                  |
-| [`rank_unrated`](_autosummary/flickpick.science.html.md#flickpick.science.rank_unrated)(artifacts, scores, exclude, k)       | Top `k` rows by `scores`, skipping `exclude` and non-finite scores.                                                                                                                                                                  |
-| [`ranking_metrics`](_autosummary/flickpick.science.html.md#flickpick.science.ranking_metrics)(recommended_idx, held_out_idx, k) | Ranking metrics at `k` of one recommendation list against held-out items.                                                                                                                                                            |
-| [`shuffled`](_autosummary/flickpick.science.html.md#flickpick.science.shuffled)(items, random)                           | Fisher-Yates shuffle into a new list: `i` from `n - 1` down to 1 swaps `i` with `j = floor(random() * (i + 1))` (as the TypeScript `shuffled`).                                                                                      |
+| [`agreement`](_autosummary/flickpick.science.html.md#flickpick.science.agreement)(ratings, catalog, \*[, min_points])     | Pearson, Spearman (average ranks) and the OLS line of the user's score on `mean_rating`, over the rated catalogue items that have one.          |
+|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`bootstrap_ci`](_autosummary/flickpick.science.html.md#flickpick.science.bootstrap_ci)(values, \*[, n_boot, level, seed])   | Percentile bootstrap interval of the mean of `values` (linear-interpolated quantiles; same draws as the TypeScript `bootstrapMeanCi`).          |
+| [`check_folds`](_autosummary/flickpick.science.html.md#flickpick.science.check_folds)(folds)                                | `folds` as an `int`, refused below [`MIN_FOLDS`](_autosummary/flickpick.science.html.md#flickpick.science.MIN_FOLDS) (#7).                                             |
+| [`cross_validated_fit`](_autosummary/flickpick.science.html.md#flickpick.science.cross_validated_fit)(ratings, catalog, \*[, ...])  | K-fold RMSE/MAE of a linear fit on `mean_rating` vs the user-mean baseline.                                                                     |
+| [`ease_scorer`](_autosummary/flickpick.science.html.md#flickpick.science.ease_scorer)(artifacts, ratings)                   | The EASE row sum ([`flickpick.score.score_cf()`](_autosummary/flickpick.score.html.md#flickpick.score.score_cf)), the default scorer.    |
+| [`holdout_evaluate`](_autosummary/flickpick.science.html.md#flickpick.science.holdout_evaluate)(artifacts, ratings, \*[, ...])   | K-fold holdout of the user's liked items, scored over the full catalogue.                                                                       |
+| [`mulberry32`](_autosummary/flickpick.science.html.md#flickpick.science.mulberry32)(seed)                                  | Seeded PRNG returning floats in `[0, 1)`; bit-identical to the TypeScript one.                                                                  |
+| [`mulberry32_floats`](_autosummary/flickpick.science.html.md#flickpick.science.mulberry32_floats)(seed, n, \*[, start])           | Outputs <br/><br/>```<br/>``<br/>```<br/><br/>start .                                                                                           |
+| [`popularity_scorer`](_autosummary/flickpick.science.html.md#flickpick.science.popularity_scorer)(artifacts, ratings)             | `log1p(n_ratings)`: the baseline every personal scorer should beat.                                                                             |
+| [`rank_unrated`](_autosummary/flickpick.science.html.md#flickpick.science.rank_unrated)(artifacts, scores, exclude, k)       | Top `k` rows by `scores`, skipping `exclude` and non-finite scores.                                                                             |
+| [`ranking_metrics`](_autosummary/flickpick.science.html.md#flickpick.science.ranking_metrics)(recommended_idx, held_out_idx, k) | Ranking metrics at `k` of one recommendation list against held-out items.                                                                       |
+| [`shuffled`](_autosummary/flickpick.science.html.md#flickpick.science.shuffled)(items, random)                           | Fisher-Yates shuffle into a new list: `i` from `n - 1` down to 1 swaps `i` with `j = floor(random() * (i + 1))` (as the TypeScript `shuffled`). |
 
 ### flickpick.science.ITEM_METRICS *= ('recall', 'ndcg', 'precision')*
 
@@ -1252,22 +1294,6 @@ quantiles; same draws as the TypeScript `bootstrapMeanCi`).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`float`](https://docs.python.org/3/builtins/functions.html#float)]
-
-### flickpick.science.check_count(name, value, minimum)
-
-`value` as an `int`, or a `ValueError` with the message of the TypeScript
-`checkCount` when it is not a whole number of at least `minimum` (a whole float
-such as `2.0` passes, as it must in JavaScript, where it is the number 2).
-
-```pycon
->>> check_count("folds", 1, 2)
-Traceback (most recent call last):
-  ...
-ValueError: folds must be an integer of at least 2; got 1
-```
-
-* **Return type:**
-  [`int`](https://docs.python.org/3/builtins/functions.html#int)
 
 ### flickpick.science.check_folds(folds)
 
@@ -1523,6 +1549,8 @@ and get 0.
 
 The top `query.k` unrated items for this user and query, explained.
 
+Refuses `k` below 1 and a negative `min_ratings` with the TypeScript messages.
+
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Recommendation`](_autosummary/flickpick.score.html.md#flickpick.score.Recommendation)]
 
@@ -1576,10 +1604,21 @@ The command surface: plain functions returning JSON-able values (SSOT for the CL
 | [`evaluate`](_autosummary/flickpick.tools.html.md#flickpick.tools.evaluate)([artifacts, ratings, folds, k, seed])    | Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit.                      |
 | [`recommend`](_autosummary/flickpick.tools.html.md#flickpick.tools.recommend)([artifacts, ratings, mood, ...])        | Recommend `k` unrated films for the ratings in a CSV (any supported export).                          |
 
+### Exceptions
+
+| [`UsageError`](_autosummary/flickpick.tools.html.md#flickpick.tools.UsageError)   | A command line that cannot run (a missing option): exit 2, as the Node CLI.   |
+|---------------------------------------------------------------|-------------------------------------------------------------------------------|
+
 ### flickpick.tools.CLI_CONFIG *= {'build': {'embeddings': {'action': <class 'argparse.BooleanOptionalAction'>, 'help': 'embed semantic_text (needs flickpick[embed])'}, 'n_items': {'help': 'number of most-rated films in the artifact set'}, 'out': {'help': 'output directory (default: <data home>/artifacts/<dataset>)'}, 'sample': {'help': 'build from ml-latest-small instead of ml-32m'}, 'topk': {'help': 'neighbours kept per item in the EASE matrix'}}, 'evaluate': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'folds': {'help': 'number of holdout folds'}, 'k': {'help': 'cutoff for the ranking metrics'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'seed': {'help': 'seed of the fold shuffle and the bootstrap (mulberry32)'}}, 'recommend': {'artifacts': {'help': 'artifact set directory (default: the latest one built in the data home)'}, 'exclude_genres': {'action': 'append', 'help': 'drop films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'include_genres': {'action': 'append', 'help': 'keep films with any of these genres (repeatable)', 'metavar': 'GENRE'}, 'json': {'help': 'print full records as JSON'}, 'k': {'help': 'number of recommendations'}, 'mood': {'help': 'free-text mood, matched against the embeddings'}, 'ratings': {'help': 'ratings CSV: Letterboxd, IMDb, MovieLens or flickpick export'}, 'year_max': {'help': 'latest release year'}, 'year_min': {'help': 'earliest release year'}}}*
 
 per-parameter argparse settings (help texts; repeatable genre options;
 –embeddings/–no-embeddings)
+
+### *exception* flickpick.tools.UsageError
+
+Bases: [`ValueError`](https://docs.python.org/3/builtins/exceptions.html#ValueError)
+
+A command line that cannot run (a missing option): exit 2, as the Node CLI.
 
 ### flickpick.tools.build(out=None, , sample=False, topk=100, n_items=10000, embeddings=True)
 
@@ -1626,18 +1665,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-19 11:36 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/7d2dfea8780b16ab8f7b3a341348b8ca08450746"><code>7d2dfea</code></a> on branch <code>main</code>, for **flickpick 0.0.5** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 11:50 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/de0dc9e054dd077b9e7aceaec11a905d7399918a"><code>de0dc9e</code></a> on branch <code>main</code>, for **flickpick 0.0.6** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.5) is behind the latest release on PyPI (0.0.6): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.6) is behind the latest release on PyPI (0.0.7): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/7d2dfea8780b16ab8f7b3a341348b8ca08450746"><code>7d2dfea8780b16ab8f7b3a341348b8ca08450746</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/de0dc9e054dd077b9e7aceaec11a905d7399918a"><code>de0dc9e054dd077b9e7aceaec11a905d7399918a</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1648,9 +1687,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39245700449">39245700449</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39247318742">39247318742</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>7d2dfea8780b16ab8f7b3a341348b8ca08450746</code> (in the history of the built commit) |
+| Event commit | <code>de0dc9e054dd077b9e7aceaec11a905d7399918a</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1675,13 +1714,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.6/">0.0.6</a>, newer than the documented version (0.0.5).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.7/">0.0.7</a>, newer than the documented version (0.0.6).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 7d2dfea8780b16ab8f7b3a341348b8ca08450746
+git checkout de0dc9e054dd077b9e7aceaec11a905d7399918a
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=282f96c0"></script>
+    <script src="../_static/documentation_options.js?v=1fd71caa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.5" />
+  <meta name="docsearch:version" content="0.0.6" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -322,6 +322,7 @@
 <li class="toctree-l1 current active has-children"><a aria-current="page" class="current reference internal" href="#">flickpick</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.artifacts.html">flickpick.artifacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.build.html">flickpick.build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.checks.html">flickpick.checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.data.html">flickpick.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.defaults.html">flickpick.defaults</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.ease.html">flickpick.ease</a></li>
@@ -917,6 +918,7 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <dt class="sig sig-object py" id="flickpick.recommend">
 <span class="sig-prename descclassname"><span class="pre">flickpick.</span></span><span class="sig-name descname"><span class="pre">recommend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifacts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">embed_query&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_because</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/score.html#recommend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.recommend" title="Link to this definition">#</a></dt>
 <dd><p>The top <code class="docutils literal notranslate"><span class="pre">query.k</span></code> unrated items for this user and query, explained.</p>
+<p>Refuses <code class="docutils literal notranslate"><span class="pre">k</span></code> below 1 and a negative <code class="docutils literal notranslate"><span class="pre">min_ratings</span></code> with the TypeScript messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.score.html#flickpick.score.Recommendation" title="flickpick.score.Recommendation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Recommendation</span></code></a>]</span></p>
@@ -1001,31 +1003,34 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <tr class="row-even"><td><p><a class="reference internal" href="flickpick.build.html#module-flickpick.build" title="flickpick.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a></p></td>
 <td><p>The build pipeline: MovieLens tables -&gt; catalogue, sparse EASE matrix, embeddings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.data.html#module-flickpick.data" title="flickpick.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.checks.html#module-flickpick.checks" title="flickpick.checks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">checks</span></code></a></p></td>
+<td><p>Argument checks shared by the cores, with the messages of <code class="docutils literal notranslate"><span class="pre">js/src/checks.ts</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.data.html#module-flickpick.data" title="flickpick.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
 <td><p>Download (with a cache) and parse the MovieLens datasets the build uses.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="flickpick.defaults.html#module-flickpick.defaults" title="flickpick.defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defaults</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.defaults.html#module-flickpick.defaults" title="flickpick.defaults"><code class="xref py py-obj docutils literal notranslate"><span class="pre">defaults</span></code></a></p></td>
 <td><p>Named defaults shared by the build pipeline, the scorer and the CLI.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.ease.html#module-flickpick.ease" title="flickpick.ease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.ease.html#module-flickpick.ease" title="flickpick.ease"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease</span></code></a></p></td>
 <td><p>EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="flickpick.embedding.html#module-flickpick.embedding" title="flickpick.embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.embedding.html#module-flickpick.embedding" title="flickpick.embedding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">embedding</span></code></a></p></td>
 <td><p>Sentence embeddings of catalogue text and of mood queries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.importers.html#module-flickpick.importers" title="flickpick.importers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importers</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.importers.html#module-flickpick.importers" title="flickpick.importers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">importers</span></code></a></p></td>
 <td><p>Parse ratings exports into <code class="docutils literal notranslate"><span class="pre">Rating</span></code> lists on the canonical 0-100 scale.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="flickpick.ratings.html#module-flickpick.ratings" title="flickpick.ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ratings</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.ratings.html#module-flickpick.ratings" title="flickpick.ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ratings</span></code></a></p></td>
 <td><p>The canonical <code class="docutils literal notranslate"><span class="pre">Rating</span></code> type, and how ratings are joined to a catalogue.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.science.html#module-flickpick.science" title="flickpick.science"><code class="xref py py-obj docutils literal notranslate"><span class="pre">science</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.science.html#module-flickpick.science" title="flickpick.science"><code class="xref py py-obj docutils literal notranslate"><span class="pre">science</span></code></a></p></td>
 <td><p>Personal evaluation and agreement statistics (&quot;for scientists&quot;).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="flickpick.score.html#module-flickpick.score" title="flickpick.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.score.html#module-flickpick.score" title="flickpick.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a></p></td>
 <td><p>Score and recommend over an artifact set (<code class="docutils literal notranslate"><span class="pre">docs/core-contract.md</span></code>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="flickpick.tools.html#module-flickpick.tools" title="flickpick.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tools</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="flickpick.tools.html#module-flickpick.tools" title="flickpick.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tools</span></code></a></p></td>
 <td><p>The command surface: plain functions returning JSON-able values (SSOT for the CLI).</p></td>
 </tr>
 </tbody>

@@ -10,6 +10,7 @@
 - [flickpick](_autosummary/flickpick.html.md): flickpick: a personal movie recommender (Python half: build pipeline and scorer).
 - [flickpick.artifacts](_autosummary/flickpick.artifacts.html.md): Write and read an artifact set as specified in &#96;docs/artifact-format.md&#96;.
 - [flickpick.build](_autosummary/flickpick.build.html.md): The build pipeline: MovieLens tables -&gt; catalogue, sparse EASE matrix, embeddings.
+- [flickpick.checks](_autosummary/flickpick.checks.html.md): Argument checks shared by the cores, with the messages of &#96;js/src/checks.ts&#96;.
 - [flickpick.data](_autosummary/flickpick.data.html.md): Download (with a cache) and parse the MovieLens datasets the build uses.
 - [flickpick.defaults](_autosummary/flickpick.defaults.html.md): Named defaults shared by the build pipeline, the scorer and the CLI.
 - [flickpick.ease](_autosummary/flickpick.ease.html.md): EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.
@@ -20,7 +21,7 @@
 - [flickpick.score](_autosummary/flickpick.score.html.md): Score and recommend over an artifact set (&#96;docs/core-contract.md&#96;).
 - [flickpick.tools](_autosummary/flickpick.tools.html.md): The command surface: plain functions returning JSON-able values (SSOT for the CLI).
 - [For AI agents](ai-agents.html.md): &#96;flickpick&#96; ships artifacts for coding agents alongside its code. This page lists
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-19 11:36 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-10-19 11:50 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 

@@ -18,7 +18,6 @@ flickpick.science
    
       agreement
       bootstrap_ci
-      check_count
       check_folds
       cross_validated_fit
       ease_scorer

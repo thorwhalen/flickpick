@@ -59,6 +59,7 @@
 
    artifacts
    build
+   checks
    data
    defaults
    ease

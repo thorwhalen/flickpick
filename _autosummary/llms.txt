@@ -8,6 +8,7 @@
 - [flickpick](flickpick.html.md): flickpick: a personal movie recommender (Python half: build pipeline and scorer).
 - [flickpick.artifacts](flickpick.artifacts.html.md): Write and read an artifact set as specified in &#96;docs/artifact-format.md&#96;.
 - [flickpick.build](flickpick.build.html.md): The build pipeline: MovieLens tables -&gt; catalogue, sparse EASE matrix, embeddings.
+- [flickpick.checks](flickpick.checks.html.md): Argument checks shared by the cores, with the messages of &#96;js/src/checks.ts&#96;.
 - [flickpick.data](flickpick.data.html.md): Download (with a cache) and parse the MovieLens datasets the build uses.
 - [flickpick.defaults](flickpick.defaults.html.md): Named defaults shared by the build pipeline, the scorer and the CLI.
 - [flickpick.ease](flickpick.ease.html.md): EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.

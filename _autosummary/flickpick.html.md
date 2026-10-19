@@ -343,6 +343,8 @@ Read and parse a ratings CSV file.
 
 The top `query.k` unrated items for this user and query, explained.
 
+Refuses `k` below 1 and a negative `min_ratings` with the TypeScript messages.
+
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Recommendation`](flickpick.score.html.md#flickpick.score.Recommendation)]
 
@@ -397,6 +399,7 @@ The manifest’s `files` entry is (re)computed from the arrays.
 | [`artifacts`](flickpick.artifacts.html.md#module-flickpick.artifacts)   | Write and read an artifact set as specified in `docs/artifact-format.md`.           |
 |-----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
 | [`build`](flickpick.build.html.md#module-flickpick.build)           | The build pipeline: MovieLens tables -> catalogue, sparse EASE matrix, embeddings.  |
+| [`checks`](flickpick.checks.html.md#module-flickpick.checks)         | Argument checks shared by the cores, with the messages of `js/src/checks.ts`.       |
 | [`data`](flickpick.data.html.md#module-flickpick.data)             | Download (with a cache) and parse the MovieLens datasets the build uses.            |
 | [`defaults`](flickpick.defaults.html.md#module-flickpick.defaults)     | Named defaults shared by the build pipeline, the scorer and the CLI.                |
 | [`ease`](flickpick.ease.html.md#module-flickpick.ease)             | EASE (Steck 2019): a closed-form linear item-item model, sparsified to top-k.       |

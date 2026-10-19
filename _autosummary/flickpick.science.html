@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=282f96c0"></script>
+    <script src="../_static/documentation_options.js?v=1fd71caa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.5" />
+  <meta name="docsearch:version" content="0.0.6" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -322,6 +322,7 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="flickpick.html">flickpick</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="flickpick.artifacts.html">flickpick.artifacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.build.html">flickpick.build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flickpick.checks.html">flickpick.checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.data.html">flickpick.data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.defaults.html">flickpick.defaults</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flickpick.ease.html">flickpick.ease</a></li>
@@ -441,37 +442,34 @@ generators have no TypeScript twin). <code class="docutils literal notranslate">
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.bootstrap_ci" title="flickpick.science.bootstrap_ci"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bootstrap_ci</span></code></a>(values, *[, n_boot, level, seed])</p></td>
 <td><p>Percentile bootstrap interval of the mean of <code class="docutils literal notranslate"><span class="pre">values</span></code> (linear-interpolated quantiles; same draws as the TypeScript <code class="docutils literal notranslate"><span class="pre">bootstrapMeanCi</span></code>).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.check_count" title="flickpick.science.check_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_count</span></code></a>(name, value, minimum)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">value</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, or a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> with the message of the TypeScript <code class="docutils literal notranslate"><span class="pre">checkCount</span></code> when it is not a whole number of at least <code class="docutils literal notranslate"><span class="pre">minimum</span></code> (a whole float such as <code class="docutils literal notranslate"><span class="pre">2.0</span></code> passes, as it must in JavaScript, where it is the number 2).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.check_folds" title="flickpick.science.check_folds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_folds</span></code></a>(folds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.check_folds" title="flickpick.science.check_folds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_folds</span></code></a>(folds)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">folds</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, refused below <a class="reference internal" href="#flickpick.science.MIN_FOLDS" title="flickpick.science.MIN_FOLDS"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_FOLDS</span></code></a> (#7).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.cross_validated_fit" title="flickpick.science.cross_validated_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validated_fit</span></code></a>(ratings, catalog, *[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.cross_validated_fit" title="flickpick.science.cross_validated_fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_validated_fit</span></code></a>(ratings, catalog, *[, ...])</p></td>
 <td><p>K-fold RMSE/MAE of a linear fit on <code class="docutils literal notranslate"><span class="pre">mean_rating</span></code> vs the user-mean baseline.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.ease_scorer" title="flickpick.science.ease_scorer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease_scorer</span></code></a>(artifacts, ratings)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.ease_scorer" title="flickpick.science.ease_scorer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ease_scorer</span></code></a>(artifacts, ratings)</p></td>
 <td><p>The EASE row sum (<a class="reference internal" href="flickpick.score.html#flickpick.score.score_cf" title="flickpick.score.score_cf"><code class="xref py py-func docutils literal notranslate"><span class="pre">flickpick.score.score_cf()</span></code></a>), the default scorer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.holdout_evaluate" title="flickpick.science.holdout_evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">holdout_evaluate</span></code></a>(artifacts, ratings, *[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.holdout_evaluate" title="flickpick.science.holdout_evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">holdout_evaluate</span></code></a>(artifacts, ratings, *[, ...])</p></td>
 <td><p>K-fold holdout of the user's liked items, scored over the full catalogue.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.mulberry32" title="flickpick.science.mulberry32"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mulberry32</span></code></a>(seed)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.mulberry32" title="flickpick.science.mulberry32"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mulberry32</span></code></a>(seed)</p></td>
 <td><p>Seeded PRNG returning floats in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1)</span></code>; bit-identical to the TypeScript one.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.mulberry32_floats" title="flickpick.science.mulberry32_floats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mulberry32_floats</span></code></a>(seed, n, *[, start])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.mulberry32_floats" title="flickpick.science.mulberry32_floats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mulberry32_floats</span></code></a>(seed, n, *[, start])</p></td>
 <td><p>Outputs <a href="#id1"><span class="problematic" id="id2">``</span></a>start .</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.popularity_scorer" title="flickpick.science.popularity_scorer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">popularity_scorer</span></code></a>(artifacts, ratings)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.popularity_scorer" title="flickpick.science.popularity_scorer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">popularity_scorer</span></code></a>(artifacts, ratings)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">log1p(n_ratings)</span></code>: the baseline every personal scorer should beat.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.rank_unrated" title="flickpick.science.rank_unrated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rank_unrated</span></code></a>(artifacts, scores, exclude, k)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.rank_unrated" title="flickpick.science.rank_unrated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rank_unrated</span></code></a>(artifacts, scores, exclude, k)</p></td>
 <td><p>Top <code class="docutils literal notranslate"><span class="pre">k</span></code> rows by <code class="docutils literal notranslate"><span class="pre">scores</span></code>, skipping <code class="docutils literal notranslate"><span class="pre">exclude</span></code> and non-finite scores.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.ranking_metrics" title="flickpick.science.ranking_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ranking_metrics</span></code></a>(recommended_idx, held_out_idx, k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.ranking_metrics" title="flickpick.science.ranking_metrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ranking_metrics</span></code></a>(recommended_idx, held_out_idx, k)</p></td>
 <td><p>Ranking metrics at <code class="docutils literal notranslate"><span class="pre">k</span></code> of one recommendation list against held-out items.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.science.shuffled" title="flickpick.science.shuffled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffled</span></code></a>(items, random)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#flickpick.science.shuffled" title="flickpick.science.shuffled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shuffled</span></code></a>(items, random)</p></td>
 <td><p>Fisher-Yates shuffle into a new list: <code class="docutils literal notranslate"><span class="pre">i</span></code> from <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">-</span> <span class="pre">1</span></code> down to 1 swaps <code class="docutils literal notranslate"><span class="pre">i</span></code> with <code class="docutils literal notranslate"><span class="pre">j</span> <span class="pre">=</span> <span class="pre">floor(random()</span> <span class="pre">*</span> <span class="pre">(i</span> <span class="pre">+</span> <span class="pre">1))</span></code> (as the TypeScript <code class="docutils literal notranslate"><span class="pre">shuffled</span></code>).</p></td>
 </tr>
 </tbody>
@@ -519,25 +517,6 @@ quantiles; same draws as the TypeScript <code class="docutils literal notranslat
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="flickpick.science.check_count">
-<span class="sig-prename descclassname"><span class="pre">flickpick.science.</span></span><span class="sig-name descname"><span class="pre">check_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimum</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/science.html#check_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.science.check_count" title="Link to this definition">#</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">value</span></code> as an <code class="docutils literal notranslate"><span class="pre">int</span></code>, or a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> with the message of the TypeScript
-<code class="docutils literal notranslate"><span class="pre">checkCount</span></code> when it is not a whole number of at least <code class="docutils literal notranslate"><span class="pre">minimum</span></code> (a whole float
-such as <code class="docutils literal notranslate"><span class="pre">2.0</span></code> passes, as it must in JavaScript, where it is the number 2).</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">check_count</span><span class="p">(</span><span class="s2">"folds"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-<span class="w">  </span><span class="c">...</span>
-<span class="gr">ValueError</span>: <span class="n">folds must be an integer of at least 2; got 1</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -739,7 +718,6 @@ items for recall, NDCG and precision; <code class="docutils literal notranslate"
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.MIN_K"><code class="docutils literal notranslate"><span class="pre">MIN_K</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.agreement"><code class="docutils literal notranslate"><span class="pre">agreement()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.bootstrap_ci"><code class="docutils literal notranslate"><span class="pre">bootstrap_ci()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.check_count"><code class="docutils literal notranslate"><span class="pre">check_count()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.check_folds"><code class="docutils literal notranslate"><span class="pre">check_folds()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.cross_validated_fit"><code class="docutils literal notranslate"><span class="pre">cross_validated_fit()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flickpick.science.ease_scorer"><code class="docutils literal notranslate"><span class="pre">ease_scorer()</span></code></a></li>
