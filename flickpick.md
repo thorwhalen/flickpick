@@ -1,4 +1,4 @@
-> built 2026-10-19 12:06 UTC from 73803f5 (main) · flickpick 0.0.7. Details: build_info.json
+> built 2026-10-19 12:14 UTC from f97619e (main) · flickpick 0.0.8. Details: build_info.json
 
 # index.html.md
 
@@ -272,10 +272,19 @@ Argument checks shared by the cores, with the messages of `js/src/checks.ts`.
 A refusal here is a `ValueError` whose text is the same in both languages (core
 contract), so the two CLIs print the same `flickpick: <message>` line.
 
+### Module Attributes
+
+| [`MAX_COUNT`](_autosummary/flickpick.checks.html.md#flickpick.checks.MAX_COUNT)   | the largest integer both languages hold exactly (`Number.MAX_SAFE_INTEGER`, 2^53 - 1)   |
+|--------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+
 ### Functions
 
 | [`check_count`](_autosummary/flickpick.checks.html.md#flickpick.checks.check_count)(name, value, minimum)   | `value` as an `int`, or a `ValueError` with the message of the TypeScript `checkCount` when it is not a whole number of at least `minimum` (a whole float such as `2.0` passes, as it must in JavaScript, where it is the number 2).   |
 |--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+### flickpick.checks.MAX_COUNT *= 9007199254740991*
+
+the largest integer both languages hold exactly (`Number.MAX_SAFE_INTEGER`, 2^53 - 1)
 
 ### flickpick.checks.check_count(name, value, minimum)
 
@@ -283,11 +292,18 @@ contract), so the two CLIs print the same `flickpick: <message>` line.
 `checkCount` when it is not a whole number of at least `minimum` (a whole float
 such as `2.0` passes, as it must in JavaScript, where it is the number 2).
 
+Beyond [`MAX_COUNT`](_autosummary/flickpick.checks.html.md#flickpick.checks.MAX_COUNT) the refusal names no value: JavaScript cannot print such an
+integer exactly, and the message must be the same in both languages (#13).
+
 ```pycon
 >>> check_count("folds", 1, 2)
 Traceback (most recent call last):
   ...
 ValueError: folds must be an integer of at least 2; got 1
+>>> check_count("k", 10**20, 1)
+Traceback (most recent call last):
+  ...
+ValueError: k must be an integer of at most 9007199254740991 in absolute value
 ```
 
 * **Return type:**
@@ -1667,18 +1683,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-19 12:06 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/73803f59e9f5c683c6a914eef0494e1c38f719d7"><code>73803f5</code></a> on branch <code>main</code>, for **flickpick 0.0.7** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 12:14 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/f97619ec0df6b7702289ef6438a6036a4c1c2d27"><code>f97619e</code></a> on branch <code>main</code>, for **flickpick 0.0.8** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.7) is behind the latest release on PyPI (0.0.8): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.8) is behind the latest release on PyPI (0.0.9): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/73803f59e9f5c683c6a914eef0494e1c38f719d7"><code>73803f59e9f5c683c6a914eef0494e1c38f719d7</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/f97619ec0df6b7702289ef6438a6036a4c1c2d27"><code>f97619ec0df6b7702289ef6438a6036a4c1c2d27</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1689,9 +1705,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39249274356">39249274356</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39250301976">39250301976</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>73803f59e9f5c683c6a914eef0494e1c38f719d7</code> (in the history of the built commit) |
+| Event commit | <code>f97619ec0df6b7702289ef6438a6036a4c1c2d27</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1716,13 +1732,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.8/">0.0.8</a>, newer than the documented version (0.0.7).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.9/">0.0.9</a>, newer than the documented version (0.0.8).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 73803f59e9f5c683c6a914eef0494e1c38f719d7
+git checkout f97619ec0df6b7702289ef6438a6036a4c1c2d27
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

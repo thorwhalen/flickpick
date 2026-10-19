@@ -4,6 +4,12 @@ flickpick.checks
 .. automodule:: flickpick.checks
 
    
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MAX_COUNT
+   
    .. rubric:: Functions
 
    .. autosummary::
