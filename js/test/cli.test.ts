@@ -88,8 +88,8 @@ describe('flickpick CLI', () => {
     expect(stderr).toBe(`flickpick: k must be an integer of at least 1; got ${k}\n`);
   });
 
-  it('a count beyond 2^53 is refused without its value, as in the Python CLI (#13)', async () => {
-    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--k', '99999999999999999999');
+  it.each(['99999999999999999999', `1${'0'.repeat(400)}`, `-1${'0'.repeat(400)}`])('a count beyond 2^53 (%s) is refused without its value, as in the Python CLI (#13)', async (k) => {
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, `--k=${k}`);
     expect(code).toBe(1);
     expect(stderr).toBe('flickpick: k must be an integer of at most 9007199254740991 in absolute value\n');
   });

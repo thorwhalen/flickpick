@@ -33,7 +33,8 @@ def check_count(name: str, value, minimum: int) -> int:
         whole = False
     else:  # an int is whole however large; float() of one past 1e308 would overflow
         whole = isinstance(value, (int, np.integer)) or float(value).is_integer()
-    if whole and abs(value) > MAX_COUNT:
+    # compare as a Python int: exact for np.float32 and np.int64(-2**63) alike
+    if whole and abs(int(value)) > MAX_COUNT:
         raise ValueError(
             f"{name} must be an integer of at most {MAX_COUNT} in absolute value"
         )
