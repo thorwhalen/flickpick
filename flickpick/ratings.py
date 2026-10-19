@@ -22,6 +22,9 @@ TMDB_PREFIX = "tmdb:"
 _YEAR_SUFFIX = re.compile(r"\s*\((\d{4})(?:[-–]\d{0,4})?\)\s*$")
 _PARENTHETICAL = re.compile(r"\s*\(([^()]*)\)")
 _AKA = re.compile(r"^(?:a\.k\.a\.|aka)\s+", re.IGNORECASE)
+#: an ``item_id`` that names one film: an IMDb id, ``ml:<id>`` or ``tmdb:<id>``
+#: (``CATALOGUE_ID`` in ``js/src/importers.ts``)
+_CATALOGUE_ID = re.compile(r"^(?:tt\d+|ml:\d+|tmdb:\d+)$")
 
 
 @dataclass(frozen=True)
@@ -51,8 +54,10 @@ def as_rating(x) -> Rating:
 def imdb_id(value) -> str | None:
     """Normalise an IMDb id given as ``114369``, ``'114369'`` or ``'tt0114369'``.
 
-    >>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678)
-    ('tt0114369', 'tt0114369', None, 'tt12345678')
+    ``0`` names no film and gives ``None``, as the TypeScript ``normalizeImdbId``.
+
+    >>> imdb_id(114369), imdb_id('tt0114369'), imdb_id(''), imdb_id(12345678), imdb_id(0)
+    ('tt0114369', 'tt0114369', None, 'tt12345678', None)
     """
     if value is None:
         return None
@@ -63,6 +68,8 @@ def imdb_id(value) -> str | None:
         s = s[len(IMDB_PREFIX) :]
     if not s.isdigit():
         raise ValueError(f"Not an IMDb id: {value!r}")
+    if int(s) == 0:
+        return None
     return f"{IMDB_PREFIX}{int(s):0{IMDB_DIGITS}d}"
 
 
@@ -122,8 +129,16 @@ def catalog_lookup(catalog: Sequence[Mapping]) -> dict[str, int]:
 
 
 def _rating_idx(rating: Rating, lookup: Mapping[str, int]) -> int | None:
-    if rating.item_id and rating.item_id in lookup:
+    """The catalogue ``idx`` a rating names, or ``None``.
+
+    An id is authoritative (#12): a rating whose ``item_id`` is an IMDb, ``ml:`` or
+    ``tmdb:`` id matches by that id or not at all, never by a same-title row. Only a
+    rating without one (Letterboxd) is matched by title and year.
+    """
+    if rating.item_id in lookup:
         return lookup[rating.item_id]
+    if _CATALOGUE_ID.match(rating.item_id or ""):
+        return None
     if rating.title:
         for key in title_keys(*split_title_year(rating.title)):
             if key in lookup:

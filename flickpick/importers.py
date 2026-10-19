@@ -143,7 +143,7 @@ def parse_movielens(csv_text: str, *, user_id=None) -> list[Rating]:
 
 
 def _flickpick_id(row: dict) -> str:
-    if not _blank(row.get("imdb_id")):
+    if not _blank(row.get("imdb_id")) and imdb_id(row["imdb_id"]):
         return imdb_id(row["imdb_id"])
     if not _blank(row.get("movie_id")):
         return f"{ML_PREFIX}{int(row['movie_id'])}"

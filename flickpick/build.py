@@ -74,6 +74,7 @@ def select_items(ml: MovieLens, *, n_items: int) -> pd.DataFrame:
         stats.join(ml.links.set_index("movieId"), how="inner")
         .join(ml.movies.set_index("movieId"), how="inner")
         .dropna(subset=["imdbId"])
+        .loc[lambda d: d["imdbId"] != 0]  # 0 names no film (ratings.imdb_id gives None)
         .reset_index()
         .sort_values(["n_ratings", "movieId"], ascending=[False, True])
     )

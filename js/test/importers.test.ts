@@ -169,6 +169,34 @@ describe('ids and resolution', () => {
   });
 });
 
+describe('an id is authoritative (#12)', () => {
+  // Same table as tests/test_importers.py::ID_AUTHORITATIVE_CASES: a whole CSV, and whether it
+  // matches "The Matrix" (1999).
+  const cases: [string, boolean][] = [
+    ['Const,Your Rating,Title,Year\ntt9999999,8,The Matrix,1999\n', false],
+    ['Const,Your Rating,Title,Year\ntt0133093,8,Wrong Title,1999\n', true],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n99999,9999999,,80,,The Matrix (1999)\n', false],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n,,99999,80,,The Matrix (1999)\n', false],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n,,603,80,,Wrong Title (2000)\n', true],
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n,,,80,,The Matrix (1999)\n', true],
+    ['movieId,rating,title\n99999,4,The Matrix (1999)\n', false],
+    ['Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,The Matrix,1999,u,4\n', true],
+    // imdb_id 0 names no film: the next id (movie_id) decides
+    ['movie_id,imdb_id,tmdb_id,rating,average_rating,title\n2571,0,,80,,Wrong Title (2000)\n', true],
+    ['movieId,rating\n02571,4\n', true], // leading zeros in a MovieLens id
+    // a title that looks like an id is still a title
+    ['Date,Name,Year,Letterboxd URI,Rating\n2024-01-01,tt0133093,,u,4\n', false],
+  ];
+  const catalog = [
+    { ...syntheticCatalog()[0]!, imdb_id: 'tt0133093', tmdb_id: 603, ml_id: 2571, title: 'The Matrix', year: 1999 },
+  ];
+
+  it.each(cases)('%s -> matched: %s', (text, matches) => {
+    const resolved = resolveRatings(parseRatings(text), catalog);
+    expect(resolved.filter((r) => r.item_id === 'tt0133093')).toHaveLength(matches ? 1 : 0);
+  });
+});
+
 describe('parseMovielens with several users', () => {
   const MULTI = 'userId,movieId,rating\n1,1,4\n2,1,1\n2,2,5\n';
   it('refuses to merge users, and picks one with { userId }', () => {
