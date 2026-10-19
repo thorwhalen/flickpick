@@ -13,8 +13,13 @@ present wins, in this order -- the rules of ``docs/core-contract.md``, Importers
   0.5-5 stars, x20). No IMDb id: the rating carries ``"Name (Year)"`` as its title and
   is matched by title.
 - **movielens** -- a MovieLens ``ratings.csv`` (requires ``movieId``, ``rating``;
-  ``userId`` and ``timestamp`` optional; x20). Items are ``ml:<movieId>``; a file
+  ``userId``, ``timestamp``, ``imdbId`` and ``title`` optional; x20). Items are the
+  ``imdbId`` (with ``ml:<movieId>`` as an alternate) or ``ml:<movieId>``; a file
   holding several users needs ``user_id=``.
+
+An id cell is ASCII digits (an IMDb one may be ``tt``-prefixed); blank or 0 names no
+film and the row is matched by title; anything else is refused, naming the row and
+column (core contract, Importers).
 
 >>> parse_ratings("Const,Your Rating,Title,Year\\ntt0114369,9,Se7en,1995\\n")
 [Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)', alt_ids=())]
@@ -22,6 +27,7 @@ present wins, in this order -- the rules of ``docs/core-contract.md``, Importers
 
 import csv
 import io
+import re
 from collections.abc import Callable
 from datetime import datetime, timezone
 
@@ -67,6 +73,30 @@ def _blank(value) -> bool:
     return value is None or not str(value).strip()
 
 
+#: an id cell: ASCII digits, an IMDb one optionally ``tt``-prefixed (core contract,
+#: Importers; ``ID_CELL`` in ``js/src/importers.ts``)
+_ID_CELL = re.compile(r"(?:tt)?([0-9]+)", re.IGNORECASE)
+
+
+def _id_cell(
+    value, *, fmt: str, row: int, column: str, imdb: bool = False
+) -> int | None:
+    """The number in an id cell; ``None`` when it is blank or 0 (which names no film).
+
+    Anything else (``356.0``, ``0x164``, ``N/A``) is refused, naming the row and column,
+    with the message of the TypeScript ``idCell``.
+    """
+    s = "" if value is None else str(value).strip()
+    m = _ID_CELL.fullmatch(s)
+    if s and (not m or (not imdb and s[:2].lower() == "tt")):
+        raise ValueError(f'{fmt}: row {row}: {column} is not an id: "{s}"')
+    return (int(m.group(1)) or None) if s else None
+
+
+def _imdb(n: int | None) -> str | None:
+    return imdb_id(n) if n else None
+
+
 def _score(value, factor: float) -> float:
     """``value`` converted to the 0-100 scale; raises when the result falls outside it."""
     score = float(value) * factor
@@ -97,17 +127,21 @@ def parse_letterboxd(csv_text: str) -> list[Rating]:
 
 
 def parse_imdb(csv_text: str) -> list[Rating]:
-    """IMDb ratings export -> ratings."""
+    """IMDb ratings export -> ratings (a row whose ``Const`` is blank or 0 has no id and
+    is matched by title)."""
     return [
         Rating(
-            item_id=imdb_id(r["const"]),
+            item_id=_imdb(
+                _id_cell(r["const"], fmt="imdb", row=n, column="Const", imdb=True)
+            )
+            or "",
             score=_score(r["your rating"], TEN_TO_100),
             rated_at=r.get("date rated") or None,
             title=_with_year(r.get("title") or "", r.get("year"))
             if r.get("title")
             else None,
         )
-        for r in _rows(csv_text)
+        for n, r in enumerate(_rows(csv_text), start=2)
         if not _blank(r.get("your rating"))
     ]
 
@@ -120,39 +154,51 @@ def _iso(timestamp) -> str | None:
 
 
 def parse_movielens(csv_text: str, *, user_id=None) -> list[Rating]:
-    """MovieLens ``ratings.csv`` -> ratings of one user (``ml:<movieId>`` ids).
+    """MovieLens ``ratings.csv`` -> ratings of one user.
 
-    ``userId`` is optional; a file holding several users needs ``user_id``.
+    The id is ``imdbId`` when the file has it (``ml:<movieId>`` then is an alternate),
+    else ``ml:<movieId>``; ``title`` is kept for matching a row with neither. ``userId``
+    is optional; a file holding several users needs ``user_id``.
     """
-    rows = _rows(csv_text)
-    users = {r["userid"].strip() for r in rows if not _blank(r.get("userid"))}
+    rows = list(enumerate(_rows(csv_text), start=2))
+    users = {r["userid"].strip() for _, r in rows if not _blank(r.get("userid"))}
     if user_id is None and len(users) > 1:
         raise ValueError(
             f"The file holds {len(users)} users; pass user_id= to pick one."
         )
     if user_id is not None:
-        rows = [r for r in rows if (r.get("userid") or "").strip() == str(user_id)]
-    return [
-        Rating(
-            item_id=f"{ML_PREFIX}{int(r['movieid'])}",
+        rows = [
+            (n, r) for n, r in rows if (r.get("userid") or "").strip() == str(user_id)
+        ]
+
+    def rating(n: int, r: dict) -> Rating:
+        cell = dict(fmt="movielens", row=n)
+        imdb = _imdb(_id_cell(r.get("imdbid"), column="imdbId", **cell))
+        ml = _id_cell(r.get("movieid"), column="movieId", **cell)
+        ids = [i for i in (imdb, ml and f"{ML_PREFIX}{ml}") if i]
+        return Rating(
+            item_id=ids[0] if ids else "",
             score=_score(r["rating"], STARS_TO_100),
             rated_at=_iso(r.get("timestamp")),
+            title=r.get("title") or None,
+            alt_ids=tuple(ids[1:]),
         )
-        for r in rows
-    ]
+
+    return [rating(n, r) for n, r in rows if not _blank(r.get("rating"))]
 
 
-def _flickpick_ids(row: dict) -> list[str]:
+def _flickpick_ids(row: dict, n: int) -> list[str]:
     """The row's ids, in the order they are tried: ``imdb_id``, ``movie_id``, ``tmdb_id``
-    (an ``imdb_id`` of 0 names no film)."""
-    ids = []
-    if not _blank(row.get("imdb_id")) and imdb_id(row["imdb_id"]):
-        ids.append(imdb_id(row["imdb_id"]))
-    if not _blank(row.get("movie_id")):
-        ids.append(f"{ML_PREFIX}{int(row['movie_id'])}")
-    if not _blank(row.get("tmdb_id")):
-        ids.append(f"{TMDB_PREFIX}{int(row['tmdb_id'])}")
-    return ids
+    (a blank or 0 cell names no film)."""
+    cell = dict(fmt="flickpick", row=n)
+    imdb = _imdb(_id_cell(row.get("imdb_id"), column="imdb_id", imdb=True, **cell))
+    ml = _id_cell(row.get("movie_id"), column="movie_id", **cell)
+    tmdb = _id_cell(row.get("tmdb_id"), column="tmdb_id", **cell)
+    return [
+        i
+        for i in (imdb, ml and f"{ML_PREFIX}{ml}", tmdb and f"{TMDB_PREFIX}{tmdb}")
+        if i
+    ]
 
 
 def parse_flickpick(csv_text: str) -> list[Rating]:
@@ -165,9 +211,9 @@ def parse_flickpick(csv_text: str) -> list[Rating]:
             title=r.get("title") or None,
             alt_ids=tuple(ids[1:]),
         )
-        for r in _rows(csv_text)
+        for n, r in enumerate(_rows(csv_text), start=2)
         if not _blank(r.get("rating"))
-        for ids in [_flickpick_ids(r)]
+        for ids in [_flickpick_ids(r, n)]
     ]
 
 

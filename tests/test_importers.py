@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import pytest
 
 from flickpick.importers import (
@@ -244,3 +247,21 @@ def test_an_id_is_authoritative(text, matches):
     ]
     resolved = resolve_ratings(catalog, parse_ratings(text))
     assert [idx for idx, _ in resolved] == ([0] if matches else [])
+
+
+_EDGE = json.loads(
+    (Path(__file__).parent / "fixtures" / "importer_edge_cases.json").read_text()
+)
+
+
+@pytest.mark.parametrize("case", _EDGE["cases"], ids=lambda c: c["why"])
+def test_importer_edge_cases_shared_with_typescript(case):
+    """#16: one rule per importer edge case, the same table the TS suite reads."""
+    catalog = [{"idx": 0, **_EDGE["catalog_row"]}]
+    if isinstance(case["expect"], str):
+        with pytest.raises(ValueError) as err:
+            parse_ratings(case["csv"])
+        assert str(err.value) == case["expect"]
+    else:
+        resolved = resolve_ratings(catalog, parse_ratings(case["csv"]))
+        assert bool(resolved) is case["expect"]

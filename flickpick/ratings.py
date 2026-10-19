@@ -77,7 +77,7 @@ def imdb_id(value) -> str | None:
         return None
     if s.lower().startswith(IMDB_PREFIX):
         s = s[len(IMDB_PREFIX) :]
-    if not s.isdigit():
+    if not (s.isascii() and s.isdigit()):
         raise ValueError(f"Not an IMDb id: {value!r}")
     if int(s) == 0:
         return None
