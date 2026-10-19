@@ -81,7 +81,10 @@ function intOption(values: Values, name: keyof Values): number | undefined {
   // What Python's int() takes (sign, surrounding spaces, digit-group underscores), so both CLIs
   // accept the same numbers: no 1e1, 0x10 or 1.0.
   const text = String(raw).trim();
-  const n = /^[+-]?\d+(_\d+)*$/.test(text) ? Number(text.replaceAll('_', '')) : NaN;
+  const parsed = /^[+-]?\d+(_\d+)*$/.test(text) ? Number(text.replaceAll('_', '')) : NaN;
+  // An integer too long for a double (Infinity) is still an integer beyond the core's cap: keep it
+  // one (2^53, signed) so the core refuses it as the Python core does, not as a usage error.
+  const n = Number.isNaN(parsed) || Number.isFinite(parsed) ? parsed : Math.sign(parsed) * 2 ** 53;
   if (!Number.isInteger(n)) throw new UsageError(`--${String(name)} must be an integer, got "${String(raw)}"`);
   return n;
 }

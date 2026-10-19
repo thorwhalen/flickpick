@@ -11,6 +11,7 @@ from flickpick.tools import cli_egress
 from flickpick.science import (
     agreement,
     bootstrap_ci,
+    check_count,
     check_folds,
     cross_validated_fit,
     ease_scorer,
@@ -239,7 +240,7 @@ def test_whole_float_folds_pass_as_in_typescript(small, example_ratings):
     )
     with pytest.raises(ValueError, match="got 0$"):
         check_folds(0.0)
-    with pytest.raises(ValueError, match="got nan$"):
+    with pytest.raises(ValueError, match="got NaN$"):
         check_folds(float("nan"))
 
 
@@ -349,3 +350,15 @@ def test_evaluate_json_has_the_node_cli_keys(paths):
         "slope",
         "intercept",
     }
+
+
+@pytest.mark.parametrize(
+    "value",
+    [2**53, -(2**53), 10**400, 1e300, np.int64(-(2**63)), np.float32(2**53)],
+)
+def test_counts_beyond_2_to_the_53_are_refused_like_typescript(value):
+    """#13: numpy types included (abs() of np.int64(-2**63) overflows; np.float32 rounds
+    the cap), the refusal is the value-free one ``checkCount`` gives."""
+    with pytest.raises(ValueError, match="at most 9007199254740991 in absolute value$"):
+        check_count("k", value, 1)
+    assert check_count("k", 2**53 - 1, 1) == 2**53 - 1
