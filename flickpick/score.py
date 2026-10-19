@@ -26,6 +26,7 @@ from dataclasses import asdict, dataclass, field
 import numpy as np
 
 from flickpick.artifacts import Artifacts
+from flickpick.checks import check_count
 from flickpick.defaults import DFLT
 from flickpick.embedding import embed_texts
 from flickpick.ratings import Rating, as_rating, like_threshold, resolve_ratings
@@ -272,8 +273,14 @@ def recommend(
     embed_query: Callable[[str, dict], np.ndarray] = embed_query,
     n_because: int = DFLT.n_because,
 ) -> list[Recommendation]:
-    """The top ``query.k`` unrated items for this user and query, explained."""
+    """The top ``query.k`` unrated items for this user and query, explained.
+
+    Refuses ``k`` below 1 and a negative ``min_ratings`` with the TypeScript messages.
+    """
     query = query or Query()
+    check_count("k", query.k, 1)
+    if query.min_ratings is not None:
+        check_count("min_ratings", query.min_ratings, 0)
     mood = (query.mood or "").strip() or None  # a blank mood is no mood (as in TS)
     ratings = [as_rating(r) for r in ratings]
     liked, rated = liked_indices(artifacts, ratings)

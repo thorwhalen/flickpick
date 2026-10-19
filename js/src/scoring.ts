@@ -10,6 +10,7 @@
  *
  * Every number comes from `defaults` (re-exported here) or from the options argument.
  */
+import { checkCount } from './checks.js';
 import { defaults } from './defaults.js';
 import {
   QuerySchema,
@@ -307,6 +308,9 @@ export async function recommend(
   query: QueryInput = {},
   options: RecommendOptions = {},
 ): Promise<Recommendation[]> {
+  // Before the schema, so these refusals read as the Python core's (checks.ts).
+  if (query.k !== undefined) checkCount('k', query.k, 1);
+  if (query.min_ratings !== undefined) checkCount('min_ratings', query.min_ratings, 0);
   const q = QuerySchema.parse(query);
   const { onWarning = (m: string) => console.warn(m) } = options;
   const likeOpts = { ...options, extraLikedIds: q.like_ids };

@@ -131,6 +131,14 @@ def _rating_idx(rating: Rating, lookup: Mapping[str, int]) -> int | None:
     return None
 
 
+def count_matched(catalog: Sequence[Mapping], ratings: Iterable) -> tuple[int, int]:
+    """``(matched, total)``: how many of ``ratings`` name a catalogue item, counting
+    repeats, as the Node CLI's ``note: <matched> of <total> ratings matched``."""
+    lookup = catalog_lookup(catalog)
+    found = [_rating_idx(r, lookup) is not None for r in map(as_rating, ratings)]
+    return sum(found), len(found)
+
+
 def resolve_ratings(
     catalog: Sequence[Mapping], ratings: Iterable
 ) -> list[tuple[int, Rating]]:

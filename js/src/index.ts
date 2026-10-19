@@ -17,3 +17,4 @@ export * from './scoring.js';
 export * from './embed.js';
 export * from './importers.js';
 export * from './science.js';
+export * from './checks.js';

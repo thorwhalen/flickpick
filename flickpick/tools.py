@@ -22,6 +22,7 @@ from flickpick.build import build_artifacts
 from flickpick.data import FULL_DATASET, SAMPLE_DATASET, data_home, load_movielens
 from flickpick.defaults import DFLT
 from flickpick.importers import read_ratings
+from flickpick.ratings import count_matched
 
 ARTIFACTS_SUBDIR = "artifacts"
 LIST_SEP = ","
@@ -45,13 +46,28 @@ def _resolve_artifacts_dir(artifacts) -> Path:
     )
 
 
+class UsageError(ValueError):
+    """A command line that cannot run (a missing option): exit 2, as the Node CLI."""
+
+
 def _require(value, name: str):
     if not value:
-        raise ValueError(
-            f"--{name} is required (e.g. --{name} "
-            "flickpick/data/examples/movie_ratings_various.csv)"
-        )
+        raise UsageError(f"--{name} is required")
     return value
+
+
+def _read_user_ratings(path, artifacts) -> list:
+    """The ratings in ``path``, with a ``note:`` on stderr when some are not in the
+    catalogue (the Node CLI's note, word for word; stdout stays machine-readable)."""
+    user = read_ratings(_require(path, "ratings"))
+    matched, total = count_matched(artifacts.catalog, user)
+    if matched < total:
+        print(
+            f"note: {matched} of {total} ratings matched the catalogue; "
+            "the rest are ignored",
+            file=sys.stderr,
+        )
+    return user
 
 
 def _as_list(value) -> list[str]:
@@ -107,7 +123,7 @@ def recommend(
     with ``json``, a dict holding the full ``Recommendation`` records.
     """
     a = read_artifacts(_resolve_artifacts_dir(artifacts))
-    user = read_ratings(_require(ratings, "ratings"))
+    user = _read_user_ratings(ratings, a)
     query = _score.Query(
         mood=mood or None,
         include_genres=_as_list(include_genres),
@@ -136,7 +152,7 @@ def evaluate(
 ) -> dict:
     """Personal benchmark: k-fold holdout metrics, agreement and a cross-validated fit."""
     a = read_artifacts(_resolve_artifacts_dir(artifacts))
-    user = read_ratings(_require(ratings, "ratings"))
+    user = _read_user_ratings(ratings, a)
     folds, k, seed = int(folds), int(k), int(seed)
     return {
         "holdout": _science.holdout_evaluate(a, user, folds=folds, k=k, seed=seed),

@@ -13,6 +13,7 @@
  * Undefined statistics (too few points, zero variance) are `NaN`, never a thrown error. Inputs a
  * computation cannot run on at all (fewer than 2 folds, fewer items than folds) are refused.
  */
+import { checkCount } from './checks.js';
 import { defaults } from './defaults.js';
 import { resolveRatings } from './importers.js';
 import { likeThreshold, scoreCf, topKByScore, type LikeOptions } from './scoring.js';
@@ -49,13 +50,6 @@ export function shuffled<T>(items: readonly T[], random: () => number): T[] {
 export const MIN_FOLDS = 2;
 /** The ranking metrics are at a cutoff of at least one item. */
 export const MIN_K = 1;
-
-/** Refuse a count that is not an integer of at least `minimum`, with the Python `check_count` message. */
-export function checkCount(name: string, value: number, minimum: number): void {
-  if (!Number.isInteger(value) || value < minimum) {
-    throw new RangeError(`${name} must be an integer of at least ${minimum}; got ${value}`);
-  }
-}
 
 /** Refuse a fold count below `MIN_FOLDS` (#7). */
 export const checkFolds = (folds: number): void => checkCount('folds', folds, MIN_FOLDS);

@@ -70,6 +70,56 @@ describe('flickpick CLI', () => {
     expect(stderr).toMatch(/folds must be an integer of at least 2; got 0/);
   });
 
+  it.each([
+    ['--folds', '-1', 'folds must be an integer of at least 2; got -1'],
+    ['--folds', '1', 'folds must be an integer of at least 2; got 1'],
+    ['--k', '-1', 'k must be an integer of at least 1; got -1'],
+  ])('%s %s is a one-line refusal with exit 1, as in the Python CLI (#10)', async (flag, value, message) => {
+    // Same cases as tests/test_cli.py::test_refusal_is_one_line_with_exit_1.
+    const { code, stdout, stderr } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, flag, value);
+    expect(code).toBe(1);
+    expect(stdout).toBe('');
+    expect(stderr).toBe(`flickpick: ${message}\n`);
+  });
+
+  it.each(['0', '-1'])('recommend --k %s is a one-line refusal, as in the Python CLI (#10)', async (k) => {
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--k', k);
+    expect(code).toBe(1);
+    expect(stderr).toBe(`flickpick: k must be an integer of at least 1; got ${k}\n`);
+  });
+
+  it('recommend --min-ratings -1 is a one-line refusal', async () => {
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--min-ratings', '-1');
+    expect(code).toBe(1);
+    expect(stderr).toBe('flickpick: min_ratings must be an integer of at least 0; got -1\n');
+  });
+
+  it.each(['1e1', '0x10', '-1e3', '2.0'])('--folds %s is a usage error, as int() makes it in Python', async (v) => {
+    const { code, stderr } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', v);
+    expect(code).toBe(2);
+    expect(stderr).toMatch(/^flickpick: /);
+  });
+
+  it.each(['+2', ' 2 ', '1_0'])('--k %s is accepted, as by int() in Python', async (v) => {
+    const { code } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--k', v);
+    expect(code).toBe(0);
+  });
+
+  it('a missing --ratings is a usage error with the Python first line', async () => {
+    const { code, stderr } = await cli('evaluate', '--artifacts', artifacts);
+    expect(code).toBe(2);
+    expect(stderr.split('\n')[0]).toBe('flickpick: --ratings is required');
+  });
+
+  it('notes unmatched ratings on stderr, as the Python CLI does (#10)', async () => {
+    const extra = join(await mkdtemp(join(tmpdir(), 'flickpick-ratings-')), 'ratings.csv');
+    const csv = flickpickCsv([[0, 90], [1, 85]]) + '999,tt9999999,999,70,50,Nowhere (1900)\n';
+    await writeFile(extra, csv);
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', extra, '--k', '1');
+    expect(code).toBe(0);
+    expect(stderr).toBe('note: 2 of 3 ratings matched the catalogue; the rest are ignored\n');
+  });
+
   it('evaluate prints a readable summary', async () => {
     const { code, stdout } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', '5');
     expect(code).toBe(0);

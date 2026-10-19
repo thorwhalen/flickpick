@@ -52,12 +52,36 @@ const OPTIONS = {
   help: { type: 'boolean', short: 'h', default: false },
 } as const;
 
+/**
+ * `--folds -1` as `--folds=-1`: `parseArgs` reads a value that starts with `-` as an option, so
+ * a negative number after a string option would be a usage error instead of reaching the core's
+ * check (as it does in the Python CLI, #10).
+ */
+function joinNegativeValues(argv: readonly string[]): string[] {
+  const takesValue = (arg: string) => {
+    const name = arg.startsWith('--') && !arg.includes('=') ? arg.slice(2) : undefined;
+    return name !== undefined && (OPTIONS as Record<string, { type: string }>)[name]?.type === 'string';
+  };
+  const out: string[] = [];
+  for (let i = 0; i < argv.length; i++) {
+    const [arg, next] = [argv[i]!, argv[i + 1]];
+    if (takesValue(arg) && next !== undefined && /^-\d+$/.test(next)) {
+      out.push(`${arg}=${next}`);
+      i++;
+    } else out.push(arg);
+  }
+  return out;
+}
+
 type Values = ReturnType<typeof parseArgs<{ options: typeof OPTIONS; allowPositionals: true }>>['values'];
 
 function intOption(values: Values, name: keyof Values): number | undefined {
   const raw = values[name];
   if (raw === undefined) return undefined;
-  const n = Number(raw);
+  // What Python's int() takes (sign, surrounding spaces, digit-group underscores), so both CLIs
+  // accept the same numbers: no 1e1, 0x10 or 1.0.
+  const text = String(raw).trim();
+  const n = /^[+-]?\d+(_\d+)*$/.test(text) ? Number(text.replaceAll('_', '')) : NaN;
   if (!Number.isInteger(n)) throw new UsageError(`--${String(name)} must be an integer, got "${String(raw)}"`);
   return n;
 }
@@ -137,10 +161,17 @@ async function runEvaluate(values: Values): Promise<string> {
 
 const COMMANDS: Record<string, (values: Values) => Promise<string>> = { recommend: runRecommend, evaluate: runEvaluate };
 
+/** An error as one line; a schema error (several issues, JSON in its message) as `path: message; ...`. */
+function oneLine(err: unknown): string {
+  const issues = (err as { issues?: { path: PropertyKey[]; message: string }[] }).issues;
+  if (Array.isArray(issues)) return issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`).join('; ');
+  return (err as Error).message;
+}
+
 /** Run the CLI with `argv` (without node and script); returns the exit code. */
 export async function runCli(argv: readonly string[]): Promise<number> {
   try {
-    const { values, positionals } = parseArgs({ args: [...argv], options: OPTIONS, allowPositionals: true, strict: true });
+    const { values, positionals } = parseArgs({ args: joinNegativeValues(argv), options: OPTIONS, allowPositionals: true, strict: true });
     const [command, ...extra] = positionals;
     if (values.help || !command) {
       process.stdout.write(`${USAGE}\n`);
@@ -149,11 +180,13 @@ export async function runCli(argv: readonly string[]): Promise<number> {
     const run = COMMANDS[command];
     if (!run) throw new UsageError(`unknown command "${command}"; expected one of: ${Object.keys(COMMANDS).join(', ')}`);
     if (extra.length) throw new UsageError(`unexpected arguments: ${extra.join(' ')}`);
-    process.stdout.write(`${await run(values)}\n`);
+    const output = await run(values);
+    // Nothing to print prints nothing, as in the Python CLI (not an empty line).
+    if (output) process.stdout.write(`${output}\n`);
     return EXIT.ok;
   } catch (err) {
     const usage = err instanceof UsageError || (err as { code?: string }).code?.startsWith('ERR_PARSE_ARGS');
-    process.stderr.write(`flickpick: ${(err as Error).message}\n${usage ? `\n${USAGE}\n` : ''}`);
+    process.stderr.write(`flickpick: ${oneLine(err)}\n${usage ? `\n${USAGE}\n` : ''}`);
     return usage ? EXIT.usage : EXIT.error;
   }
 }
