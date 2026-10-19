@@ -46,12 +46,13 @@ def _resolve_artifacts_dir(artifacts) -> Path:
     )
 
 
+class UsageError(ValueError):
+    """A command line that cannot run (a missing option): exit 2, as the Node CLI."""
+
+
 def _require(value, name: str):
     if not value:
-        raise ValueError(
-            f"--{name} is required (e.g. --{name} "
-            "flickpick/data/examples/movie_ratings_various.csv)"
-        )
+        raise UsageError(f"--{name} is required")
     return value
 
 

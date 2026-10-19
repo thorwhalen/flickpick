@@ -82,6 +82,30 @@ describe('flickpick CLI', () => {
     expect(stderr).toBe(`flickpick: ${message}\n`);
   });
 
+  it.each(['0', '-1'])('recommend --k %s is a one-line refusal, as in the Python CLI (#10)', async (k) => {
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--k', k);
+    expect(code).toBe(1);
+    expect(stderr).toBe(`flickpick: k must be an integer of at least 1; got ${k}\n`);
+  });
+
+  it('recommend --min-ratings -1 is a one-line refusal', async () => {
+    const { code, stderr } = await cli('recommend', '--artifacts', artifacts, '--ratings', ratings, '--min-ratings', '-1');
+    expect(code).toBe(1);
+    expect(stderr).toBe('flickpick: min_ratings must be an integer of at least 0; got -1\n');
+  });
+
+  it.each(['1e1', '0x10', '-1e3', '2.0'])('--folds %s is a usage error, as int() makes it in Python', async (v) => {
+    const { code, stderr } = await cli('evaluate', '--artifacts', artifacts, '--ratings', ratings, '--folds', v);
+    expect(code).toBe(2);
+    expect(stderr).toMatch(/^flickpick: /);
+  });
+
+  it('a missing --ratings is a usage error with the Python first line', async () => {
+    const { code, stderr } = await cli('evaluate', '--artifacts', artifacts);
+    expect(code).toBe(2);
+    expect(stderr.split('\n')[0]).toBe('flickpick: --ratings is required');
+  });
+
   it('notes unmatched ratings on stderr, as the Python CLI does (#10)', async () => {
     const extra = join(await mkdtemp(join(tmpdir(), 'flickpick-ratings-')), 'ratings.csv');
     const csv = flickpickCsv([[0, 90], [1, 85]]) + '999,tt9999999,999,70,50,Nowhere (1900)\n';

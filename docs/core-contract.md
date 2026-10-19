@@ -68,7 +68,7 @@ python -m flickpick evaluate --artifacts <dir> --ratings <csv> [--folds 5] [--k 
 
 Both CLIs accept `--include-genre`/`--exclude-genre` and the plural spellings.
 
-Both CLIs write results to stdout and everything else to stderr. Ratings that name no catalogue item give `note: <matched> of <total> ratings matched the catalogue; the rest are ignored`, counting repeats. A refusal by the core, such as `--folds 1` or `--folds -1`, or an unreadable file prints `flickpick: <message>` and exits 1, with no traceback. A usage error, such as an unknown option or a missing value, exits 2 (#10).
+Both CLIs write results to stdout and everything else to stderr. Ratings that the core does not resolve to a catalogue item (step (a)) give `note: <matched> of <total> ratings matched the catalogue; the rest are ignored`, counting repeats. Until #12 is fixed, the cores resolve one case differently: an off-catalogue id with an in-catalogue title. A refusal by the core prints `flickpick: <message>` and exits 1, with no traceback. Examples are `--folds 1`, `--folds -1`, and `--k 0` on either command. An unreadable file does the same. Numeric options take digits only, so `1e1` and `0x10` are not accepted. A usage error exits 2. Examples are an unknown option, a non-integer number, and a missing `--ratings` or `--artifacts`. Refusals of `recommend`: `k must be an integer of at least 1; got <k>` and `min_ratings must be an integer of at least 0; got <n>` (#10).
 
 Output of `evaluate --json` (the Python CLI always prints JSON): `{ holdout, agreement, cross_validated_fit }`, the results of `holdoutEvaluate`, `agreement` and `crossValidatedFit`, with `NaN` written as `null` (#8).
 

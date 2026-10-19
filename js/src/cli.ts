@@ -65,7 +65,7 @@ function joinNegativeValues(argv: readonly string[]): string[] {
   const out: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const [arg, next] = [argv[i]!, argv[i + 1]];
-    if (takesValue(arg) && next !== undefined && /^-\d/.test(next)) {
+    if (takesValue(arg) && next !== undefined && /^-\d+$/.test(next)) {
       out.push(`${arg}=${next}`);
       i++;
     } else out.push(arg);
@@ -78,7 +78,8 @@ type Values = ReturnType<typeof parseArgs<{ options: typeof OPTIONS; allowPositi
 function intOption(values: Values, name: keyof Values): number | undefined {
   const raw = values[name];
   if (raw === undefined) return undefined;
-  const n = Number(raw);
+  // Digits only, as Python's int(): no 1e1, 0x10 or 1.0.
+  const n = /^-?\d+$/.test(String(raw)) ? Number(raw) : NaN;
   if (!Number.isInteger(n)) throw new UsageError(`--${String(name)} must be an integer, got "${String(raw)}"`);
   return n;
 }
@@ -158,6 +159,13 @@ async function runEvaluate(values: Values): Promise<string> {
 
 const COMMANDS: Record<string, (values: Values) => Promise<string>> = { recommend: runRecommend, evaluate: runEvaluate };
 
+/** An error as one line; a schema error (several issues, JSON in its message) as `path: message; ...`. */
+function oneLine(err: unknown): string {
+  const issues = (err as { issues?: { path: PropertyKey[]; message: string }[] }).issues;
+  if (Array.isArray(issues)) return issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`).join('; ');
+  return (err as Error).message;
+}
+
 /** Run the CLI with `argv` (without node and script); returns the exit code. */
 export async function runCli(argv: readonly string[]): Promise<number> {
   try {
@@ -170,11 +178,13 @@ export async function runCli(argv: readonly string[]): Promise<number> {
     const run = COMMANDS[command];
     if (!run) throw new UsageError(`unknown command "${command}"; expected one of: ${Object.keys(COMMANDS).join(', ')}`);
     if (extra.length) throw new UsageError(`unexpected arguments: ${extra.join(' ')}`);
-    process.stdout.write(`${await run(values)}\n`);
+    const output = await run(values);
+    // Nothing to print prints nothing, as in the Python CLI (not an empty line).
+    if (output) process.stdout.write(`${output}\n`);
     return EXIT.ok;
   } catch (err) {
     const usage = err instanceof UsageError || (err as { code?: string }).code?.startsWith('ERR_PARSE_ARGS');
-    process.stderr.write(`flickpick: ${(err as Error).message}\n${usage ? `\n${USAGE}\n` : ''}`);
+    process.stderr.write(`flickpick: ${oneLine(err)}\n${usage ? `\n${USAGE}\n` : ''}`);
     return usage ? EXIT.usage : EXIT.error;
   }
 }

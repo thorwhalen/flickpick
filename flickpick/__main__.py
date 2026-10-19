@@ -3,7 +3,8 @@
 
 A refusal (a ``ValueError`` such as ``folds must be an integer of at least 2; got 1``)
 or an unreadable file prints ``flickpick: <message>`` on stderr and exits 1, as the
-Node CLI does; a usage error exits 2 (argparse). Anything else is a bug and keeps its
+Node CLI does; a usage error (argparse's, or a missing ``--ratings``) exits 2. Anything
+else is a bug and keeps its
 traceback.
 """
 
@@ -11,10 +12,11 @@ import sys
 
 import cw
 
-from flickpick.tools import CLI_CONFIG, CLI_FUNCS, cli_egress
+from flickpick.tools import CLI_CONFIG, CLI_FUNCS, UsageError, cli_egress
 
 #: exit codes shared with the Node CLI (``js/src/cli.ts``)
 EXIT_ERROR = 1
+EXIT_USAGE = 2
 
 
 def main(argv=None) -> int:
@@ -23,7 +25,7 @@ def main(argv=None) -> int:
         return cw.dispatch(CLI_FUNCS, argv, config=CLI_CONFIG, egress=cli_egress)
     except (ValueError, OSError) as err:
         print(f"flickpick: {err}", file=sys.stderr)
-        return EXIT_ERROR
+        return EXIT_USAGE if isinstance(err, UsageError) else EXIT_ERROR
 
 
 if __name__ == "__main__":
