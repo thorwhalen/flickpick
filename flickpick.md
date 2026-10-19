@@ -1,4 +1,4 @@
-> built 2026-10-19 12:32 UTC from 9b18018 (main) · flickpick 0.0.9. Details: build_info.json
+> built 2026-10-19 12:44 UTC from bf85711 (main) · flickpick 0.0.10. Details: build_info.json
 
 # index.html.md
 
@@ -615,9 +615,9 @@ The formats and the scoring contract are in `docs/artifact-format.md` and
 | [`sparsify_topk`](_autosummary/flickpick.html.md#flickpick.sparsify_topk)(B, \*[, topk])                       | Keep each row's `topk` largest positive weights, sorted descending, as CSR.                                                            |
 | [`detect_format`](_autosummary/flickpick.html.md#flickpick.detect_format)(csv_text)                            | The name of the export format of `csv_text` (a key of `SIGNATURES`).                                                                   |
 | [`parse_flickpick`](_autosummary/flickpick.html.md#flickpick.parse_flickpick)(csv_text)                          | The flickpick CSV (the example file's columns) -> ratings (already 0-100).                                                             |
-| [`parse_imdb`](_autosummary/flickpick.html.md#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings.                                                                                                        |
+| [`parse_imdb`](_autosummary/flickpick.html.md#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and is matched by title).                                  |
 | [`parse_letterboxd`](_autosummary/flickpick.html.md#flickpick.parse_letterboxd)(csv_text)                         | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).                                                                        |
-| [`parse_movielens`](_autosummary/flickpick.html.md#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).                                                                   |
+| [`parse_movielens`](_autosummary/flickpick.html.md#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user.                                                                                        |
 | [`parse_ratings`](_autosummary/flickpick.html.md#flickpick.parse_ratings)(csv_text, \*[, format])              | Parse `csv_text` with the parser for `format` (detected when None).                                                                    |
 | [`read_ratings`](_autosummary/flickpick.html.md#flickpick.read_ratings)(path, \*[, format, encoding])         | Read and parse a ratings CSV file.                                                                                                     |
 | [`resolve_ratings`](_autosummary/flickpick.html.md#flickpick.resolve_ratings)(catalog, ratings)                  | Pair each rating with its catalogue `idx`, dropping the ones not found.                                                                |
@@ -875,7 +875,8 @@ The flickpick CSV (the example file’s columns) -> ratings (already 0-100).
 
 ### flickpick.parse_imdb(csv_text)
 
-IMDb ratings export -> ratings.
+IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and
+is matched by title).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)]
@@ -889,9 +890,11 @@ Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).
 
 ### flickpick.parse_movielens(csv_text, , user_id=None)
 
-MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).
+MovieLens `ratings.csv` -> ratings of one user.
 
-`userId` is optional; a file holding several users needs `user_id`.
+The id is `imdbId` when the file has it (`ml:<movieId>` then is an alternate),
+else `ml:<movieId>`; `title` is kept for matching a row with neither. `userId`
+is optional; a file holding several users needs `user_id`.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)]
@@ -1020,8 +1023,13 @@ present wins, in this order – the rules of `docs/core-contract.md`, Importers)
   0.5-5 stars, x20). No IMDb id: the rating carries `"Name (Year)"` as its title and
   is matched by title.
 - **movielens** – a MovieLens `ratings.csv` (requires `movieId`, `rating`;
-  `userId` and `timestamp` optional; x20). Items are `ml:<movieId>`; a file
+  `userId`, `timestamp`, `imdbId` and `title` optional; x20). Items are the
+  `imdbId` (with `ml:<movieId>` as an alternate) or `ml:<movieId>`; a file
   holding several users needs `user_id=`.
+
+An id cell is ASCII digits (an IMDb one may be `tt`-prefixed); blank or 0 names no
+film and the row is matched by title; anything else is refused, naming the row and
+column (core contract, Importers).
 
 ```pycon
 >>> parse_ratings("Const,Your Rating,Title,Year\ntt0114369,9,Se7en,1995\n")
@@ -1035,14 +1043,14 @@ present wins, in this order – the rules of `docs/core-contract.md`, Importers)
 
 ### Functions
 
-| [`detect_format`](_autosummary/flickpick.importers.html.md#flickpick.importers.detect_format)(csv_text)                    | The name of the export format of `csv_text` (a key of `SIGNATURES`).       |
-|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| [`parse_flickpick`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_flickpick)(csv_text)                  | The flickpick CSV (the example file's columns) -> ratings (already 0-100). |
-| [`parse_imdb`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_imdb)(csv_text)                       | IMDb ratings export -> ratings.                                            |
-| [`parse_letterboxd`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_letterboxd)(csv_text)                 | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).            |
-| [`parse_movielens`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_movielens)(csv_text, \*[, user_id])   | MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).       |
-| [`parse_ratings`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_ratings)(csv_text, \*[, format])      | Parse `csv_text` with the parser for `format` (detected when None).        |
-| [`read_ratings`](_autosummary/flickpick.importers.html.md#flickpick.importers.read_ratings)(path, \*[, format, encoding]) | Read and parse a ratings CSV file.                                         |
+| [`detect_format`](_autosummary/flickpick.importers.html.md#flickpick.importers.detect_format)(csv_text)                    | The name of the export format of `csv_text` (a key of `SIGNATURES`).                                  |
+|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| [`parse_flickpick`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_flickpick)(csv_text)                  | The flickpick CSV (the example file's columns) -> ratings (already 0-100).                            |
+| [`parse_imdb`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_imdb)(csv_text)                       | IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and is matched by title). |
+| [`parse_letterboxd`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_letterboxd)(csv_text)                 | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).                                       |
+| [`parse_movielens`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_movielens)(csv_text, \*[, user_id])   | MovieLens `ratings.csv` -> ratings of one user.                                                       |
+| [`parse_ratings`](_autosummary/flickpick.importers.html.md#flickpick.importers.parse_ratings)(csv_text, \*[, format])      | Parse `csv_text` with the parser for `format` (detected when None).                                   |
+| [`read_ratings`](_autosummary/flickpick.importers.html.md#flickpick.importers.read_ratings)(path, \*[, format, encoding]) | Read and parse a ratings CSV file.                                                                    |
 
 ### flickpick.importers.SIGNATURES *= {'flickpick': {'imdb_id', 'movie_id', 'rating'}, 'imdb': {'const', 'your rating'}, 'letterboxd': {'name', 'rating', 'year'}, 'movielens': {'movieid', 'rating'}}*
 
@@ -1065,7 +1073,8 @@ The flickpick CSV (the example file’s columns) -> ratings (already 0-100).
 
 ### flickpick.importers.parse_imdb(csv_text)
 
-IMDb ratings export -> ratings.
+IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and
+is matched by title).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)]
@@ -1079,9 +1088,11 @@ Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).
 
 ### flickpick.importers.parse_movielens(csv_text, , user_id=None)
 
-MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).
+MovieLens `ratings.csv` -> ratings of one user.
 
-`userId` is optional; a file holding several users needs `user_id`.
+The id is `imdbId` when the file has it (`ml:<movieId>` then is an alternate),
+else `ml:<movieId>`; `title` is kept for matching a row with neither. `userId`
+is optional; a file holding several users needs `user_id`.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](_autosummary/flickpick.ratings.html.md#flickpick.ratings.Rating)]
@@ -1698,18 +1709,18 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-10-19 12:32 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/9b18018f34e40760f5f1c3eab95c4f7bcc7584a4"><code>9b18018</code></a> on branch <code>main</code>, for **flickpick 0.0.9** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 12:44 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/bf85711b27ccf3f5c468c75e32c3e8d022cb3d93"><code>bf85711</code></a> on branch <code>main</code>, for **flickpick 0.0.10** (from <code>pyproject.toml</code>).
 
 #### WARNING
 The documentation and the package may be misaligned:
 
-- The documented version (0.0.9) is behind the latest release on PyPI (0.0.10): `pip install flickpick` gives newer code than these docs describe.
+- The documented version (0.0.10) is behind the latest release on PyPI (0.0.11): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/9b18018f34e40760f5f1c3eab95c4f7bcc7584a4"><code>9b18018f34e40760f5f1c3eab95c4f7bcc7584a4</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/bf85711b27ccf3f5c468c75e32c3e8d022cb3d93"><code>bf85711b27ccf3f5c468c75e32c3e8d022cb3d93</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1720,9 +1731,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39252647440">39252647440</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39254166326">39254166326</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>9b18018f34e40760f5f1c3eab95c4f7bcc7584a4</code> (in the history of the built commit) |
+| Event commit | <code>bf85711b27ccf3f5c468c75e32c3e8d022cb3d93</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1747,13 +1758,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.10/">0.0.10</a>, newer than the documented version (0.0.9).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.11/">0.0.11</a>, newer than the documented version (0.0.10).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 9b18018f34e40760f5f1c3eab95c4f7bcc7584a4
+git checkout bf85711b27ccf3f5c468c75e32c3e8d022cb3d93
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=f7cdbf68"></script>
+    <script src="../_static/documentation_options.js?v=a83ce22a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,7 +58,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.9" />
+  <meta name="docsearch:version" content="0.0.10" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -413,9 +413,13 @@ numeric or <code class="docutils literal notranslate"><span class="pre">tt</span
 0.5-5 stars, x20). No IMDb id: the rating carries <code class="docutils literal notranslate"><span class="pre">&quot;Name</span> <span class="pre">(Year)&quot;</span></code> as its title and
 is matched by title.</p></li>
 <li><p><strong>movielens</strong> – a MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> (requires <code class="docutils literal notranslate"><span class="pre">movieId</span></code>, <code class="docutils literal notranslate"><span class="pre">rating</span></code>;
-<code class="docutils literal notranslate"><span class="pre">userId</span></code> and <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> optional; x20). Items are <code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code>; a file
+<code class="docutils literal notranslate"><span class="pre">userId</span></code>, <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>, <code class="docutils literal notranslate"><span class="pre">imdbId</span></code> and <code class="docutils literal notranslate"><span class="pre">title</span></code> optional; x20). Items are the
+<code class="docutils literal notranslate"><span class="pre">imdbId</span></code> (with <code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> as an alternate) or <code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code>; a file
 holding several users needs <code class="docutils literal notranslate"><span class="pre">user_id=</span></code>.</p></li>
 </ul>
+<p>An id cell is ASCII digits (an IMDb one may be <code class="docutils literal notranslate"><span class="pre">tt</span></code>-prefixed); blank or 0 names no
+film and the row is matched by title; anything else is refused, naming the row and
+column (core contract, Importers).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_ratings</span><span class="p">(</span><span class="s2">"Const,Your Rating,Title,Year</span><span class="se">\n</span><span class="s2">tt0114369,9,Se7en,1995</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 <span class="go">[Rating(item_id='tt0114369', score=90.0, rated_at=None, title='Se7en (1995)', alt_ids=())]</span>
 </pre></div>
@@ -439,13 +443,13 @@ holding several users needs <code class="docutils literal notranslate"><span cla
 <td><p>The flickpick CSV (the example file's columns) -&gt; ratings (already 0-100).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.importers.parse_imdb" title="flickpick.importers.parse_imdb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_imdb</span></code></a>(csv_text)</p></td>
-<td><p>IMDb ratings export -&gt; ratings.</p></td>
+<td><p>IMDb ratings export -&gt; ratings (a row whose <code class="docutils literal notranslate"><span class="pre">Const</span></code> is blank or 0 has no id and is matched by title).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.importers.parse_letterboxd" title="flickpick.importers.parse_letterboxd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_letterboxd</span></code></a>(csv_text)</p></td>
 <td><p>Letterboxd <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings (unrated rows are skipped).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#flickpick.importers.parse_movielens" title="flickpick.importers.parse_movielens"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_movielens</span></code></a>(csv_text, *[, user_id])</p></td>
-<td><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user (<code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> ids).</p></td>
+<td><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#flickpick.importers.parse_ratings" title="flickpick.importers.parse_ratings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_ratings</span></code></a>(csv_text, *[, format])</p></td>
 <td><p>Parse <code class="docutils literal notranslate"><span class="pre">csv_text</span></code> with the parser for <code class="docutils literal notranslate"><span class="pre">format</span></code> (detected when None).</p></td>
@@ -488,7 +492,8 @@ the same table as the TypeScript <code class="docutils literal notranslate"><spa
 <dl class="py function">
 <dt class="sig sig-object py" id="flickpick.importers.parse_imdb">
 <span class="sig-prename descclassname"><span class="pre">flickpick.importers.</span></span><span class="sig-name descname"><span class="pre">parse_imdb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_imdb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.importers.parse_imdb" title="Link to this definition">#</a></dt>
-<dd><p>IMDb ratings export -&gt; ratings.</p>
+<dd><p>IMDb ratings export -&gt; ratings (a row whose <code class="docutils literal notranslate"><span class="pre">Const</span></code> is blank or 0 has no id and
+is matched by title).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>
@@ -510,8 +515,10 @@ the same table as the TypeScript <code class="docutils literal notranslate"><spa
 <dl class="py function">
 <dt class="sig sig-object py" id="flickpick.importers.parse_movielens">
 <span class="sig-prename descclassname"><span class="pre">flickpick.importers.</span></span><span class="sig-name descname"><span class="pre">parse_movielens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_text</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/flickpick/importers.html#parse_movielens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#flickpick.importers.parse_movielens" title="Link to this definition">#</a></dt>
-<dd><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user (<code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> ids).</p>
-<p><code class="docutils literal notranslate"><span class="pre">userId</span></code> is optional; a file holding several users needs <code class="docutils literal notranslate"><span class="pre">user_id</span></code>.</p>
+<dd><p>MovieLens <code class="docutils literal notranslate"><span class="pre">ratings.csv</span></code> -&gt; ratings of one user.</p>
+<p>The id is <code class="docutils literal notranslate"><span class="pre">imdbId</span></code> when the file has it (<code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code> then is an alternate),
+else <code class="docutils literal notranslate"><span class="pre">ml:&lt;movieId&gt;</span></code>; <code class="docutils literal notranslate"><span class="pre">title</span></code> is kept for matching a row with neither. <code class="docutils literal notranslate"><span class="pre">userId</span></code>
+is optional; a file holding several users needs <code class="docutils literal notranslate"><span class="pre">user_id</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference internal" href="flickpick.ratings.html#flickpick.ratings.Rating" title="flickpick.ratings.Rating"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rating</span></code></a>]</span></p>

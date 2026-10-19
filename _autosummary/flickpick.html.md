@@ -30,9 +30,9 @@ The formats and the scoring contract are in `docs/artifact-format.md` and
 | [`sparsify_topk`](#flickpick.sparsify_topk)(B, \*[, topk])                       | Keep each row's `topk` largest positive weights, sorted descending, as CSR.                                                            |
 | [`detect_format`](#flickpick.detect_format)(csv_text)                            | The name of the export format of `csv_text` (a key of `SIGNATURES`).                                                                   |
 | [`parse_flickpick`](#flickpick.parse_flickpick)(csv_text)                          | The flickpick CSV (the example file's columns) -> ratings (already 0-100).                                                             |
-| [`parse_imdb`](#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings.                                                                                                        |
+| [`parse_imdb`](#flickpick.parse_imdb)(csv_text)                               | IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and is matched by title).                                  |
 | [`parse_letterboxd`](#flickpick.parse_letterboxd)(csv_text)                         | Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).                                                                        |
-| [`parse_movielens`](#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).                                                                   |
+| [`parse_movielens`](#flickpick.parse_movielens)(csv_text, \*[, user_id])           | MovieLens `ratings.csv` -> ratings of one user.                                                                                        |
 | [`parse_ratings`](#flickpick.parse_ratings)(csv_text, \*[, format])              | Parse `csv_text` with the parser for `format` (detected when None).                                                                    |
 | [`read_ratings`](#flickpick.read_ratings)(path, \*[, format, encoding])         | Read and parse a ratings CSV file.                                                                                                     |
 | [`resolve_ratings`](#flickpick.resolve_ratings)(catalog, ratings)                  | Pair each rating with its catalogue `idx`, dropping the ones not found.                                                                |
@@ -290,7 +290,8 @@ The flickpick CSV (the example file’s columns) -> ratings (already 0-100).
 
 ### flickpick.parse_imdb(csv_text)
 
-IMDb ratings export -> ratings.
+IMDb ratings export -> ratings (a row whose `Const` is blank or 0 has no id and
+is matched by title).
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](flickpick.ratings.html.md#flickpick.ratings.Rating)]
@@ -304,9 +305,11 @@ Letterboxd `ratings.csv` -> ratings (unrated rows are skipped).
 
 ### flickpick.parse_movielens(csv_text, , user_id=None)
 
-MovieLens `ratings.csv` -> ratings of one user (`ml:<movieId>` ids).
+MovieLens `ratings.csv` -> ratings of one user.
 
-`userId` is optional; a file holding several users needs `user_id`.
+The id is `imdbId` when the file has it (`ml:<movieId>` then is an alternate),
+else `ml:<movieId>`; `title` is kept for matching a row with neither. `userId`
+is optional; a file holding several users needs `user_id`.
 
 * **Return type:**
   [`list`](https://docs.python.org/3/builtins/stdtypes.html#list)[[`Rating`](flickpick.ratings.html.md#flickpick.ratings.Rating)]
