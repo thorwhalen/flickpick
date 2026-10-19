@@ -14,6 +14,7 @@ import {
   parseRatings,
   resolveRatings,
   titleVariants,
+  type CatalogItem,
 } from '../src/index.js';
 import { syntheticCatalog } from './helpers/synthetic.js';
 
@@ -209,5 +210,28 @@ describe('parseMovielens with several users', () => {
       ['ml:1', 20],
       ['ml:2', 100],
     ]);
+  });
+});
+
+describe('importer edge cases (#16)', () => {
+  // The same table as tests/test_importers.py::test_importer_edge_cases_shared_with_typescript.
+  const edge = JSON.parse(readFileSync(fileURLToPath(new URL('../../tests/fixtures/importer_edge_cases.json', import.meta.url)), 'utf8')) as {
+    catalog_row: Record<string, unknown>;
+    cases: { csv: string; expect: boolean | string; why: string }[];
+  };
+  const catalog = [{ ...syntheticCatalog()[0]!, ...edge.catalog_row }] as CatalogItem[];
+
+  it.each(edge.cases)('$why', ({ csv, expect: expected }) => {
+    if (typeof expected === 'string') {
+      expect(() => parseRatings(csv)).toThrow(expected);
+      try {
+        parseRatings(csv);
+      } catch (e) {
+        expect((e as Error).message).toBe(expected);
+      }
+    } else {
+      const matched = resolveRatings(parseRatings(csv), catalog).filter((r) => r.item_id === 'tt0133093');
+      expect(matched.length > 0).toBe(expected);
+    }
   });
 });

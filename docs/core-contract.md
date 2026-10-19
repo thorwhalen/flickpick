@@ -28,7 +28,9 @@
 | imdb | `Const`, `Your Rating` | `Date Rated`, `Title`, `Year` |
 | flickpick | `movie_id`, `imdb_id`, `rating` | `tmdb_id`, `title`, `rated_at` |
 | letterboxd | `Name`, `Year`, `Rating` | `Date`, `Letterboxd URI` (not required: `diary.csv` and hand-made files lack it) |
-| movielens | `movieId`, `rating` | `userId`, `timestamp` (TS also `imdbId`, `title`) |
+| movielens | `movieId`, `rating` | `userId`, `timestamp`, `imdbId` (or `imdb_id`), `title` |
+
+**Id cells** (`Const`, `imdb_id`, `imdbId`, `movie_id`, `movieId`, `tmdb_id`) hold ASCII digits, with surrounding spaces trimmed. An IMDb id may be `tt`-prefixed. A cell that is blank or `0` names no film. When a row has no id left, it is matched by title and year, like a Letterboxd row. Anything else, such as `356.0`, `3.56e2`, `0x164`, `N/A`, or `tt2571` in a non-IMDb column, refuses the file with `<format>: row <n>: <column> is not an id: "<cell>"`. Row 2 is the first data row. A MovieLens row's id is `imdbId` when present, with `ml:<movieId>` as its alternate; otherwise it is `ml:<movieId>`. A row is checked in a fixed order: blank-rating rows are skipped, then the id cells are checked (`imdb_id`, `movie_id`, `tmdb_id`), then the rating. So a row with several bad cells names the same one in both cores. Ids are kept as text, so an id past 2^53 stays exact. A trailing year range in a title (`(1994-1995)`, `(2010-)`) gives its first year. `tests/fixtures/importer_edge_cases.json` pins each case for both suites (#16).
 
 A MovieLens file whose `userId` column holds more than one user is refused unless the caller picks one (`user_id=` in Python, `{ userId }` in TS); merging users would score one person on everybody's ratings. A file without `userId` is one user. An unrecognised header is a `ValueError` in Python and `null` from TS `detectFormat` (and an error from `parseRatings`), naming the header.
 

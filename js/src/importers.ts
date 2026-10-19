@@ -96,11 +96,32 @@ export function normalizeImdbId(value: string | number | null | undefined): stri
   return defaults.importers.imdbPrefix + match[1]!.padStart(defaults.importers.imdbMinDigits, '0');
 }
 
-/** `"Se7en (1995)"` -> `{ title: "Se7en", year: 1995 }`; no trailing year -> year undefined. */
+/**
+ * `"Se7en (1995)"` -> `{ title: "Se7en", year: 1995 }`; a range (`"(1994-1995)"`, `"(2010-)"`)
+ * gives its first year, as the Python `split_title_year`; no trailing year -> year undefined.
+ */
 export function splitTitleYear(raw: string): { title: string; year?: number } {
-  const match = /^(.*?)\s*\((\d{4})\)\s*$/.exec(raw.trim());
+  const match = /^(.*?)\s*\((\d{4})(?:[-–]\d{0,4})?\)\s*$/.exec(raw.trim());
   return match ? { title: match[1]!, year: Number(match[2]) } : { title: raw.trim() };
 }
+
+/** An id cell: ASCII digits, an IMDb one optionally `tt`-prefixed (Python `_ID_CELL`). */
+const ID_CELL = /^(?:tt)?([0-9]+)$/i;
+
+/**
+ * The digits of an id cell, without leading zeros (kept as text: an id past 2^53 must not round);
+ * null when it is blank or 0 (which names no film). Anything else (`356.0`, `0x164`, `N/A`) is
+ * refused, naming the row and column, with the Python `_id_cell` message.
+ */
+function idCell(value: string, what: string, row: number, col: string, { imdb = false } = {}): string | null {
+  const s = value.trim();
+  if (!s) return null;
+  const match = ID_CELL.exec(s);
+  if (!match || (!imdb && /^tt/i.test(s))) throw new Error(`${what}: row ${row}: ${col} is not an id: "${s}"`);
+  return match[1]!.replace(/^0+/, '') || null;
+}
+
+const imdbOf = (digits: string | null): string | null => (digits ? normalizeImdbId(digits) : null);
 
 function toNumber(value: string, what: string, row: number): number | undefined {
   if (value === '') return undefined;
@@ -161,16 +182,20 @@ export function parseLetterboxd(csvText: string): Rating[] {
 /** IMDb "Your ratings" export. */
 export function parseImdb(csvText: string): Rating[] {
   return mapRows(csvText, 'imdb', (r, row) => {
-    const score = toNumber(column(r, 'Your Rating'), 'imdb', row);
-    if (score === undefined) return null;
-    const id = normalizeImdbId(column(r, 'Const'));
-    if (!id) throw new Error(`imdb: row ${row} has no valid Const (IMDb id): "${column(r, 'Const')}"`);
+    // Unrated rows are skipped; then the id cells, then the score, as in Python.
+    if (column(r, 'Your Rating') === '') return null;
+    // A blank or 0 Const names no film: the row is matched by title, as a Letterboxd one.
+    const id = imdbOf(idCell(column(r, 'Const'), 'imdb', row, 'Const', { imdb: true }));
+    const score = toNumber(column(r, 'Your Rating'), 'imdb', row)!;
+    const title = column(r, 'Title');
+    const year = toYear(column(r, 'Year'));
     return {
-      item_id: id,
+      item_id: id ?? noIdPlaceholder(title, year, row),
       score: score * defaults.importers.imdbFactor,
       rated_at: column(r, 'Date Rated') || undefined,
-      title: column(r, 'Title') || undefined,
-      year: toYear(column(r, 'Year')),
+      title: title || undefined,
+      year,
+      needs_resolution: id ? undefined : true,
     } as Rating;
   });
 }
@@ -187,15 +212,16 @@ export function parseMovielens(csvText: string, { userId }: { userId?: string | 
   }
   return mapRows(csvText, 'movielens', (r, row) => {
     if (userId !== undefined && column(r, 'userId') !== String(userId)) return null;
-    const stars = toNumber(column(r, 'rating'), 'movielens', row);
-    if (stars === undefined) return null;
-    const imdb = normalizeImdbId(column(r, 'imdbId', 'imdb_id'));
+    if (column(r, 'rating') === '') return null;
+    const imdb = imdbOf(idCell(column(r, 'imdbId', 'imdb_id'), 'movielens', row, 'imdbId', { imdb: true }));
+    const movieId = idCell(column(r, 'movieId'), 'movielens', row, 'movieId');
+    const stars = toNumber(column(r, 'rating'), 'movielens', row)!;
     const { title, year } = splitTitleYear(column(r, 'title'));
     const ts = toNumber(column(r, 'timestamp'), 'movielens', row);
-    const ml = `ml:${Number(column(r, 'movieId'))}`;
+    const ids = [imdb, movieId && `ml:${movieId}`].filter((x): x is string => Boolean(x));
     return {
-      item_id: imdb ?? ml,
-      ...(imdb ? { alt_ids: [ml] } : {}),
+      item_id: ids[0] ?? noIdPlaceholder(title, year, row),
+      ...(ids.length > 1 ? { alt_ids: ids.slice(1) } : {}),
       score: stars * defaults.importers.starsFactor,
       rated_at: ts === undefined ? undefined : new Date(ts * defaults.importers.msPerSecond).toISOString(),
       title: title || undefined,
@@ -209,15 +235,15 @@ export function parseMovielens(csvText: string, { userId }: { userId?: string | 
 /** flickpick's own format: `movie_id, imdb_id, tmdb_id, rating (0-100), average_rating, title`. */
 export function parseFlickpick(csvText: string): Rating[] {
   return mapRows(csvText, 'flickpick', (r, row) => {
-    const score = toNumber(column(r, 'rating'), 'flickpick', row);
-    if (score === undefined) return null;
-    const id = normalizeImdbId(column(r, 'imdb_id'));
-    const { title, year } = splitTitleYear(column(r, 'title'));
+    if (column(r, 'rating') === '') return null;
     // Every id, tried in this order: imdb_id, movie_id, tmdb_id (the Python `_flickpick_ids`); a row
     // with none is matched by title.
-    const movieId = column(r, 'movie_id');
-    const tmdbId = column(r, 'tmdb_id');
-    const ids = [id, movieId && `ml:${Number(movieId)}`, tmdbId && `tmdb:${Number(tmdbId)}`].filter((x): x is string => Boolean(x));
+    const id = imdbOf(idCell(column(r, 'imdb_id'), 'flickpick', row, 'imdb_id', { imdb: true }));
+    const movieId = idCell(column(r, 'movie_id'), 'flickpick', row, 'movie_id');
+    const tmdbId = idCell(column(r, 'tmdb_id'), 'flickpick', row, 'tmdb_id');
+    const score = toNumber(column(r, 'rating'), 'flickpick', row)!;
+    const { title, year } = splitTitleYear(column(r, 'title'));
+    const ids = [id, movieId && `ml:${movieId}`, tmdbId && `tmdb:${tmdbId}`].filter((x): x is string => Boolean(x));
     return {
       item_id: ids[0] ?? noIdPlaceholder(title, year, row),
       ...(ids.length > 1 ? { alt_ids: ids.slice(1) } : {}),
