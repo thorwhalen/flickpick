@@ -5,17 +5,19 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-10-19 11:28 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/789c0b70d3c4a12a1573c1e19f2b4231a92003a0"><code>789c0b7</code></a> on branch <code>main</code>, for **flickpick 0.0.4** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-10-19 11:36 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/7d2dfea8780b16ab8f7b3a341348b8ca08450746"><code>7d2dfea</code></a> on branch <code>main</code>, for **flickpick 0.0.5** (from <code>pyproject.toml</code>).
 
-:::{note}
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+:::{warning}
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.5) is behind the latest release on PyPI (0.0.6): `pip install flickpick` gives newer code than these docs describe.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/thorwhalen/flickpick/commit/789c0b70d3c4a12a1573c1e19f2b4231a92003a0"><code>789c0b70d3c4a12a1573c1e19f2b4231a92003a0</code></a> |
+| Commit | <a href="https://github.com/thorwhalen/flickpick/commit/7d2dfea8780b16ab8f7b3a341348b8ca08450746"><code>7d2dfea8780b16ab8f7b3a341348b8ca08450746</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -26,9 +28,9 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 | | |
 |---|---|
 | Repository | <code>thorwhalen/flickpick</code> |
-| Run | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39244682838">39244682838</a> |
+| Run | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39245700449">39245700449</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>789c0b70d3c4a12a1573c1e19f2b4231a92003a0</code> (in the history of the built commit) |
+| Event commit | <code>7d2dfea8780b16ab8f7b3a341348b8ca08450746</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -53,13 +55,13 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.4/">0.0.4</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.6/">0.0.6</a>, newer than the documented version (0.0.5).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 789c0b70d3c4a12a1573c1e19f2b4231a92003a0
+git checkout 7d2dfea8780b16ab8f7b3a341348b8ca08450746
 pip install "epythet==0.2.18"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=8c5712d9"></script>
+    <script src="../../_static/documentation_options.js?v=282f96c0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -411,7 +411,7 @@ window.runMermaid = runMermaid;</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.0.4" />
+  <meta name="docsearch:version" content="0.0.5" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -1013,8 +1013,8 @@ window.runMermaid = runMermaid;</script>
     <span class="n">liked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">item_id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rated</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">liked</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">folds</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"Need at least </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> liked items in the catalogue for "</span>
-            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2">-fold evaluation; found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">liked</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="sa">f</span><span class="s2">"need at least </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> liked items in the catalogue for </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> folds; "</span>
+            <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">liked</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
     <span class="n">order</span> <span class="o">=</span> <span class="n">shuffled</span><span class="p">(</span><span class="n">liked</span><span class="p">,</span> <span class="n">mulberry32</span><span class="p">(</span><span class="n">seed</span><span class="p">))</span>
     <span class="n">to_idx</span> <span class="o">=</span> <span class="n">artifacts</span><span class="o">.</span><span class="n">imdb_to_idx</span>
@@ -1182,8 +1182,8 @@ window.runMermaid = runMermaid;</script>
     <span class="n">_</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_paired_items</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">catalog</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">folds</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"Need at least </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> rated catalogue items for </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> folds; "</span>
-            <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+            <span class="sa">f</span><span class="s2">"need at least </span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> rated catalogue items with a mean_rating for "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">folds</span><span class="si">}</span><span class="s2"> folds; got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
     <span class="n">order</span> <span class="o">=</span> <span class="n">shuffled</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">mulberry32</span><span class="p">(</span><span class="n">seed</span><span class="p">))</span>
     <span class="n">pred_lin</span><span class="p">,</span> <span class="n">pred_base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
