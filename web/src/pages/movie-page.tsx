@@ -18,7 +18,7 @@ import { defaults } from '@/defaults';
 import { cfNeighbours, semanticNeighbours, type Neighbour } from '@/lib/neighbours';
 import { titleYear } from '@/lib/utils';
 import { HOME, leaveTo, openedFrom } from '@/route';
-import { imageUrl } from '@/sources/tmdb';
+import { hasOffers, imageUrl } from '@/sources/tmdb';
 import { useApp, useArtifacts } from '@/state/hooks';
 import type { RegionProviders, WatchProvider } from '@/state/schemas';
 import { Button } from '@/ui/button';
@@ -69,14 +69,54 @@ function ProviderRow({ label, providers }: { label: string; providers: WatchProv
   );
 }
 
-function WhereToWatch({ providers, region }: { providers: RegionProviders | null; region: string }) {
-  const none = !providers || providers.flatrate.length + providers.rent.length + providers.buy.length === 0;
+/** A country's display name in the user's language, falling back to its code. */
+function countryName(code: string): string {
+  try {
+    return new Intl.DisplayNames(undefined, { type: 'region' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
+/** Offers in the other countries TMDB lists, behind a disclosure (no extra request). */
+function OtherCountries({ others }: { others: Record<string, RegionProviders> }) {
+  const rows = Object.entries(others)
+    .map(([code, p]) => ({ code, name: countryName(code), p }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  if (!rows.length) return null;
+  return (
+    <details className="text-sm">
+      <summary className="cursor-pointer text-primary">Other countries ({rows.length})</summary>
+      <ul className="mt-2 space-y-3">
+        {rows.map(({ code, name, p }) => (
+          <li key={code} className="space-y-1">
+            <span className="font-medium">{name}</span>
+            <ProviderRow label="Stream" providers={p.flatrate} />
+            <ProviderRow label="Rent" providers={p.rent} />
+            <ProviderRow label="Buy" providers={p.buy} />
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+function WhereToWatch({
+  providers,
+  region,
+  others,
+}: {
+  providers: RegionProviders | null;
+  region: string;
+  others: Record<string, RegionProviders>;
+}) {
+  const none = !providers || !hasOffers(providers);
   return (
     <section aria-labelledby="watch-heading" className="space-y-2">
       <h3 id="watch-heading" className="font-semibold">
         Where to watch ({region})
       </h3>
-      {none ? (
+      {none || !providers ? (
         <p className="text-sm text-muted-foreground">No streaming, rental or purchase offers listed for {region}.</p>
       ) : (
         <div className="space-y-2">
@@ -90,6 +130,7 @@ function WhereToWatch({ providers, region }: { providers: RegionProviders | null
           )}
         </div>
       )}
+      <OtherCountries others={others} />
     </section>
   );
 }
@@ -127,7 +168,7 @@ function Enriched({ imdbId }: { imdbId: string }) {
         {data.certification ? <span>Rated {data.certification} ({region})</span> : null}
       </div>
       {data.overview && <p className="text-sm leading-relaxed">{data.overview}</p>}
-      <WhereToWatch providers={data.providers} region={region} />
+      <WhereToWatch providers={data.providers} region={region} others={data.other_regions} />
     </div>
   );
 }

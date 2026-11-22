@@ -91,5 +91,7 @@ export const EnrichmentSchema = z.object({
   runtime: z.number().nullable().default(null),
   certification: z.string().default(''),
   providers: RegionProvidersSchema.nullable().default(null),
+  /** Offers in every other country TMDB lists (ISO 3166-1 code to offers), from the same response. */
+  other_regions: z.record(z.string(), RegionProvidersSchema).default({}),
 });
 export type Enrichment = z.infer<typeof EnrichmentSchema>;
