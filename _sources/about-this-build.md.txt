@@ -5,19 +5,17 @@ orphan: true
 
 # About this build
 
-This documentation was built on **2026-10-19 12:44 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/bf85711b27ccf3f5c468c75e32c3e8d022cb3d93"><code>bf85711</code></a> on branch <code>main</code>, for **flickpick 0.0.10** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-22 13:17 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/2e3ce30599fb27c4139f1542b044748825100ba2"><code>2e3ce30</code></a> on branch <code>main</code>, for **flickpick 0.0.11** (from <code>pyproject.toml</code>).
 
-:::{warning}
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.10) is behind the latest release on PyPI (0.0.11): `pip install flickpick` gives newer code than these docs describe.
+:::{note}
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 :::
 
 ## Source
 
 | | |
 |---|---|
-| Commit | <a href="https://github.com/thorwhalen/flickpick/commit/bf85711b27ccf3f5c468c75e32c3e8d022cb3d93"><code>bf85711b27ccf3f5c468c75e32c3e8d022cb3d93</code></a> |
+| Commit | <a href="https://github.com/thorwhalen/flickpick/commit/2e3ce30599fb27c4139f1542b044748825100ba2"><code>2e3ce30599fb27c4139f1542b044748825100ba2</code></a> |
 | Branch | <code>main</code> |
 | Tags at this commit | none |
 | Working tree | clean |
@@ -28,18 +26,18 @@ The documentation and the package may be misaligned:
 | | |
 |---|---|
 | Repository | <code>thorwhalen/flickpick</code> |
-| Run | <a href="https://github.com/thorwhalen/flickpick/actions/runs/39254166326">39254166326</a> |
+| Run | <a href="https://github.com/thorwhalen/flickpick/actions/runs/45026498811">45026498811</a> |
 | Ref | <code>refs/heads/main</code> |
-| Event commit | <code>bf85711b27ccf3f5c468c75e32c3e8d022cb3d93</code> (in the history of the built commit) |
+| Event commit | <code>2e3ce30599fb27c4139f1542b044748825100ba2</code> (in the history of the built commit) |
 
 ## Tools
 
 | | |
 |---|---|
-| epythet | 0.2.18 |
-| Sphinx | 9.1.0 |
+| epythet | 0.2.23 |
+| Sphinx | 9.1.1 |
 | docutils | 0.22.4 |
-| Python | 3.12.15 |
+| Python | 3.12.16 |
 
 ## Configuration as resolved
 
@@ -55,14 +53,14 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.11/">0.0.11</a>, newer than the documented version (0.0.10).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.11/">0.0.11</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout bf85711b27ccf3f5c468c75e32c3e8d022cb3d93
-pip install "epythet==0.2.18"
+git checkout 2e3ce30599fb27c4139f1542b044748825100ba2
+pip install "epythet==0.2.23"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
