@@ -11,10 +11,12 @@
  *
  * Two calls per title: `/find/{imdb_id}?external_source=imdb_id` (skipped when the catalogue
  * already carries the TMDB id) and `/movie/{id}?append_to_response=release_dates,watch/providers`.
+ * The providers response carries every country TMDB covers: the user's region is the default view
+ * (`providers`), the rest are kept as `other_regions` for an "other countries" disclosure.
  */
 import { z } from 'zod';
 import { defaults } from '@/defaults';
-import { EnrichmentSchema, RegionProvidersSchema, type Enrichment } from '@/state/schemas';
+import { EnrichmentSchema, RegionProvidersSchema, type Enrichment, type RegionProviders } from '@/state/schemas';
 
 export const TMDB_TERMS = {
   displayOnly: true,
@@ -99,6 +101,15 @@ export async function fetchEnrichment(imdbId: string, options: FetchEnrichmentOp
   const regionProviders = movie['watch/providers']?.results[region];
   const providers = regionProviders === undefined ? null : RegionProvidersSchema.safeParse(regionProviders).data ?? null;
 
+  const otherRegions = Object.fromEntries(
+    Object.entries(movie['watch/providers']?.results ?? {})
+      .filter(([code]) => code !== region)
+      .flatMap(([code, raw]) => {
+        const parsed = RegionProvidersSchema.safeParse(raw);
+        return parsed.success && hasOffers(parsed.data) ? [[code, parsed.data] as const] : [];
+      }),
+  );
+
   return EnrichmentSchema.parse({
     ...base,
     found: true,
@@ -109,7 +120,13 @@ export async function fetchEnrichment(imdbId: string, options: FetchEnrichmentOp
     runtime: movie.runtime,
     certification,
     providers,
+    other_regions: otherRegions,
   });
+}
+
+/** Whether a region lists any stream, rent or buy offer. */
+export function hasOffers(p: Pick<RegionProviders, 'flatrate' | 'rent' | 'buy'>): boolean {
+  return p.flatrate.length + p.rent.length + p.buy.length > 0;
 }
 
 /** Whether a cached entry is past TMDB's cache limit (or has no valid `fetched_at`): delete it. */
