@@ -48,7 +48,7 @@ export const CMD = {
 export type CommandId = (typeof CMD)[keyof typeof CMD];
 
 const ImdbId = z.string().min(1).describe('Catalogue id, e.g. tt0114369');
-const Score = z.number().min(defaults.rating.min).max(defaults.rating.max).describe('Score on the 0-100 scale');
+const Score = z.number().int().min(defaults.rating.min).max(defaults.rating.max).describe('Score on the 0-100 scale (whole numbers)');
 
 /** What `app.movie.enrich` did. */
 type EnrichStatus = 'no_key' | 'in_flight' | 'cached' | 'fetched';
@@ -317,16 +317,27 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
     defineCommand({
       id: CMD.restoreRatings,
       title: 'Restore ratings',
-      description: 'Put rating rows back exactly as they were (the Undo of a removal or a rescore).',
+      description:
+        'Put rating rows back as they were (the Undo of a removal or a rescore). With `expect`, a row is restored only if its title is still as the action left it (absent: null; rescored: that rated_at), so a rating changed since is never overwritten.',
       category: 'Ratings',
-      params: z.object({ rows: z.array(RatingRowSchema).min(1) }),
-      execute: async ({ rows }) => {
-        for (const row of rows) await upsertRow(providers.ratings, row.item_id, row);
+      params: z.object({
+        rows: z.array(RatingRowSchema).min(1),
+        expect: z.record(z.string(), z.string().nullable()).optional().describe('item_id -> the rated_at the action left (null: removed)'),
+      }),
+      execute: async ({ rows, expect }) => {
+        const current = state().ratings;
+        const still = (r: RatingRow) => {
+          if (!expect || !(r.item_id in expect)) return true;
+          const want = expect[r.item_id];
+          return want === null ? !current[r.item_id] : current[r.item_id]?.rated_at === want;
+        };
+        const back = rows.filter(still);
+        for (const row of back) await upsertRow(providers.ratings, row.item_id, row);
         store.setState((s) => {
-          for (const row of rows) s.ratings[row.item_id] = row;
+          for (const row of back) s.ratings[row.item_id] = row;
         });
-        await refreshResults();
-        return ok({ restored: rows.length });
+        if (back.length) await refreshResults();
+        return ok({ restored: back.length, skipped: rows.length - back.length });
       },
     }),
 
@@ -345,7 +356,7 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
           for (const row of after) s.ratings[row.item_id] = row;
         });
         await refreshResults();
-        return ok({ before });
+        return ok({ before, at: now });
       },
     }),
 

@@ -211,6 +211,7 @@ function RatingsTable() {
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
   const anchor = useRef<string | null>(null);
   const [rescore, setRescore] = useState('');
+  const [busy, setBusy] = useState(false);
 
   const all = useMemo(() => Object.values(ratings), [ratings]);
   const rows = useMemo(() => {
@@ -247,7 +248,9 @@ function RatingsTable() {
 
   /** Remove ratings: one command, one Undo that puts every row back as it was (no question first). */
   async function remove(ids: readonly string[]) {
-    const result = await dispatch<{ removed: RatingRow[] }>(CMD.removeRatings, { item_ids: ids });
+    if (busy) return; // a second press while the first runs would remove nothing and replace its Undo
+    setBusy(true);
+    const result = await dispatch<{ removed: RatingRow[] }>(CMD.removeRatings, { item_ids: ids }).finally(() => setBusy(false));
     if (!result.ok) return;
     const removed = result.value.removed;
     setPicked((was) => new Set([...was].filter((x) => !removed.some((r) => r.item_id === x))));
@@ -255,25 +258,31 @@ function RatingsTable() {
     offerUndo({
       message: `${name} removed`,
       advice: advise(removed.length === 1 ? 'remove-item' : 'bulk-delete', { count: removed.length }),
-      undo: async () => (await dispatch(CMD.restoreRatings, { rows: removed })).ok,
+      // Only titles still unrated come back: one rated again since keeps its new score.
+      undo: async () => (await dispatch(CMD.restoreRatings, { rows: removed, expect: Object.fromEntries(removed.map((r) => [r.item_id, null])) })).ok,
     });
   }
 
   /** Give the picked titles one score: one command, one Undo that restores each old score. */
   async function rescoreTo(score: number) {
-    const result = await dispatch<{ before: RatingRow[] }>(CMD.rescoreRatings, { item_ids: pickedRows.map((r) => r.item_id), score });
+    if (busy) return;
+    setBusy(true);
+    const result = await dispatch<{ before: RatingRow[]; at: string }>(CMD.rescoreRatings, { item_ids: pickedRows.map((r) => r.item_id), score }).finally(() =>
+      setBusy(false),
+    );
     if (!result.ok) return;
-    const before = result.value.before;
-    if (!before.length) return;
+    const { before, at } = result.value;
+    if (!before.length) return; // every selected title already had this score: nothing changed, nothing to undo
     offerUndo({
       message: `${plural(before.length, 'title', 'titles')} rescored to ${score}`,
       advice: advise({ reversal: 'compensating', cost: 'low', count: before.length }),
-      undo: async () => (await dispatch(CMD.restoreRatings, { rows: before })).ok,
+      // Only titles still at this rescore come back: one changed since keeps its new score.
+      undo: async () => (await dispatch(CMD.restoreRatings, { rows: before, expect: Object.fromEntries(before.map((r) => [r.item_id, at])) })).ok,
     });
   }
 
   const score = Number(rescore);
-  const scoreOk = rescore.trim() !== '' && Number.isFinite(score) && score >= defaults.rating.min && score <= defaults.rating.max;
+  const scoreOk = rescore.trim() !== '' && Number.isInteger(score) && score >= defaults.rating.min && score <= defaults.rating.max;
 
   return (
     <Section
@@ -300,7 +309,7 @@ function RatingsTable() {
       </div>
       <Input type="search" placeholder="Search titles" aria-label="Search your ratings" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-sm" />
       {pickedRows.length > 0 && (
-        <div role="region" aria-label="Selected ratings" className="sticky top-14 z-[5] flex flex-wrap items-center gap-2 rounded-lg border bg-card p-2 text-sm">
+        <div role="region" aria-label="Selected ratings" className="sticky top-[var(--header-h,3.5rem)] z-[5] flex flex-wrap items-center gap-2 rounded-lg border bg-card p-2 text-sm">
           <span aria-live="polite" className="font-medium">
             {plural(pickedRows.length, 'title', 'titles')} selected
             {pickedRows.length > shownPicked ? ` (${pickedRows.length - shownPicked} not shown)` : ''}
@@ -309,10 +318,10 @@ function RatingsTable() {
             <span className="sr-only">New score</span>
             <Input type="number" inputMode="numeric" min={defaults.rating.min} max={defaults.rating.max} placeholder="Score" value={rescore} onChange={(e) => setRescore(e.target.value)} className="w-24" />
           </label>
-          <Button size="sm" variant="outline" disabled={!scoreOk} onClick={() => void rescoreTo(score)}>
+          <Button size="sm" variant="outline" disabled={!scoreOk || busy} onClick={() => void rescoreTo(score)}>
             Set score
           </Button>
-          <Button size="sm" variant="destructive" onClick={() => void remove(pickedRows.map((r) => r.item_id))}>
+          <Button size="sm" variant="destructive" disabled={busy} onClick={() => void remove(pickedRows.map((r) => r.item_id))}>
             Remove {pickedRows.length}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => setPicked(new Set())}>
@@ -333,7 +342,11 @@ function RatingsTable() {
                     type="checkbox"
                     aria-label="Select all shown"
                     checked={rows.length > 0 && shownPicked === rows.length}
-                    onChange={() => setPicked(shownPicked === rows.length ? new Set() : new Set([...picked, ...rows.map((r) => r.item_id)]))}
+                    onChange={() => {
+                      // Only the shown rows: picks hidden by the view or the search stay as they are.
+                      const shownIds = rows.map((r) => r.item_id);
+                      setPicked((was) => (shownPicked === rows.length ? new Set([...was].filter((x) => !shownIds.includes(x))) : new Set([...was, ...shownIds])));
+                    }}
                   />
                 </th>
                 {COLUMNS.map((c) => (

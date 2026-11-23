@@ -124,6 +124,23 @@ describe('commands', () => {
     expect(deps.store.getState().ratings[a!.imdb_id]?.score).toBe(80);
   });
 
+  it('restore with expect never overwrites a rating changed since the action', async () => {
+    const { dispatch, deps, artifacts } = await loaded();
+    const [a, b] = artifacts.catalog;
+    await dispatch(CMD.rateTitle, { item_id: a!.imdb_id, score: 70 });
+    await dispatch(CMD.rateTitle, { item_id: b!.imdb_id, score: 30 });
+    const removed = await dispatch<{ removed: { item_id: string }[] }>(CMD.removeRatings, { item_ids: [a!.imdb_id, b!.imdb_id] });
+    if (!removed.ok) throw new Error('remove failed');
+    await dispatch(CMD.rateTitle, { item_id: a!.imdb_id, score: 90 }); // rated again before the Undo
+    const back = await dispatch<{ restored: number; skipped: number }>(CMD.restoreRatings, {
+      rows: removed.value.removed,
+      expect: { [a!.imdb_id]: null, [b!.imdb_id]: null },
+    });
+    expect(back.ok && back.value).toEqual({ restored: 1, skipped: 1 });
+    expect(deps.store.getState().ratings[a!.imdb_id]?.score).toBe(90);
+    expect(deps.store.getState().ratings[b!.imdb_id]?.score).toBe(30);
+  });
+
   it('exportRatings writes a flickpick CSV that the core reads back', async () => {
     const { dispatch, deps, artifacts } = await loaded();
     const [a, b] = artifacts.catalog;
