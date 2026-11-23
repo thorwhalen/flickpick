@@ -26,7 +26,7 @@ import { parseSetting, settingKeys, SettingsSchema, type SettingKey, type Settin
 import { fetchEnrichment, isExpired, isFresh } from '@/sources/tmdb';
 import { readAll, upsertRow } from '@/state/providers';
 import { queryFromForm, RecommendFormSchema, type RecommendForm } from '@/state/recommend-form';
-import { EnrichmentSchema, LIST_IDS, ListEntrySchema, RatingRowSchema, type ListEntry, type RatingRow } from '@/state/schemas';
+import { EnrichmentSchema, LIST_IDS, ListEntrySchema, RatingRowSchema, SavedSearchSchema, type ListEntry, type RatingRow, type SavedSearch } from '@/state/schemas';
 import type { CommandDeps } from './deps';
 
 /** Command ids, named once. */
@@ -39,6 +39,8 @@ export const CMD = {
   restoreRatings: 'app.ratings.restore',
   rescoreRatings: 'app.ratings.rescoreMany',
   setList: 'app.lists.set',
+  saveSearch: 'app.searches.save',
+  removeSearch: 'app.searches.remove',
   importRatings: 'app.ratings.import',
   exportRatings: 'app.ratings.export',
   setSetting: 'app.settings.set',
@@ -68,10 +70,11 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
   /** Read stored settings and ratings once. Invalid stored values decay to the defaults. */
   async function hydrate(): Promise<void> {
     if (state().hydrated) return;
-    const [settingsRows, ratingRows, listRows] = await Promise.all([
+    const [settingsRows, ratingRows, listRows, searchRows] = await Promise.all([
       readAll(providers.settings),
       readAll(providers.ratings),
       readAll(providers.lists).catch(() => []),
+      readAll(providers.searches).catch(() => []),
     ]);
     const lists = listRows.flatMap((r) => {
       const parsed = ListEntrySchema.safeParse(r);
@@ -87,6 +90,12 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
       s.settings = settings.success ? settings.data : SettingsSchema.parse({});
       s.ratings = Object.fromEntries(ratings.map((r) => [r.item_id, r]));
       s.lists = Object.fromEntries(lists.map((l) => [l.item_id, l]));
+      s.searches = Object.fromEntries(
+        searchRows.flatMap((r) => {
+          const parsed = SavedSearchSchema.safeParse(r);
+          return parsed.success ? [[parsed.data.id, parsed.data]] : [];
+        }),
+      );
       s.hydrated = true;
     });
     await purgeExpiredEnrichment();
@@ -396,6 +405,39 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
         });
         if ((before?.list === 'not_interested') !== (next?.list === 'not_interested')) await refreshResults();
         return ok({ before });
+      },
+    }),
+
+    defineCommand({
+      id: CMD.saveSearch,
+      title: 'Save a search',
+      description: 'Name a Recommend search (mood, genres, years, count) so a chip reopens it. Pass `restore` to put back one just removed.',
+      category: 'Searches',
+      params: z.object({ name: z.string().trim().min(1).max(60), form: RecommendFormSchema, restore: SavedSearchSchema.optional() }),
+      execute: async ({ name, form, restore }) => {
+        const saved: SavedSearch = restore ?? SavedSearchSchema.parse({ id: `s${deps.now().getTime().toString(36)}`, name, form, created_at: deps.now().toISOString() });
+        await upsertRow(providers.searches, saved.id, saved);
+        store.setState((s) => {
+          s.searches[saved.id] = saved;
+        });
+        return ok({ saved });
+      },
+    }),
+
+    defineCommand({
+      id: CMD.removeSearch,
+      title: 'Remove a saved search',
+      description: 'Forget a saved search; returns it, for an Undo.',
+      category: 'Searches',
+      params: z.object({ id: z.string().min(1) }),
+      execute: async ({ id }) => {
+        const removed = state().searches[id];
+        if (!removed) return err('not_found', `No saved search ${id}`);
+        await providers.searches.delete(id);
+        store.setState((s) => {
+          delete s.searches[id];
+        });
+        return ok({ removed });
       },
     }),
 

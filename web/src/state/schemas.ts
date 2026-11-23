@@ -13,6 +13,7 @@
 import { defineCollection } from '@zodal/core';
 import type { Rating } from 'flickpick';
 import { z } from 'zod';
+import { RecommendFormSchema } from './recommend-form';
 import { defaults } from '@/defaults';
 import { SettingsSchema } from '@/settings/schema';
 
@@ -46,6 +47,15 @@ export const ListEntrySchema = z.object({
   added_at: z.string(),
 });
 export type ListEntry = z.infer<typeof ListEntrySchema>;
+
+/** A saved search: a named Recommend form (mood, genres, years), reopened from a chip (the views design's saved view). */
+export const SavedSearchSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().trim().min(1).max(60),
+  form: RecommendFormSchema,
+  created_at: z.string(),
+});
+export type SavedSearch = z.infer<typeof SavedSearchSchema>;
 
 // Compile-time guarantee that a stored row can be handed to the core as a `Rating` as is.
 // (If the core's Rating gains a required field, this line stops compiling.)

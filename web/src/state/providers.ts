@@ -10,7 +10,7 @@ import type { DataProvider } from '@zodal/store';
 import { createInMemoryProvider } from '@zodal/store';
 import { createLocalStorageProvider } from '@zodal/store-localstorage';
 import { defaults } from '@/defaults';
-import type { Enrichment, ListEntry, RatingRow, SettingsRow } from './schemas';
+import type { Enrichment, ListEntry, RatingRow, SavedSearch, SettingsRow } from './schemas';
 
 export interface Providers {
   ratings: DataProvider<RatingRow>;
@@ -18,16 +18,19 @@ export interface Providers {
   enrichment: DataProvider<Enrichment>;
   /** Watchlist and not-interested entries. */
   lists: DataProvider<ListEntry>;
+  /** Saved searches (named Recommend forms). */
+  searches: DataProvider<SavedSearch>;
 }
 
 /** The browser default: everything in this browser's localStorage. */
 export function createLocalProviders(): Providers {
-  const { ratingsKey, settingsKey, enrichmentKey, listsKey } = defaults.storage;
+  const { ratingsKey, settingsKey, enrichmentKey, listsKey, searchesKey } = defaults.storage;
   return {
     ratings: createLocalStorageProvider<RatingRow>({ storageKey: ratingsKey, idField: 'item_id', searchFields: ['title'] }),
     settings: createLocalStorageProvider<SettingsRow>({ storageKey: settingsKey, idField: 'id' }),
     enrichment: createLocalStorageProvider<Enrichment>({ storageKey: enrichmentKey, idField: 'imdb_id' }),
     lists: createLocalStorageProvider<ListEntry>({ storageKey: listsKey, idField: 'item_id' }),
+    searches: createLocalStorageProvider<SavedSearch>({ storageKey: searchesKey, idField: 'id' }),
   };
 }
 
@@ -38,6 +41,7 @@ export function createMemoryProviders(seed: { ratings?: RatingRow[]; settings?: 
     settings: createInMemoryProvider<SettingsRow>(seed.settings ?? [], { idField: 'id' }),
     enrichment: createInMemoryProvider<Enrichment>([], { idField: 'imdb_id' }),
     lists: createInMemoryProvider<ListEntry>([], { idField: 'item_id' }),
+    searches: createInMemoryProvider<SavedSearch>([], { idField: 'id' }),
   };
 }
 

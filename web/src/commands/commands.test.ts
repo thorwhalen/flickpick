@@ -165,6 +165,19 @@ describe('commands', () => {
     expect(deps.store.getState().recs.items.map((r) => r.item_id)).not.toContain(shown[0]);
   });
 
+  it('a saved search is kept, removed, and put back exactly by its Undo', async () => {
+    const { dispatch, deps } = await loaded();
+    const form = { mood: 'quiet', include_genres: ['Drama'], exclude_genres: [], k: 10 };
+    const saved = await dispatch<{ saved: { id: string } }>(CMD.saveSearch, { name: 'Quiet dramas', form });
+    expect(saved.ok).toBe(true);
+    const id = saved.ok ? saved.value.saved.id : '';
+    expect((await deps.providers.searches.getOne(id)).name).toBe('Quiet dramas');
+    const removed = await dispatch<{ removed: { id: string; name: string; form: unknown } }>(CMD.removeSearch, { id });
+    expect(deps.store.getState().searches[id]).toBeUndefined();
+    if (removed.ok) await dispatch(CMD.saveSearch, { name: removed.value.removed.name, form: removed.value.removed.form, restore: removed.value.removed });
+    expect(deps.store.getState().searches[id]?.form.include_genres).toEqual(['Drama']);
+  });
+
   it('exportRatings writes a flickpick CSV that the core reads back', async () => {
     const { dispatch, deps, artifacts } = await loaded();
     const [a, b] = artifacts.catalog;
