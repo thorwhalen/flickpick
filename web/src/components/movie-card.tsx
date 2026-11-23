@@ -1,6 +1,6 @@
 /**
  * One recommendation: poster, title (opens the movie page), year, fused score, the reasons, your
- * rating control, and a "why" expander listing the liked titles behind the collaborative score.
+ * rating control, Watchlist / Not interested, and a "why" expander listing the liked titles behind the collaborative score.
  */
 import type { Recommendation } from 'flickpick';
 import type { ReactNode } from 'react';
@@ -11,6 +11,7 @@ import { useArtifacts, useDispatch } from '@/state/hooks';
 import { Card } from '@/ui/card';
 import { Poster } from './poster';
 import { RatingControl } from './rating-control';
+import { ListButtons } from './list-buttons';
 
 export function MovieTitleButton({ imdbId, children }: { imdbId: string; children: ReactNode }) {
   const dispatch = useDispatch();
@@ -78,8 +79,9 @@ export function MovieCard({ rec, rank }: { rec: Recommendation; rank: number }) 
           </ul>
         </details>
       )}
-      <div className="mt-auto">
+      <div className="mt-auto space-y-2">
         <RatingControl itemId={rec.item_id} title={rec.title} start={item?.mean_rating} compact />
+        <ListButtons itemId={rec.item_id} title={rec.title} />
       </div>
     </Card>
   );

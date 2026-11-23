@@ -141,6 +141,30 @@ describe('commands', () => {
     expect(deps.store.getState().ratings[b!.imdb_id]?.score).toBe(30);
   });
 
+  it('setList puts a title on one list at a time, returns what it was, and Not interested leaves it out of recommendations', async () => {
+    const { dispatch, deps, artifacts } = await loaded();
+    const [a] = artifacts.catalog;
+    const first = await dispatch<{ before: unknown }>(CMD.setList, { item_id: a!.imdb_id, list: 'watchlist' });
+    expect(first.ok && first.value.before).toBe(null);
+    expect(deps.store.getState().lists[a!.imdb_id]?.list).toBe('watchlist');
+    const second = await dispatch<{ before: { list: string } }>(CMD.setList, { item_id: a!.imdb_id, list: 'not_interested' });
+    expect(second.ok && second.value.before.list).toBe('watchlist');
+    expect((await deps.providers.lists.getOne(a!.imdb_id)).list).toBe('not_interested');
+    // Undo: put back exactly what it was
+    if (second.ok) await dispatch(CMD.setList, { item_id: a!.imdb_id, list: 'watchlist', restore: second.value.before });
+    expect(deps.store.getState().lists[a!.imdb_id]?.list).toBe('watchlist');
+    await dispatch(CMD.setList, { item_id: a!.imdb_id, list: null });
+    expect(deps.store.getState().lists[a!.imdb_id]).toBeUndefined();
+  });
+
+  it('a title marked Not interested leaves the shown recommendations at once', async () => {
+    const { dispatch, deps } = await loaded();
+    await dispatch(CMD.recommend, { k: 5 });
+    const shown = deps.store.getState().recs.items.map((r) => r.item_id);
+    await dispatch(CMD.setList, { item_id: shown[0]!, list: 'not_interested' });
+    expect(deps.store.getState().recs.items.map((r) => r.item_id)).not.toContain(shown[0]);
+  });
+
   it('exportRatings writes a flickpick CSV that the core reads back', async () => {
     const { dispatch, deps, artifacts } = await loaded();
     const [a, b] = artifacts.catalog;

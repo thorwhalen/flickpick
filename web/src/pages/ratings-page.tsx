@@ -8,6 +8,8 @@ import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { advise, offerUndo } from 'undo-toast';
 import { CMD } from '@/commands/index';
 import { MovieTitleButton } from '@/components/movie-card';
+import { useSetList } from '@/components/list-buttons';
+import type { ListId } from '@/state/schemas';
 import { RatingControl } from '@/components/rating-control';
 import { defaults } from '@/defaults';
 import { previewImport, type ImportPreview } from '@/lib/ratings-io';
@@ -408,10 +410,53 @@ function RatingsTable() {
   );
 }
 
+/** The watchlist and the not-interested list: each title opens its page; taking it off has one Undo. */
+function Lists() {
+  const lists = useApp((s) => s.lists);
+  const setList = useSetList();
+  const [which, setWhich] = useState<ListId>('watchlist');
+  const entries = Object.values(lists)
+    .filter((e) => e.list === which)
+    .sort((a, b) => b.added_at.localeCompare(a.added_at));
+  const count = (id: ListId) => Object.values(lists).filter((e) => e.list === id).length;
+  return (
+    <Section title="Your lists" id="lists-heading">
+      <div className="flex flex-wrap gap-1" role="group" aria-label="List">
+        {(['watchlist', 'not_interested'] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            aria-pressed={which === id}
+            onClick={() => setWhich(id)}
+            className={cn('rounded-full border px-3 py-1 text-sm', which === id ? 'bg-primary text-primary-foreground' : 'hover:bg-muted')}
+          >
+            {id === 'watchlist' ? 'Watchlist' : 'Not interested'} <span className="tabular-nums opacity-75">{count(id)}</span>
+          </button>
+        ))}
+      </div>
+      {entries.length === 0 ? (
+        <Notice>{which === 'watchlist' ? 'Nothing on your watchlist yet: add titles from the Recommend page.' : 'Nothing here: titles you mark Not interested are left out of recommendations.'}</Notice>
+      ) : (
+        <ul className="divide-y rounded-lg border">
+          {entries.map((e) => (
+            <li key={e.item_id} className="flex items-center justify-between gap-2 px-3 py-2 text-sm">
+              <MovieTitleButton imdbId={e.item_id}>{e.title ?? e.item_id}</MovieTitleButton>
+              <Button size="sm" variant="ghost" aria-label={`Take ${e.title ?? e.item_id} off this list`} onClick={() => void setList(e.item_id, e.title, null)}>
+                Take off
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
+  );
+}
+
 export function RatingsPage() {
   return (
     <div className="space-y-8">
       <ImportPanel />
+      <Lists />
       <RatingsTable />
     </div>
   );
