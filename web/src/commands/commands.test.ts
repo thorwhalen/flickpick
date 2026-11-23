@@ -98,6 +98,49 @@ describe('commands', () => {
     await expect(deps.providers.ratings.getOne(id)).rejects.toThrow();
   });
 
+  it('removeRatings forgets several at once and returns the rows; restoreRatings puts them back exactly', async () => {
+    const { dispatch, deps, artifacts } = await loaded();
+    const [a, b, c] = artifacts.catalog;
+    for (const [x, score] of [[a, 80], [b, 35], [c, 60]] as const) await dispatch(CMD.rateTitle, { item_id: x!.imdb_id, score });
+    const before = { ...deps.store.getState().ratings };
+    const removed = await dispatch<{ removed: { item_id: string }[] }>(CMD.removeRatings, { item_ids: [a!.imdb_id, b!.imdb_id, 'tt-never-rated'] });
+    expect(removed.ok && removed.value.removed.map((r) => r.item_id)).toEqual([a!.imdb_id, b!.imdb_id]);
+    expect(Object.keys(deps.store.getState().ratings)).toEqual([c!.imdb_id]);
+    if (!removed.ok) return;
+    expect((await dispatch(CMD.restoreRatings, { rows: removed.value.removed })).ok).toBe(true);
+    expect(deps.store.getState().ratings).toEqual(before);
+    expect((await deps.providers.ratings.getOne(a!.imdb_id)).score).toBe(80);
+  });
+
+  it('rescoreRatings sets one score and returns the rows as they were (only those it changed)', async () => {
+    const { dispatch, deps, artifacts } = await loaded();
+    const [a, b] = artifacts.catalog;
+    await dispatch(CMD.rateTitle, { item_id: a!.imdb_id, score: 80 });
+    await dispatch(CMD.rateTitle, { item_id: b!.imdb_id, score: 50 });
+    const result = await dispatch<{ before: { item_id: string; score: number }[] }>(CMD.rescoreRatings, { item_ids: [a!.imdb_id, b!.imdb_id], score: 50 });
+    expect(result.ok && result.value.before.map((r) => [r.item_id, r.score])).toEqual([[a!.imdb_id, 80]]);
+    expect(deps.store.getState().ratings[a!.imdb_id]?.score).toBe(50);
+    if (result.ok) await dispatch(CMD.restoreRatings, { rows: result.value.before });
+    expect(deps.store.getState().ratings[a!.imdb_id]?.score).toBe(80);
+  });
+
+  it('restore with expect never overwrites a rating changed since the action', async () => {
+    const { dispatch, deps, artifacts } = await loaded();
+    const [a, b] = artifacts.catalog;
+    await dispatch(CMD.rateTitle, { item_id: a!.imdb_id, score: 70 });
+    await dispatch(CMD.rateTitle, { item_id: b!.imdb_id, score: 30 });
+    const removed = await dispatch<{ removed: { item_id: string }[] }>(CMD.removeRatings, { item_ids: [a!.imdb_id, b!.imdb_id] });
+    if (!removed.ok) throw new Error('remove failed');
+    await dispatch(CMD.rateTitle, { item_id: a!.imdb_id, score: 90 }); // rated again before the Undo
+    const back = await dispatch<{ restored: number; skipped: number }>(CMD.restoreRatings, {
+      rows: removed.value.removed,
+      expect: { [a!.imdb_id]: null, [b!.imdb_id]: null },
+    });
+    expect(back.ok && back.value).toEqual({ restored: 1, skipped: 1 });
+    expect(deps.store.getState().ratings[a!.imdb_id]?.score).toBe(90);
+    expect(deps.store.getState().ratings[b!.imdb_id]?.score).toBe(30);
+  });
+
   it('exportRatings writes a flickpick CSV that the core reads back', async () => {
     const { dispatch, deps, artifacts } = await loaded();
     const [a, b] = artifacts.catalog;

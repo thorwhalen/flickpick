@@ -19,6 +19,8 @@ import { SciencePage } from '@/pages/science-page';
 import { SettingsPage } from '@/pages/settings-page';
 import { HOME, navigate, useRoute, type Route, type Screen } from '@/route';
 import { useApp, useArtifacts, useDispatch } from '@/state/hooks';
+import { UndoToast } from 'undo-toast/react';
+import 'undo-toast/styles.css';
 
 const NAV: { screen: Screen; label: string }[] = [
   { screen: 'recommend', label: 'Recommend' },
@@ -76,6 +78,17 @@ export function App() {
   const dispatch = useDispatch();
   const artifactsStatus = useApp((s) => s.artifacts.status);
   const mainRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  // The header wraps on a phone: its real height goes in --header-h, so bars sticky under it stay visible.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const set = () => document.documentElement.style.setProperty('--header-h', `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   useDocumentTitle(route);
 
   // Load the stored data and the artifact set once.
@@ -104,7 +117,7 @@ export function App() {
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:m-2 focus:rounded focus:bg-card focus:p-2">
         Skip to content
       </a>
-      <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
+      <header ref={headerRef} className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
           <RouteLink to={HOME} className="text-lg font-bold tracking-tight">
             <span className="text-primary">flick</span>pick
@@ -129,6 +142,7 @@ export function App() {
       <main id="main" ref={mainRef} tabIndex={-1} className="mx-auto max-w-7xl px-4 py-6 outline-none">
         {route && <Screen route={route} />}
       </main>
+      <UndoToast />
     </div>
   );
 }
