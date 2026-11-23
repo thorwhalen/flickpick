@@ -1,4 +1,4 @@
-> built 2026-11-23 20:21 UTC from 8993f0e (main) · flickpick 0.0.14. Details: build_info.json
+> built 2026-11-23 20:25 UTC from 4c2de4b (main) · flickpick 0.0.15. Details: build_info.json
 
 # index.html.md
 
@@ -1709,18 +1709,16 @@ with `json`, a dict holding the full `Recommendation` records.
 
 # About this build
 
-This documentation was built on **2026-11-23 20:21 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/8993f0e646055a6b434ff4f964ebdffdd810d7ca"><code>8993f0e</code></a> on branch <code>main</code>, for **flickpick 0.0.14** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 20:25 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/4c2de4bf4ec4e9df7f54baf6741d503fb06f5109"><code>4c2de4b</code></a> on branch <code>main</code>, for **flickpick 0.0.15** (from <code>pyproject.toml</code>).
 
-#### WARNING
-The documentation and the package may be misaligned:
-
-- The documented version (0.0.14) is behind the latest release on PyPI (0.0.15): `pip install flickpick` gives newer code than these docs describe.
+#### NOTE
+Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/8993f0e646055a6b434ff4f964ebdffdd810d7ca"><code>8993f0e646055a6b434ff4f964ebdffdd810d7ca</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/4c2de4bf4ec4e9df7f54baf6741d503fb06f5109"><code>4c2de4bf4ec4e9df7f54baf6741d503fb06f5109</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -1731,9 +1729,9 @@ The documentation and the package may be misaligned:
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/45258236887">45258236887</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/45258847708">45258847708</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>8993f0e646055a6b434ff4f964ebdffdd810d7ca</code> (in the history of the built commit) |
+| Event commit | <code>4c2de4bf4ec4e9df7f54baf6741d503fb06f5109</code> (in the history of the built commit) |
 
 ## Tools
 
@@ -1758,13 +1756,13 @@ The documentation and the package may be misaligned:
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.15/">0.0.15</a>, newer than the documented version (0.0.14).
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.15/">0.0.15</a>, the same as the documented version.
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 8993f0e646055a6b434ff4f964ebdffdd810d7ca
+git checkout 4c2de4bf4ec4e9df7f54baf6741d503fb06f5109
 pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
