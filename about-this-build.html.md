@@ -2,16 +2,18 @@
 
 # About this build
 
-This documentation was built on **2026-11-22 13:17 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/2e3ce30599fb27c4139f1542b044748825100ba2"><code>2e3ce30</code></a> on branch <code>main</code>, for **flickpick 0.0.11** (from <code>pyproject.toml</code>).
+This documentation was built on **2026-11-23 19:24 UTC** from commit <a href="https://github.com/thorwhalen/flickpick/commit/384bdc745999731ed7578e9e3181ab27c80a09fa"><code>384bdc7</code></a> on branch <code>main</code>, for **flickpick 0.0.12** (from <code>pyproject.toml</code>).
 
-#### NOTE
-Nothing suggests a mismatch: the tree was clean at the commit above, and the documented version is the one on PyPI.
+#### WARNING
+The documentation and the package may be misaligned:
+
+- The documented version (0.0.12) is behind the latest release on PyPI (0.0.13): `pip install flickpick` gives newer code than these docs describe.
 
 ## Source
 
 |                     |                                                                                                                                                             |
 |---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/2e3ce30599fb27c4139f1542b044748825100ba2"><code>2e3ce30599fb27c4139f1542b044748825100ba2</code></a> |
+| Commit              | <a href="https://github.com/thorwhalen/flickpick/commit/384bdc745999731ed7578e9e3181ab27c80a09fa"><code>384bdc745999731ed7578e9e3181ab27c80a09fa</code></a> |
 | Branch              | <code>main</code>                                                                                                                                           |
 | Tags at this commit | none                                                                                                                                                        |
 | Working tree        | clean                                                                                                                                                       |
@@ -22,15 +24,15 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 |              |                                                                                            |
 |--------------|--------------------------------------------------------------------------------------------|
 | Repository   | <code>thorwhalen/flickpick</code>                                                          |
-| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/45026498811">45026498811</a> |
+| Run          | <a href="https://github.com/thorwhalen/flickpick/actions/runs/45248244564">45248244564</a> |
 | Ref          | <code>refs/heads/main</code>                                                               |
-| Event commit | <code>2e3ce30599fb27c4139f1542b044748825100ba2</code> (in the history of the built commit) |
+| Event commit | <code>384bdc745999731ed7578e9e3181ab27c80a09fa</code> (in the history of the built commit) |
 
 ## Tools
 
 |          |         |
 |----------|---------|
-| epythet  | 0.2.23  |
+| epythet  | 0.2.25  |
 | Sphinx   | 9.1.1   |
 | docutils | 0.22.4  |
 | Python   | 3.12.16 |
@@ -49,14 +51,14 @@ Nothing suggests a mismatch: the tree was clean at the commit above, and the doc
 
 ## Package on PyPI
 
-Latest release: <a href="https://pypi.org/project/flickpick/0.0.11/">0.0.11</a>, the same as the documented version.
+Latest release: <a href="https://pypi.org/project/flickpick/0.0.13/">0.0.13</a>, newer than the documented version (0.0.12).
 
 ## Reproduce
 
 ```bash
 git clone https://github.com/thorwhalen/flickpick && cd flickpick
-git checkout 2e3ce30599fb27c4139f1542b044748825100ba2
-pip install "epythet==0.2.23"
+git checkout 384bdc745999731ed7578e9e3181ab27c80a09fa
+pip install "epythet==0.2.25"
 epythet quickstart . --ignore tests/ scrap/ examples/
 ```
 
