@@ -26,7 +26,7 @@ import { parseSetting, settingKeys, SettingsSchema, type SettingKey, type Settin
 import { fetchEnrichment, isExpired, isFresh } from '@/sources/tmdb';
 import { readAll, upsertRow } from '@/state/providers';
 import { queryFromForm, RecommendFormSchema, type RecommendForm } from '@/state/recommend-form';
-import { EnrichmentSchema, RatingRowSchema, type RatingRow } from '@/state/schemas';
+import { EnrichmentSchema, LIST_IDS, ListEntrySchema, RatingRowSchema, type ListEntry, type RatingRow } from '@/state/schemas';
 import type { CommandDeps } from './deps';
 
 /** Command ids, named once. */
@@ -38,6 +38,7 @@ export const CMD = {
   removeRatings: 'app.ratings.removeMany',
   restoreRatings: 'app.ratings.restore',
   rescoreRatings: 'app.ratings.rescoreMany',
+  setList: 'app.lists.set',
   importRatings: 'app.ratings.import',
   exportRatings: 'app.ratings.export',
   setSetting: 'app.settings.set',
@@ -67,7 +68,15 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
   /** Read stored settings and ratings once. Invalid stored values decay to the defaults. */
   async function hydrate(): Promise<void> {
     if (state().hydrated) return;
-    const [settingsRows, ratingRows] = await Promise.all([readAll(providers.settings), readAll(providers.ratings)]);
+    const [settingsRows, ratingRows, listRows] = await Promise.all([
+      readAll(providers.settings),
+      readAll(providers.ratings),
+      readAll(providers.lists).catch(() => []),
+    ]);
+    const lists = listRows.flatMap((r) => {
+      const parsed = ListEntrySchema.safeParse(r);
+      return parsed.success ? [parsed.data] : [];
+    });
     const stored = settingsRows.find((r) => r.id === defaults.storage.settingsRowId);
     const settings = SettingsSchema.safeParse(stored ?? {});
     const ratings = ratingRows.flatMap((r) => {
@@ -77,6 +86,7 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
     store.setState((s) => {
       s.settings = settings.success ? settings.data : SettingsSchema.parse({});
       s.ratings = Object.fromEntries(ratings.map((r) => [r.item_id, r]));
+      s.lists = Object.fromEntries(lists.map((l) => [l.item_id, l]));
       s.hydrated = true;
     });
     await purgeExpiredEnrichment();
@@ -199,12 +209,15 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
         onWarning: (w) => warnings.push(w),
       });
       if (state().recs.requestId !== requestId) return ok({ stale: true, items });
+      // Titles marked "not interested" are left out of what is recommended.
+      const lists = state().lists;
+      const wanted = items.filter((i) => lists[i.item_id]?.list !== 'not_interested');
       store.setState((s) => {
         s.recs.status = 'ready';
-        s.recs.items = items;
+        s.recs.items = wanted;
         s.recs.warnings = warnings;
       });
-      return ok({ stale: false, items });
+      return ok({ stale: false, items: wanted });
     } catch (e) {
       if (state().recs.requestId === requestId) {
         store.setState((s) => {
@@ -357,6 +370,32 @@ export function buildCommands(deps: CommandDeps): AnyCommandRecord[] {
         });
         await refreshResults();
         return ok({ before, at: now });
+      },
+    }),
+
+    defineCommand({
+      id: CMD.setList,
+      title: 'Put a title on a list',
+      description:
+        'Put a catalogue title on the watchlist or the not-interested list (it is in one at a time), or take it off (list: null). Returns the entry as it was, for an Undo. Not-interested titles are left out of recommendations.',
+      category: 'Lists',
+      params: z.object({ item_id: ImdbId, list: z.enum(LIST_IDS).nullable(), restore: ListEntrySchema.optional() }),
+      execute: async ({ item_id, list, restore }) => {
+        const before = state().lists[item_id] ?? null;
+        const item = catalogRow(item_id);
+        const next: ListEntry | null = restore
+          ? restore
+          : list
+            ? ListEntrySchema.parse({ item_id, list, title: before?.title ?? item?.title, year: before?.year ?? item?.year ?? undefined, added_at: deps.now().toISOString() })
+            : null;
+        if (next) await upsertRow(providers.lists, item_id, next);
+        else if (before) await providers.lists.delete(item_id);
+        store.setState((s) => {
+          if (next) s.lists[item_id] = next;
+          else delete s.lists[item_id];
+        });
+        if ((before?.list === 'not_interested') !== (next?.list === 'not_interested')) await refreshResults();
+        return ok({ before });
       },
     }),
 

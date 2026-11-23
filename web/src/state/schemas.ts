@@ -33,6 +33,20 @@ export const RatingRowSchema = z.object({
 });
 export type RatingRow = z.infer<typeof RatingRowSchema>;
 
+/** The two collections a title can be in (one at a time): to watch, or not interested (left out of recommendations). */
+export const LIST_IDS = ['watchlist', 'not_interested'] as const;
+export type ListId = (typeof LIST_IDS)[number];
+
+/** A title in one of the lists (the views design's explicit collection: membership by id). */
+export const ListEntrySchema = z.object({
+  item_id: z.string().min(1),
+  list: z.enum(LIST_IDS),
+  title: z.string().optional(),
+  year: z.number().int().optional(),
+  added_at: z.string(),
+});
+export type ListEntry = z.infer<typeof ListEntrySchema>;
+
 // Compile-time guarantee that a stored row can be handed to the core as a `Rating` as is.
 // (If the core's Rating gains a required field, this line stops compiling.)
 const _rowIsRating: (row: RatingRow) => Rating = (row) => row;
