@@ -18,6 +18,9 @@ import { Card } from '@/ui/card';
 import { Chip } from '@/ui/chip';
 import { Notice, ProgressBar, Skeleton } from '@/ui/feedback';
 import { Input } from '@/ui/input';
+import { cn } from '@/lib/utils';
+import { advise, offerUndo } from 'undo-toast';
+import type { SavedSearch } from '@/state/schemas';
 import { useEditBuffer } from '@/ui/edit-buffer';
 
 /** Genres that are not genres. */
@@ -116,6 +119,65 @@ function GenrePicker({
 
 const toggle = (list: string[], value: string) => (list.includes(value) ? list.filter((x) => x !== value) : [...list, value]);
 
+/** The saved searches as chips: one reopens its search; Save names the current one; × removes one (one Undo). */
+function SavedSearches({ form, setForm }: { form: RecommendForm; setForm: (f: RecommendForm) => void }) {
+  const searches = useApp((s) => s.searches);
+  const dispatch = useDispatch();
+  const [naming, setNaming] = useState(false);
+  const [name, setName] = useState('');
+  const list = Object.values(searches).sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const same = (f: RecommendForm) => JSON.stringify(f) === JSON.stringify(form);
+  async function save() {
+    if (!name.trim()) return;
+    const result = await dispatch(CMD.saveSearch, { name: name.trim(), form });
+    if (result.ok) {
+      setNaming(false);
+      setName('');
+    }
+  }
+  async function remove(id: string) {
+    const result = await dispatch<{ removed: SavedSearch }>(CMD.removeSearch, { id });
+    if (!result.ok) return;
+    const { removed } = result.value;
+    offerUndo({
+      message: `Saved search “${removed.name}” removed`,
+      advice: advise('remove-item'),
+      undo: async () => (await dispatch(CMD.saveSearch, { name: removed.name, form: removed.form, restore: removed })).ok,
+    });
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Saved searches">
+      {list.map((s) => (
+        <span key={s.id} className="inline-flex items-center">
+          <button
+            type="button"
+            aria-pressed={same(s.form)}
+            onClick={() => setForm(s.form)}
+            className={cn('rounded-l-full border px-3 py-1 text-sm', same(s.form) ? 'bg-primary text-primary-foreground' : 'hover:bg-muted')}
+          >
+            {s.name}
+          </button>
+          <button type="button" aria-label={`Remove the saved search ${s.name}`} onClick={() => void remove(s.id)} className="rounded-r-full border border-l-0 px-2 py-1 text-sm hover:bg-muted">
+            ×
+          </button>
+        </span>
+      ))}
+      {naming ? (
+        <span className="inline-flex items-center gap-1">
+          <Input autoFocus value={name} maxLength={60} placeholder="Name this search" aria-label="Name this search" onChange={(e) => setName(e.target.value)} onKeyDown={(e) => {
+            if (e.key === 'Enter') void save();
+            if (e.key === 'Escape') setNaming(false);
+          }} className="h-8 w-44" />
+          <Button size="sm" onClick={() => void save()} disabled={!name.trim()}>Save</Button>
+          <Button size="sm" variant="ghost" onClick={() => setNaming(false)}>Cancel</Button>
+        </span>
+      ) : (
+        !list.some((s) => same(s.form)) && <Button size="sm" variant="outline" onClick={() => setNaming(true)}>+ Save this search</Button>
+      )}
+    </div>
+  );
+}
+
 function QueryForm({ form, setForm }: { form: RecommendForm; setForm: (f: RecommendForm) => void }) {
   const artifacts = useArtifacts()!;
   const embeddingEnabled = useApp((s) => s.settings.embeddingEnabled);
@@ -137,6 +199,7 @@ function QueryForm({ form, setForm }: { form: RecommendForm; setForm: (f: Recomm
 
   return (
     <Card className="space-y-4 p-4">
+      <SavedSearches form={form} setForm={setForm} />
       <form
         className="flex flex-col gap-2 sm:flex-row sm:items-end"
         onSubmit={(e) => {

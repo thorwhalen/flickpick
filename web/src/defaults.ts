@@ -28,6 +28,7 @@ export const defaults = {
     settingsRowId: 'settings',
     enrichmentKey: 'flickpick:tmdb-cache',
     listsKey: 'flickpick:lists',
+    searchesKey: 'flickpick:searches',
   },
 
   /** The rating control (the canonical scale is the core's 0-100). */

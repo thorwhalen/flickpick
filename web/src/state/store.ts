@@ -14,7 +14,7 @@ import type { Artifacts, HoldoutResult, Recommendation } from 'flickpick';
 import { immer } from 'zustand/middleware/immer';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import { defaultSettings, type Settings } from '@/settings/schema';
-import type { Enrichment, ListEntry, RatingRow } from './schemas';
+import type { Enrichment, ListEntry, RatingRow, SavedSearch } from './schemas';
 import type { RecommendForm } from './recommend-form';
 
 /** The four states every async thing in the UI goes through. */
@@ -34,6 +34,8 @@ export interface AppState {
   ratings: Record<string, RatingRow>;
   /** Watchlist and not-interested entries by `item_id`. */
   lists: Record<string, ListEntry>;
+  /** Saved searches by id. */
+  searches: Record<string, SavedSearch>;
   artifacts: { status: LoadStatus; source: string; error: string | null; name: string | null };
   recs: {
     status: LoadStatus;
@@ -58,6 +60,7 @@ export const initialAppState = (): AppState => ({
   settings: defaultSettings(),
   ratings: {},
   lists: {},
+  searches: {},
   artifacts: { status: 'idle', source: '', error: null, name: null },
   recs: { status: 'idle', query: null, items: [], error: null, warnings: [], requestId: 0 },
   model: { status: 'idle', progress: null, error: null },
