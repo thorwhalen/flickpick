@@ -1,32 +1,32 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-23T19:24:06Z",
+  "built_at": "2026-11-23T20:16:47Z",
   "package": {
     "name": "flickpick",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "display_name": "flickpick",
     "source": "pyproject.toml"
   },
   "git": {
     "available": true,
-    "commit": "384bdc745999731ed7578e9e3181ab27c80a09fa",
-    "short_commit": "384bdc7",
+    "commit": "65a2f0167b87cf03fbb617d1ff1e5d3a0f758551",
+    "short_commit": "65a2f01",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/flickpick",
-    "commit_url": "https://github.com/thorwhalen/flickpick/commit/384bdc745999731ed7578e9e3181ab27c80a09fa",
+    "commit_url": "https://github.com/thorwhalen/flickpick/commit/65a2f0167b87cf03fbb617d1ff1e5d3a0f758551",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/flickpick",
-    "sha": "384bdc745999731ed7578e9e3181ab27c80a09fa",
+    "sha": "65a2f0167b87cf03fbb617d1ff1e5d3a0f758551",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45248244564",
-    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/45248244564",
+    "run_id": "45257341700",
+    "run_url": "https://github.com/thorwhalen/flickpick/actions/runs/45257341700",
     "server_url": "https://github.com"
   },
   "tools": {
@@ -60,16 +60,16 @@
   },
   "pypi": {
     "checked": true,
-    "latest": "0.0.13",
+    "latest": "0.0.14",
     "relation": "behind",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout 384bdc745999731ed7578e9e3181ab27c80a09fa\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/flickpick && cd flickpick\ngit checkout 65a2f0167b87cf03fbb617d1ff1e5d3a0f758551\npip install \"epythet==0.2.25\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": false,
     "notes": [
-      "The documented version (0.0.12) is behind the latest release on PyPI (0.0.13): `pip install flickpick` gives newer code than these docs describe."
+      "The documented version (0.0.13) is behind the latest release on PyPI (0.0.14): `pip install flickpick` gives newer code than these docs describe."
     ]
   }
 }
