@@ -210,6 +210,15 @@ function RatingsTable() {
   const query = useDebounced(search.trim().toLowerCase(), defaults.ui.searchDebounceMs);
   const [sort, setSort] = useState<Sort>({ id: 'rated_at', desc: true });
   const [view, setView] = useState<QuickViewId>('all');
+  const [genre, setGenre] = useState('');
+  // A rated title's genres, from the catalogue (an unmatched one has none).
+  const genresOf = useMemo(() => {
+    const catalog = artifacts?.catalog;
+    return (id: string): readonly string[] => {
+      const idx = artifacts?.idToIdx.get(id);
+      return idx === undefined || !catalog ? [] : (catalog[idx]?.genres ?? []);
+    };
+  }, [artifacts]);
   const [picked, setPicked] = useState<ReadonlySet<string>>(new Set());
   const anchor = useRef<string | null>(null);
   const [rescore, setRescore] = useState('');
@@ -218,10 +227,11 @@ function RatingsTable() {
   const all = useMemo(() => Object.values(ratings), [ratings]);
   const rows = useMemo(() => {
     const test = QUICK_VIEWS.find((v) => v.id === view)?.test ?? (() => true);
-    const shown = all.filter((r) => test(r) && (!query || (r.title ?? r.item_id).toLowerCase().includes(query)));
+    const shown = all.filter((r) => test(r) && (!genre || genresOf(r.item_id).includes(genre)) && (!query || (r.title ?? r.item_id).toLowerCase().includes(query)));
     const sign = sort.desc ? -1 : 1;
     return shown.sort((a, b) => sign * compare(a[sort.id as keyof RatingRow], b[sort.id as keyof RatingRow]));
-  }, [all, view, query, sort]);
+  }, [all, view, query, sort, genre, genresOf]);
+  const genres = useMemo(() => [...new Set(all.flatMap((r) => genresOf(r.item_id)))].sort(), [all, genresOf]);
   const total = all.length;
   // The picked titles that are still rated (a removal elsewhere drops them).
   const pickedRows = useMemo(() => all.filter((r) => picked.has(r.item_id)), [all, picked]);
@@ -309,7 +319,19 @@ function RatingsTable() {
           </button>
         ))}
       </div>
-      <Input type="search" placeholder="Search titles" aria-label="Search your ratings" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-sm" />
+      <div className="flex flex-wrap items-center gap-2">
+        <Input type="search" placeholder="Search titles" aria-label="Search your ratings" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-sm" />
+        {genres.length > 0 && (
+          <select aria-label="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} className="h-9 rounded-md border bg-background px-2 text-sm">
+            <option value="">All genres</option>
+            {genres.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
       {pickedRows.length > 0 && (
         <div role="region" aria-label="Selected ratings" className="sticky top-[var(--header-h,3.5rem)] z-[5] flex flex-wrap items-center gap-2 rounded-lg border bg-card p-2 text-sm">
           <span aria-live="polite" className="font-medium">
