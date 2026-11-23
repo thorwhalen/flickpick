@@ -19,6 +19,8 @@ import { SciencePage } from '@/pages/science-page';
 import { SettingsPage } from '@/pages/settings-page';
 import { HOME, navigate, useRoute, type Route, type Screen } from '@/route';
 import { useApp, useArtifacts, useDispatch } from '@/state/hooks';
+import { UndoToast } from 'undo-toast/react';
+import 'undo-toast/styles.css';
 
 const NAV: { screen: Screen; label: string }[] = [
   { screen: 'recommend', label: 'Recommend' },
@@ -129,6 +131,7 @@ export function App() {
       <main id="main" ref={mainRef} tabIndex={-1} className="mx-auto max-w-7xl px-4 py-6 outline-none">
         {route && <Screen route={route} />}
       </main>
+      <UndoToast />
     </div>
   );
 }
